@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  headercolour: 1
+  textcolour: 1
+  navigationcolor: 1
+  navigationlinkcolor: 1
+  onlinestatuscolor: 1
+  profilecolor: 1
+  errorcolor: 1
+  warningcolor: 1
+  notificationcolor: 1
+  successcolor: 1
+
+two:
+  name: MyString
+  headercolour: 1
+  textcolour: 1
+  navigationcolor: 1
+  navigationlinkcolor: 1
+  onlinestatuscolor: 1
+  profilecolor: 1
+  errorcolor: 1
+  warningcolor: 1
+  notificationcolor: 1
+  successcolor: 1

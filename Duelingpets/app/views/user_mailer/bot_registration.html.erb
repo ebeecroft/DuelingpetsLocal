@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1>New Bot <%= @registration.vname %> was discovered by the review team.</h1>
+      <p>Hello Admin we the review team discovered this new bot while going
+         through the review process. Some of the attributes appeared to be very
+         suspicious so we denied it entry and sent the information directly to
+         you.
+      </p>
+      <p>The data from this bot can now be used to stop other future bots
+         from entering in to the site. We do appreciate this new mechanism
+         that you set up as it helps manage the site better and keep it
+         clean.
+      </p>
+      <br>
+      <p>Name: <%= @registration.first_name %><%= @registration.last_name %></p>
+      <p>Email: <%= @registration.email %> Vname: <%= @registration.vname %></p>
+      <p>Login_id: <%= @registration.login_id %></p>
+      <p>Country: <%= @registration.country %></p>
+      <p>Country timezone: <%= @registration.country_timezone %></p>
+      <p>Birthday: <%= @registration.birthday %></p>
+      <br>
+      <p>I hope this information will be able to help you against these bots</p>
+      <br>
+      <p>The Review Team</p>
+   </body>
+</html>

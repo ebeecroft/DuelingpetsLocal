@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+     <h1><%= @blog.user.vname %>'s blog <%= @blog.title %> is awaiting your review.</h1>
+     <p>Greetings Review Team we have a blogger by the name of
+        <%= @blog.user.vname %> who has created a new blog for
+        the site. I'd like you all to take the time to look
+        through the blog and all its ads to see if they are
+        appropriate.
+     </p>
+     <p>If you feel that the blogger has done a really good
+        job with it and the content is appropriate then
+        please click the approve button. However if you feel
+        that it doesn't seem to be appropriate then click the
+        deny button. However above all you should use your
+        best judment.
+     </p>
+     <p>To access the review section you will need to
+        use this url: <%= @url %>
+     </p>
+     <p>From Bolt Greywing the Admin</p>
+  </body>
+</html>

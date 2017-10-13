@@ -1,0 +1,21 @@
+<% provide(:h1, "Moviecomment List") %>
+<p><%= paginate @moviecomments %></p>
+<% @moviecomments.each do |moviecomment| %>
+   <br>
+   <p class="navlinks">Movie title: <%= link_to moviecomment.movie.title, subplaylist_movie_path(moviecomment.movie.subplaylist, moviecomment.movie) %><%= button_to 'Edit', edit_movie_moviecomment_path(moviecomment.movie, moviecomment), method: :get %><%= button_to 'Destroy', [moviecomment.movie, moviecomment], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now moviecomment.created_on %> ago on (<%= moviecomment.created_on.strftime("%B-%d-%Y") %>)</p>
+   <br>
+   <p><%= moviecomment.message %></p>
+   <% if moviecomment.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(moviecomment.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Director: <%= getUserPrivilege(moviecomment.user) %><%= link_to moviecomment.user.vname, user_path(moviecomment.user) %></p>
+   <p>Status: <%= getActivity(moviecomment.user) %>
+      <% if getActivity(moviecomment.user) == "Offline" || getActivity(moviecomment.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(moviecomment.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

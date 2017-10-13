@@ -1,0 +1,27 @@
+<%= form_for([@channel, @mainplaylist]) do |f| %>
+  <% if @mainplaylist.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mainplaylist.errors.count, "error") %> prohibited this mainplaylist from being saved:</h2>
+
+      <ul>
+      <% @mainplaylist.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_channel_path(@channel.user, @channel) %></p>
+<% end %>

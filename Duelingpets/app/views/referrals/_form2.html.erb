@@ -1,0 +1,28 @@
+<% if @referral.errors.any? %>
+   <div id="error_explanation">
+      <h2><%= pluralize(@referral.errors.count, "error") %> prohibited this referral from being saved:</h2>
+      <ul>
+         <% @referral.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+         <% end %>
+      </ul>
+   </div>
+<% end %>
+<br>
+<div class="field">
+   <%= object[0].label :vname, "Virtual Name" %><br />
+   <%= object[0].text_field :vname %>
+</div>
+<div class="actions">
+   <% if object[1] == "Edit" %>
+      <%= object[0].submit "Update Referral" %>
+   <% else %>
+      <%= object[0].submit "Save Referral" %>
+   <% end %>
+</div>
+<br>
+<% if object[1] == "Edit" %>
+   <p class="navlinks"><%= link_to 'Back', referrals_path %></p>
+<% else %>
+   <p class="navlinks"><%= link_to 'Back', user_path(current_user.vname) %></p>
+<% end %>

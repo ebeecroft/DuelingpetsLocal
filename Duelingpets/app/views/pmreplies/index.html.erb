@@ -1,0 +1,21 @@
+<% provide(:h1, "Pmreply List") %>
+<p><%= paginate @pmreplies %></p>
+<% @pmreplies.each do |pmreply| %>
+   <br>
+   <p class="navlinks">re: <%= link_to pmreply.pm.title, user_pm_path(pmreply.user, pmreply.pm) %><%= button_to 'Edit', edit_pm_pmreply_path(pmreply.pm, pmreply), method: :get %><%= button_to 'Destroy', [pmreply.pm, pmreply], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <% if pmreply.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(pmreply.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Author: <%= getUserPrivilege(pmreply.user) %><%= pmreply.user.vname %></p>
+   <p>Created on: <%= pmreply.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pmreply.created_on %> ago) %></p>
+   <p>Status: <%= getActivity(pmreply.user) %>
+      <% if getActivity(pmreply.user) == "Offline" || getActivity(pmreply.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(pmreply.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= pmreply.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

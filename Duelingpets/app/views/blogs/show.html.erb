@@ -1,0 +1,92 @@
+<% provide(:h1, @blog.title) %>
+<p id="notice"><%= notice %></p>
+<% if @blog.adbanner.to_s != "" %>
+   <p><%= image_tag(@blog.adbanner_url(:thumb), id: "adbanner") %></p>
+   <p><%= @blog.title %>
+      <% if current_user && (current_user.id == @blog.user_id || current_user.admin) %>
+         <%= button_to 'Edit', edit_user_blog_path(@blog.user, @blog), method: :get %><%= button_to 'Destroy', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+   </p>
+<% end %>
+<p>Created on: <%= @blog.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now @blog.created_on %> ago)</p>
+<br>
+<p><%= image_tag(@blog.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% if @blog.adbanner.to_s == "" %>
+<p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %>
+   <% if current_user && (current_user.id == @blog.user_id || current_user.admin) %>
+      <%= button_to 'Edit Blog', edit_user_blog_path(@blog.user, @blog), method: :get %><%= button_to 'Destroy Blog', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %>
+   <% end %>
+</p>
+<% else %>
+   <p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %></p>
+<% end %>
+<p>Status: <%= getActivity(@blog.user) %>
+   <% if getActivity(@blog.user) == "Inactive" || getActivity(@blog.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@blog.user) %>
+   <% end %>
+</p>
+<br>
+<% if @blog.admascot.to_s != "" %>
+<p class="centerad"><%= image_tag(@blog.admascot_url(:thumb)) %></p>
+<% end %>
+<br>
+<p class="centerad">
+  <% if @blog.largeimage1.to_s != "" %>
+  <%= image_tag(@blog.largeimage1_url(:thumb)) %>
+  <% end %>
+  <% if @blog.largeimage2.to_s != "" %>
+  <%= image_tag(@blog.largeimage2_url(:thumb)) %>
+  <% end %>
+  <% if @blog.largeimage3.to_s != "" %>
+  <%= image_tag(@blog.largeimage3_url(:thumb)) %>
+  <% end %>
+</p>
+<br>
+<p class="centerad">
+  <% if @blog.smallimage1.to_s != "" %>
+  <%= image_tag(@blog.smallimage1_url(:thumb)) %>
+  <% end %>
+  <% if @blog.smallimage2.to_s != "" %>
+  <%= image_tag(@blog.smallimage2_url(:thumb)) %>
+  <% end %>
+  <% if @blog.smallimage3.to_s != "" %>
+  <%= image_tag(@blog.smallimage3_url(:thumb)) %>
+  <% end %>
+  <% if @blog.smallimage4.to_s != "" %>
+  <%= image_tag(@blog.smallimage4_url(:thumb)) %>
+  <% end %>
+  <% if @blog.smallimage5.to_s != "" %>
+  <%= image_tag(@blog.smallimage5_url(:thumb)) %>
+  <% end %>
+</p>
+<br>
+<p>
+  <%= @blog.description %>
+</p>
+<% if @blog.replies.count != 0 %>
+   <br>
+   <p><%= paginate @replies %></p>
+   <% @replies.each do |reply| %>
+      <br>
+      <% if reply.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(reply.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">By: <%= getUserPrivilege(reply.user) %><%= link_to reply.user.vname, user_path(reply.user) %><%= button_to 'Edit Reply', edit_blog_reply_path(reply.blog, reply), method: :get %><%= button_to 'Destroy Reply', [reply.blog, reply], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+      <p>Created on: <%= reply.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now reply.created_on %> ago)</p>
+      <p>Status: <%= getActivity(reply.user) %>
+         <% if getActivity(reply.user) == "Offline" || getActivity(reply.user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(reply.user) %>
+         <% end %>
+      </p>
+      <br>
+      <p><%= reply.message %></p>
+   <% end %>
+<% end %>
+<% if current_user %>
+   <br>
+   <p class="navlinks"><%= link_to 'New Reply', new_blog_reply_path(@blog) %></p>
+   <br>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to "User Blogs", user_blogs_path(@blog.user) %> |
+<%= link_to "Blog List", blogs_path %></p>

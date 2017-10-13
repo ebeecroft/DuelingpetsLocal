@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  description: MyText
+  created_on: 2017-07-31 22:11:59
+  user_id: 1
+  donationbox_id: 1
+  amount: 1
+
+two:
+  description: MyText
+  created_on: 2017-07-31 22:11:59
+  user_id: 1
+  donationbox_id: 1
+  amount: 1

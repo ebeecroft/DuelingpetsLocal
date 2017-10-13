@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  remember_token: MyString
+  expiretime: 2017-01-27 22:00:48
+  activated: false
+  signed_in_at: 2017-01-27 22:00:48
+  last_visited: 2017-01-27 22:00:48
+  signed_out_at: 2017-01-27 22:00:48
+  amount: 1
+
+two:
+  user_id: 1
+  remember_token: MyString
+  expiretime: 2017-01-27 22:00:48
+  activated: false
+  signed_in_at: 2017-01-27 22:00:48
+  last_visited: 2017-01-27 22:00:48
+  signed_out_at: 2017-01-27 22:00:48
+  amount: 1

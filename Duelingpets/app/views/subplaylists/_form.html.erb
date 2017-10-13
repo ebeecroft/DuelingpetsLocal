@@ -1,0 +1,35 @@
+<%= form_for([@mainplaylist, @subplaylist]) do |f| %>
+  <% if @subplaylist.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@subplaylist.errors.count, "error") %> prohibited this subplaylist from being saved:</h2>
+
+      <ul>
+      <% @subplaylist.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :collab_mode %><br />
+    <%= f.check_box :collab_mode %>
+  </div>
+  <div class="field">
+    <%= f.label :bookgroup_id, "Select Group" %><br />
+    <%= f.collection_select(:bookgroup_id, @group, :id, :name) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', channel_mainplaylist_path(@subplaylist.mainplaylist.channel, @subplaylist.mainplaylist) %></p>
+<% end %>

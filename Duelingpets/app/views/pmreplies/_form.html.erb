@@ -1,0 +1,47 @@
+<%= form_for([@pm, @pmreply], :html => {:multipart => true}) do |f| %>
+  <% if @pmreply.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@pmreply.errors.count, "error") %> prohibited this pmreply from being saved:</h2>
+
+      <ul>
+      <% @pmreply.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  OGV files
+  <div class="field">
+     <%= video_tag @pmreply.ogv_url(:thumb).to_s, size: "200x200", :controls => true if @pmreply.ogv? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogv %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogv_url, "or OGV URL" %><br />
+    <%= f.text_field :remote_ogv_url %>
+    <%= f.hidden_field :ogv_cache %>
+  </div>
+  MP4 files
+  <div class="field">
+     <%= video_tag @pmreply.mp4_url(:thumb).to_s, size: "200x200", :controls => true if @pmreply.mp4? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp4 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp4_url, "or MP4 URL" %><br />
+    <%= f.text_field :remote_mp4_url %>
+    <%= f.hidden_field :mp4_cache %>
+  </div>
+  <div class="field">
+    <%= f.label :message %><br />
+    <%= f.text_area :message %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_pm_path(@pm.from_user, @pm) %></p>
+<% end %>

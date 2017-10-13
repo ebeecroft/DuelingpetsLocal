@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1><%= @pmreply.user.vname %> sent you a new pmreply.</h1>
+      <p>re: <%= @pmreply.pm.title %></p>
+      <p><%= @pmreply.message %></p>
+      <br>
+      <p>To reply to the following message you will need to create a pmreply
+         to the original private message in your inbox. Once you are inside
+         your inbox all you need to do is click on the message itself and
+         click on the new pmreply link below.
+      </p>
+      <p>If you get lost you can use this url: <%= @url %> to help you out.</p>
+      <p>Thank you for utilzing the private messaging system and have a nice day.</p>
+      <br>
+      <p>Bolt Greywing the Admin</p>
+   </body>
+</html>

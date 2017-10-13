@@ -1,0 +1,8 @@
+<% provide(:h1, "Bookgroup List") %>
+<% @bookgroups.each do |bookgroup| %>
+   <br>
+   <p>Group: <%= bookgroup.name %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now bookgroup.created_on %> ago on (<%= bookgroup.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

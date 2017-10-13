@@ -1,0 +1,43 @@
+Login Information
+===============================================
+
+Greetings <%= @user.vname %> the following information that
+will appear below is going to be strictly confidential for
+your eyes only.
+
+Your Login Name <%= @user.login_id %> is strictly designed to
+allow you access to the website through the login page. The
+Login Name is your private key to the website and as such no
+two private keys can be the same so it is very important that
+you protect this information.
+
+Your initial Password is <%= @password %> to the website
+is also very important as it helps you login and change 
+settings on your account that are specific to you.
+Please do not give out your password to anyone.
+
+Your Activation Token <%= @user.pouch.remember_token %>
+is strictly designed to allow you to activate your account
+for the first time on the website through the activation
+page in combination with your login name. Your account can
+only be activated with in 1 day timeframe. Once your
+account is activated you will not need to reactivate it
+again. Do not give out your activation token to others.
+
+Your Virtual Name <%= @user.vname %> identifies your
+presence on the website. It is what allows you to find
+artists, authors, and other users of the site. Your
+virtual name has other uses such as allowing you to
+refer other users as well as to reset your password for
+your account. Your virtual name is free to share with
+other users as it is public knowledge. This is your
+public key to the website.
+
+Thank you for taking the time to read through all of this
+information and keeping your login information safe in
+the process.
+
+Your helpful Admin,
+
+
+Bolt Greywing

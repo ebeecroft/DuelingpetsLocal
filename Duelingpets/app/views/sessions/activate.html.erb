@@ -1,0 +1,13 @@
+<% provide(:h1, "Activate Account") %>
+<br>
+<%= form_for(:session, url: activatepost_path) do |f| %>
+   <p><%= f.label :login_id, "Login Name" %></p>
+   <p><%= f.password_field :login_id %></p>
+   <p><%= f.label :token %></p>
+   <p><%= f.password_field :token %></p>
+   <p><%= f.submit "Activate" %></p>
+<% end %>
+<br>
+<p class="navlinks">Expired Token? <%= link_to "Reset Timer!", resettime_path %></p>
+<br>
+<p class="navlinks"><%= link_to "Back", login_path %></p>

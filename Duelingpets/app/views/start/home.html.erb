@@ -1,0 +1,37 @@
+<% provide(:h1, "Welcome to Duelingpets") %>
+<% if checkMusicFlag == "On" %>
+   <p><%= audio_tag (getHomepageMusic), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
+<% end %>
+<% if checkMusicFlag == "On" %>
+   <p><%= button_to 'Turn off music', start_adjust_path, method: :post %></p>
+<% else %>
+   <p><%= button_to 'Turn on music', start_adjust_path, method: :post %></p>
+<% end %>
+<br>
+<% if newestMovies.count > 0 %>
+   <p>Newest Movies</p>
+   <br>
+   <% newestMovies.each_with_index do |movie, index| %>
+      <div class="container">
+         <p class="navlinks"><%= link_to movie.title, subplaylist_movie_path(movie.subplaylist, movie) %></p>
+         <p><%= video_tag(getVideo(movie), size: "200x200", :controls => true) %></p>
+         <p>Created on: <%= distance_of_time_in_words_to_now movie.created_on %> ago on (<%= movie.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Group: <%= movie.bookgroup.name %></p>
+         <p class="navlinks">Director: <%= getUserPrivilege(movie.user) %><%= link_to movie.user.vname, user_path(movie.user) %></p>
+         <p>Status: <%= getActivity(movie.user) %>
+            <% if getActivity(movie.user) == "Inactive" || getActivity(movie.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(movie.user) %>
+            <% end %>
+         </p>
+      </div>
+      <% if newestMovies.count == (index + 1) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
+<p>Pets</p>
+<p>Arts</p>
+<p>Audios</p>
+<p>Stories</p>
+<p>Items</p>

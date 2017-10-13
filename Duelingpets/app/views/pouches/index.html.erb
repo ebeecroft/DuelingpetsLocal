@@ -1,0 +1,35 @@
+<% provide(:h1, "Pouch List") %>
+<p><%= paginate @pouches %></p>
+<table>
+  <tr>
+    <th>User</th>
+    <th>Remember token</th>
+    <th>Expiretime</th>
+    <th>Activated</th>
+    <th>Status</th>
+    <th>Amount</th>
+    <th>Privilege</th>
+    <th></th>
+  </tr>
+
+<% @pouches.each do |pouch| %>
+  <tr>
+    <td class="navlinks"><%= link_to pouch.user.vname, user_path(pouch.user) %></td>
+    <td><%= pouch.remember_token %></td>
+    <td><% if pouch.expiretime %>
+           <%= pouch.expiretime.strftime("%B-%d-%Y") %>
+        <% end %>
+    <td><%= pouch.activated %></td>
+    <td><%= getActivity(pouch.user) %>
+        <% if getActivity(pouch.user) == "Offline" || getActivity(pouch.user) == "Inactive" %>
+           for <%= distance_of_time_in_words_to_now getTime(pouch.user) %>
+        <% end %>
+    </td>
+    <td><%= pouch.amount %></td>
+    <td><%= pouch.privilege %></td>
+    <td><%= button_to 'Edit', edit_pouch_path(pouch), method: :get %></td>
+  </tr>
+<% end %>
+</table>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

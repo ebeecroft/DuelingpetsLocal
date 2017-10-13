@@ -1,0 +1,32 @@
+<% if optional %>
+   <% provide(:h1, @user.vname +  "'s blogs") %>
+<% else %>
+   <% provide(:h1, "Blog List") %>
+<% end %>
+<p><%= paginate @blogs %></p>
+<% @blogs.each do |blog| %>
+    <br>
+    <p class="navlinks"><%= link_to blog.title, user_blog_path(blog.user, blog) %></p>
+    <p>Created on: <%= blog.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now blog.created_on %> ago)</p>
+    <% if !optional %>
+       <br>
+       <% if blog.user.userinfo.miniavatar.to_s != "" %>
+          <p><%= image_tag(blog.user.userinfo.miniavatar_url(:thumb)) %></p>
+       <% end %>
+       <p class="navlinks">Blogger: <%= getUserPrivilege(blog.user) %><%= link_to blog.user.vname, user_path(blog.user) %></p>
+       <p>Status: <%= getActivity(blog.user) %>
+          <% if getActivity(blog.user) == "Offline" || getActivity(blog.user) == "Inactive" %>
+             for <%= distance_of_time_in_words_to_now getTime(blog.user) %>
+          <% end %>
+       </p>
+       <br>
+    <% end %>
+    <p><%= blog.description %></p>
+<% end %>
+<% if optional %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>
+<% else %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', root_path %></p>
+<% end %>

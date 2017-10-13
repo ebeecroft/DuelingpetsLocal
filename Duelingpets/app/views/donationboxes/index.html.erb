@@ -1,0 +1,34 @@
+<% provide(:h1, "Donationbox List") %>
+<p><%= paginate @donationboxes %></p>
+<% @donationboxes.each do |donationbox| %>
+   <br>
+   <p><%= button_to 'Edit', edit_user_donationbox_path(donationbox.user, donationbox), method: :get %></p>
+   <% if donationbox.turn_on %>
+      <p><%= donationbox.description %></p>
+      <br>
+      <p>Donated: <%= donationbox.progress %>/<%= donationbox.goal %></p>
+      <p>Initialized on: <%= distance_of_time_in_words_to_now donationbox.initialized_on %> ago on
+      <%= (donationbox.initialized_on.strftime("%B-%d-%Y")) %></p>
+      <p>Goal hit: <%= donationbox.hit_goal %></p>
+      <br>
+      <% if donationbox.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(donationbox.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Box owner: <%= getUserPrivilege(donationbox.user) %><%= link_to donationbox.user.vname, user_path(donationbox.user) %></p>
+      <p>Status: <%= getActivity(donationbox.user) %>
+         <% if getActivity(donationbox.user) == "Offline" || getActivity(donationbox.user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(donationbox.user) %>
+         <% end %>
+      </p>
+   <% else %>
+      <p class="navlinks"><%= getUserPrivilege(donationbox.user) %><%= link_to donationbox.user.vname, user_path(donationbox.user) %> box is not 
+      accepting donations at this time</p>
+      <p>Status: <%= getActivity(donationbox.user) %>
+         <% if getActivity(donationbox.user) == "Offline" || getActivity(donationbox.user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(donationbox.user) %>
+         <% end %>
+      </p>
+   <% end %>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

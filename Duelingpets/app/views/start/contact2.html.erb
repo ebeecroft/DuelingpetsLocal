@@ -1,0 +1,16 @@
+<% provide(:h1, "Contact") %>
+<p class="navlinks">Mail to: <%= mail_to("contact@duelingpets.net") %></p>
+<br>
+<%= form_for(:session, url: verify2_path) do |f| %>
+   <p><%= f.label :name %></p>
+   <p><%= f.text_field :name %></p>
+   <p><%= f.label :email %></p>
+   <p><%= f.text_field :email %></p>
+   <p><%= f.label :subject %></p>
+   <p><%= f.text_field :subject %></p>
+   <p><%= f.label :body %></p>
+   <p><%= f.text_area :body %></p>
+   <p><%= f.submit "Submit" %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to "Back", root_path %></p>

@@ -1,0 +1,19 @@
+<% provide(:h1, "Moviestar List") %>
+<p><%= paginate @moviestars %></p>
+<% @moviestars.each do |moviestar| %>
+   <br>
+   <% if moviestar.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(moviestar.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(moviestar.user) %><%= link_to moviestar.user.vname, user_path(moviestar.user) %></p>
+   <p>Status: <%= getActivity(moviestar.user) %>
+      <% if getActivity(moviestar.user) == "Offline" || getActivity(moviestar.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(moviestar.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Starred movie: <%= link_to moviestar.movie.title, subplaylist_movie_path(moviestar.movie.subplaylist, moviestar.movie) %><%= button_to 'Destroy', [moviestar.movie, moviestar], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now moviestar.created_on %> ago on (<%= moviestar.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

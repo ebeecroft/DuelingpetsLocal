@@ -1,0 +1,26 @@
+New Bot <%= @registration.vname %> was discovered by the review team.
+===============================================
+
+Hello Admin we the review team discovered this new bot while going
+through the review process. Some of the attributes appeared to be very
+suspicious so we denied it entry and sent the information directly to
+you.
+
+The data from this bot can now be used to stop other future bots
+from entering in to the site. We do appreciate this new mechanism
+that you set up as it helps manage the site better and keep it
+clean.
+
+
+Name: <%= @registration.first_name %><%= @registration.last_name %>
+Email: <%= @registration.email %> Vname: <%= @registration.vname %>
+Login_id: <%= @registration.login_id %>
+Country: <%= @registration.country %>
+Country timezone: <%= @registration.country_timezone %>
+Birthday: <%= @registration.birthday %>
+
+
+I hope this information will be able to help you against these bots
+
+
+The Review Team

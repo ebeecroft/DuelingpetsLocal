@@ -1,0 +1,58 @@
+<% provide(:h1, "Blog Review") %>
+<p><%= paginate @blogs %></p>
+<% @blogs.each do |blog| %>
+   <br>
+   <% if blog.adbanner.to_s != "" %>
+      <p><%= image_tag(blog.adbanner_url(:thumb), id: "adbanner") %></p>
+   <% end %>
+   <p class="navlinks"><%= link_to blog.title, user_blog_path(blog.user, blog) %><%= button_to 'Approve', blogs_review1_path(:blog_id=>blog.id), method: :post %><%= button_to 'Deny', blogs_review2_path(:blog_id=>blog.id), method: :post %></p>
+   <p>Created on: <%= blog.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now blog.created_on %> ago)</p>
+   <br>
+   <% if blog.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(blog.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Blogger: <%= getUserPrivilege(blog.user) %><%= link_to blog.user.vname, user_path(blog.user) %></p>
+   <p>Status: <%= getActivity(blog.user) %>
+      <% if getActivity(blog.user) == "Offline" || getActivity(blog.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(blog.user) %>
+      <% end %>
+   </p>
+   <br>
+   <% if blog.admascot.to_s != "" %>
+      <p class="centerad"><%= image_tag(blog.admascot_url(:thumb)) %></p>
+   <% end %>
+   <br>
+   <p class="centerad">
+      <% if blog.largeimage1.to_s != "" %>
+         <%= image_tag(blog.largeimage1_url(:thumb)) %>
+      <% end %>
+      <% if blog.largeimage2.to_s != "" %>
+         <%= image_tag(blog.largeimage2_url(:thumb)) %>
+      <% end %>
+      <% if blog.largeimage3.to_s != "" %>
+         <%= image_tag(blog.largeimage3_url(:thumb)) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="centerad">
+      <% if blog.smallimage1.to_s != "" %>
+         <%= image_tag(blog.smallimage1_url(:thumb)) %>
+      <% end %>
+      <% if blog.smallimage2.to_s != "" %>
+         <%= image_tag(blog.smallimage2_url(:thumb)) %>
+      <% end %>
+      <% if blog.smallimage3.to_s != "" %>
+         <%= image_tag(blog.smallimage3_url(:thumb)) %>
+      <% end %>
+      <% if blog.smallimage4.to_s != "" %>
+         <%= image_tag(blog.smallimage4_url(:thumb)) %>
+      <% end %>
+      <% if blog.smallimage5.to_s != "" %>
+         <%= image_tag(blog.smallimage5_url(:thumb)) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= blog.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

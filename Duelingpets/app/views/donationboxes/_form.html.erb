@@ -1,0 +1,35 @@
+<%= form_for([@user, @donationbox]) do |f| %>
+  <% if @donationbox.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@donationbox.errors.count, "error") %> prohibited this donationbox from being saved:</h2>
+
+      <ul>
+      <% @donationbox.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :goal, "Set Goal Points" %><br />
+    <%= f.number_field :goal %>
+  </div>
+  <div class="field">
+    <%= f.label :turn_on, "Activate Donationbox" %><br />
+    <%= f.check_box :turn_on %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <% if current_user.admin %>
+     <p class="navlinks"><%= link_to 'Back', donationboxes_path %></p>
+  <% else %>
+     <p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>
+  <% end %>
+<% end %>

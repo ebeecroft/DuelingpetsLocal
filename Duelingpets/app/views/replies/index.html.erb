@@ -1,0 +1,21 @@
+<% provide(:h1, "Reply List") %>
+<p><%= paginate @replies %></p>
+<% @replies.each do |reply| %>
+   <br>
+   <p class="navlinks">Blog: <%= link_to reply.blog.title, user_blog_path(reply.blog.user, reply.blog) %><%= button_to 'Edit', edit_blog_reply_path(reply.blog, reply), method: :get %><%= button_to 'Destroy', [reply.blog, reply], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= reply.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now reply.created_on %> ago)</p>
+   <br>
+   <% if reply.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(reply.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">By: <%= getUserPrivilege(reply.user) %><%= link_to reply.user.vname, user_path(reply.user) %></p>
+   <p>Status: <%= getActivity(reply.user) %>
+      <% if getActivity(reply.user) == "Offline" || getActivity(reply.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(reply.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= reply.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

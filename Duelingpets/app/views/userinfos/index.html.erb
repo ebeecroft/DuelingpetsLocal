@@ -1,0 +1,27 @@
+<% provide(:h1, "Userinfo List") %>
+<p><%= paginate @userinfos %></p>
+<% @userinfos.each do |userinfo| %>
+    <br>
+    <p class="navlinks">Vname: <%= link_to userinfo.user.vname, user_path(userinfo.user) %><%= button_to 'Edit', edit_userinfo_path(userinfo), method: :get %></p>
+    <% if userinfo.miniavatar.to_s != "" %>
+       <p>Mini-avatar: <%= userinfo.miniavatar %></p>
+    <% end %>
+    <% if userinfo.avatar.to_s != "" %>
+       <p>Avatar: <%= userinfo.avatar %></p>
+    <% end %>
+    <p>Audio Browser: <%= userinfo.browser %></p>
+    <p>Video Browser: <%= userinfo.vbrowser %></p>
+    <% if userinfo.mp3.to_s != "" %>
+       <p>MP3: <%= audio_tag userinfo.mp3_url.to_s, :controls => true %></p>
+    <% end %>
+    <% if userinfo.ogg.to_s != "" %>
+       <p>OGG: <%= audio_tag userinfo.ogg_url.to_s, :controls => true %></p>
+    <% end %>
+    <p><%= userinfo.info %></p>
+    <p>Status: <%= getActivity(userinfo.user) %>
+       <% if getActivity(userinfo.user) == "Offline" || getActivity(userinfo.user) == "Inactive" %>
+          for <%= distance_of_time_in_words_to_now getTime(userinfo.user) %>
+       <% end %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

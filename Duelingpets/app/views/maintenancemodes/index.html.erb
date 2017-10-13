@@ -1,0 +1,24 @@
+<% provide(:h1, "Maintenance List") %>
+<br>
+<div><%= paginate @maintenancemodes %></div>
+<br>
+<table>
+   <tr>
+      <th>Name</th>
+      <th>Created on</th>
+      <th>Maintenance on</th>
+      <th></th>
+   </tr>
+   <% @maintenancemodes.each do |maintenancemode| %>
+      <tr>
+         <td><%= maintenancemode.name %></td>
+         <td><%= maintenancemode.created_on %></td>
+         <td><%= maintenancemode.maintenance_on %></td>
+         <td><%= button_to 'Edit', edit_maintenancemode_path(maintenancemode), method: :get %></td>
+      </tr>
+   <% end %>
+</table>
+<br>
+<p class="navlinks"><%= link_to 'New Maintenancemode', new_maintenancemode_path %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

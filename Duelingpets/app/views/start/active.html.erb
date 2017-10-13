@@ -1,0 +1,6 @@
+<% provide(:h1, "Active Users") %>
+<p>Users seperated by spaces up to 50 or more</p>
+<p><%= paginate @pouches %></p>
+<% @pouches.each do |pouch| %>
+   <%= link_to pouch.user.vname, pouch.user %>
+<% end %>

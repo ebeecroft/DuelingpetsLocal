@@ -1,0 +1,127 @@
+<%= form_for([@user, @colorscheme]) do |f| %>
+  <% if @colorscheme.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@colorscheme.errors.count, "error") %> prohibited this colorscheme from being saved:</h2>
+
+      <ul>
+      <% @colorscheme.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :activate %><br />
+    <%= f.check_box :activate %>
+  </div>
+  <div class="field">
+    <%= f.label :backgroundcolor %><br />
+    <%= f.text_field :backgroundcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :headercolor %><br />
+    <%= f.text_field :headercolor %>
+  </div>
+  <div class="field">
+    <%= f.label :textcolor %><br />
+    <%= f.text_field :textcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navigationcolor %><br />
+    <%= f.text_field :navigationcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navigationlinkcolor %><br />
+    <%= f.text_field :navigationlinkcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navigationhovercolor %><br />
+    <%= f.text_field :navigationhovercolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navigationhoverbackgcolor %><br />
+    <%= f.text_field :navigationhoverbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :onlinestatuscolor %><br />
+    <%= f.text_field :onlinestatuscolor %>
+  </div>
+  <div class="field">
+    <%= f.label :profilecolor %><br />
+    <%= f.text_field :profilecolor %>
+  </div>
+  <div class="field">
+    <%= f.label :profilevisitedcolor %><br />
+    <%= f.text_field :profilevisitedcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :profilehovercolor %><br />
+    <%= f.text_field :profilehovercolor %>
+  </div>
+  <div class="field">
+    <%= f.label :profilehoverbackgcolor %><br />
+    <%= f.text_field :profilehoverbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :sessioncolor %><br />
+    <%= f.text_field :sessioncolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navlinkcolor %><br />
+    <%= f.text_field :navlinkcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navlinkhovercolor %><br />
+    <%= f.text_field :navlinkhovercolor %>
+  </div>
+  <div class="field">
+    <%= f.label :navlinkhoverbackgcolor %><br />
+    <%= f.text_field :navlinkhoverbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :explanationborder %><br />
+    <%= f.text_field :explanationborder %>
+  </div>
+  <div class="field">
+    <%= f.label :explanationbackgcolor %><br />
+    <%= f.text_field :explanationbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :explanheadercolor %><br />
+    <%= f.text_field :explanheadercolor %>
+  </div>
+  <div class="field">
+    <%= f.label :explanheaderbackgcolor %><br />
+    <%= f.text_field :explanheaderbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :errorcolor %><br />
+    <%= f.text_field :errorcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :warningcolor %><br />
+    <%= f.text_field :warningcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :notificationcolor %><br />
+    <%= f.text_field :notificationcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :successcolor %><br />
+    <%= f.text_field :successcolor %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Usercolors', user_colorschemes_path %>|<%= link_to 'ColorSchemes', colorschemes_path %></p>
+<% end %>

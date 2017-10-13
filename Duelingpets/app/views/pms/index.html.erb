@@ -1,0 +1,23 @@
+<% provide(:h1, "Pm List") %>
+<p><%= paginate @pms %></p>
+<% @pms.each do |pm| %>
+   <br>
+   <p class="navlinks"><%= link_to pm.title, user_pm_path(pm.to_user, pm) %><%= button_to 'Edit', edit_user_pm_path(pm.from_user, pm), method: :get %><%= button_to 'Destroy', [pm.from_user, pm], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <% if pm.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(pm.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Author: <%= getUserPrivilege(pm.from_user) %><%= pm.from_user.vname %></p>
+   <p class="navlinks">To: <%= getUserPrivilege(pm.to_user) %><%= pm.to_user.vname %></p>
+   <p>Created on: <%= pm.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pm.created_on %> ago)</p>
+   <p>Status: <%= getActivity(pm.from_user) %>
+      <% if getActivity(pm.from_user) == "Offline" || getActivity(pm.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(pm.from_user) %>
+      <% end %>
+   </p>
+   <p>Posts: <%= postCount(pm) %></p>
+   <br>
+   <p><%= pm.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

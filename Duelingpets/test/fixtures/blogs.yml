@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyText
+  adbanner: MyString
+  admascot: MyString
+  largeimage1: MyString
+  largeimage2: MyString
+  largeimage3: MyString
+  smallimage1: MyString
+  smallimage2: MyString
+  smallimage3: MyString
+  smallimage4: MyString
+  smallimage5: MyString
+  created_on: 2017-04-13 20:14:21
+  user_id: 1
+
+two:
+  title: MyString
+  description: MyText
+  adbanner: MyString
+  admascot: MyString
+  largeimage1: MyString
+  largeimage2: MyString
+  largeimage3: MyString
+  smallimage1: MyString
+  smallimage2: MyString
+  smallimage3: MyString
+  smallimage4: MyString
+  smallimage5: MyString
+  created_on: 2017-04-13 20:14:21
+  user_id: 1

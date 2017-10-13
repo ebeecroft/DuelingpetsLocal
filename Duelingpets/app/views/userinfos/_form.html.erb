@@ -1,0 +1,83 @@
+<%= form_for(@userinfo, :html => {:multipart => true}) do |f| %>
+  <% if @userinfo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@userinfo.errors.count, "error") %> prohibited this userinfo from being saved:</h2>
+
+      <ul>
+      <% @userinfo.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  Miniavatar files
+  <div class="field">
+     <%= image_tag @userinfo.miniavatar_url(:thumb).to_s if @userinfo.miniavatar? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :miniavatar %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_miniavatar_url, "or Mini-Avatar URL" %><br />
+    <%= f.text_field :remote_miniavatar_url %>
+    <%= f.hidden_field :miniavatar_cache %>
+  </div>
+  Avatar files
+  <div class="field">
+     <%= image_tag @userinfo.avatar_url(:thumb).to_s if @userinfo.avatar? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :avatar %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_avatar_url, "or Avatar URL" %><br />
+    <%= f.text_field :remote_avatar_url %>
+    <%= f.hidden_field :avatar_cache %>
+  </div>
+  <div class="field">
+    <%= f.label :browser %><br />
+    <%= f.text_field :browser %>
+  </div>
+  <div class="field">
+    <%= f.label :vbrowser %><br />
+    <%= f.text_field :vbrowser %>
+  </div>
+  <div class="field">
+    <%= f.label :info %><br />
+    <%= f.text_area :info %>
+  </div>
+  Ogg files
+  <div class="field">
+     <%= audio_tag(@userinfo.ogg_url.to_s, :controls => true) if @userinfo.ogg? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogg %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogg_url, "or Ogg URL" %><br />
+    <%= f.text_field :remote_ogg_url %>
+    <%= f.hidden_field :ogg_cache %>
+  </div>
+  MP3 files
+  <div class="field">
+     <%= audio_tag(@userinfo.mp3_url.to_s, :controls => true) if @userinfo.mp3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp3_url, "or Mp3 URL" %><br />
+    <%= f.text_field :remote_mp3_url %>
+    <%= f.hidden_field :mp3_cache %>
+  </div>
+  <div class="field">
+    <%= f.label :colorscheme_id, "Select colorscheme" %><br />
+    <%= f.collection_select(:colorscheme_id, @colorschemes, :id, :name) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_path(@userinfo.user) %></p>
+<% end %>

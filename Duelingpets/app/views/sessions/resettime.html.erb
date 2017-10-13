@@ -1,0 +1,11 @@
+<% provide(:h1, "Reset Timer") %>
+<br>
+<%= form_for(:session, url: resettimepost_path) do |f| %>
+   <p><%= f.label :login_id, "Login Name" %></p>
+   <p><%= f.password_field :login_id %></p>
+   <p><%= f.label :vname, "Virtual Name" %></p>
+   <p><%= f.password_field :vname %></p>
+   <p><%= f.submit "Reset" %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to "Back", root_path %></p>

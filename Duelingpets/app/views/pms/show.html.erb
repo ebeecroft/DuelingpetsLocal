@@ -1,0 +1,56 @@
+<% provide(:h1, @pm.title) %>
+<p id="notice"><%= notice %></p>
+<p>Created on: <%= @pm.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now @pm.created_on %> ago)</p>
+<% if @pm.from_user.userinfo.miniavatar.to_s != "" %>
+   <br>
+   <p><%= image_tag(@pm.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks">Author: <%= getUserPrivilege(@pm.from_user) %><%= link_to @pm.from_user.vname, user_path(@pm.from_user) %>
+   <% if current_user && (current_user.id == @pm.from_user_id || current_user.admin) %>
+      <%= button_to 'Edit Pm', edit_user_pm_path(@pm.from_user, @pm), method: :get %>
+   <% end %>
+   <% if current_user && (((current_user.id == @pm.to_user.id) || (current_user.id == @pm.from_user_id)) || current_user.admin) %>
+   <%= button_to 'Destroy Pm', [@pm.from_user, @pm], method: :delete, data: { confirm: 'Are you sure?' } %>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@pm.from_user) %>
+   <% if getActivity(@pm.from_user) == "Inactive" || getActivity(@pm.from_user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@pm.from_user) %>
+   <% end %>
+</p>
+<p>Posts: <%= postCount(@pm) %></p>
+<br>
+<p><%= @pm.message %></p>
+<br>
+<p><%= paginate @pmreplies %></p>
+<% @pmreplies.each do |pmreply| %>
+   <br>
+   <p>re: <%= pmreply.pm.title %>
+      <% if current_user && ((current_user.id == pmreply.pm.from_user_id) || (current_user.id == pmreply.user_id) || current_user.admin) %>
+         <%= button_to 'Edit Pmreply', edit_pm_pmreply_path(pmreply.pm, pmreply), method: :get %><%= button_to 'Destroy Pmreply', [pmreply.pm, pmreply], method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+   </p>
+   <p>Created on: <%= pmreply.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pmreply.created_on %> ago)</p>
+   <% if pmreply.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(pmreply.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Author: <%= getUserPrivilege(pmreply.user) %><%= link_to pmreply.user.vname, user_path(pmreply.user) %></p>
+   <p>Status: <%= getActivity(pmreply.user) %>
+      <% if getActivity(pmreply.user) == "Offline" || getActivity(pmreply.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(pmreply.user) %>
+      <% end %>
+   </p>
+   <% if pmreply.ogv != "" || pmreply.mp4 != "" %>
+      <br>
+      <p><%= video_tag(getVideo(pmreply), :controls => true) %></p>
+   <% end %>
+   <br>
+   <p><%= pmreply.message %></p>
+<% end %>
+<br>
+<% if current_user %>
+   <p class="navlinks"><%= link_to 'New Pmreply', new_pm_pmreply_path(@pm) %></p>
+   <br>
+<% end %>
+<p class="navlinks"><%= link_to 'Outbox', pms_outbox_path %> | <%= link_to 'Inbox', pms_inbox_path %></p>

@@ -1,0 +1,84 @@
+<% provide(:h1, "Stats") %>
+<p>Economy</p>
+<p>Sources</p>
+<p>Today: <%= getSourced("Today") %> points Week: <%= getSourced("Week") %> points Month: <%= getSourced("Month") %> points</p>
+<p>Year: <%= getSourced("Year") %> points 3Years: <%= getSourced("Threeyears") %> points Bacon of Tomato: <%= getSourced("BaconOfTomato") %> points</p>
+<br>
+<p>Sinks</p>
+<p>Today: <%= getSunk("Today") %> points Week: <%= getSunk("Week") %> points Month: <%= getSunk("Month") %> points</p>
+<p>Year: <%= getSunk("Year") %> points 3 Years: <%= getSunk("Threeyears") %> points Bacon of Tomato: <%= getSunk("BaconOfTomato") %> points</p>
+<br>
+<p>Transfers</p>
+<p>Today: <%= getTransfers("Today") %> points Week: <%= getTransfers("Week") %> points Month: <%= getTransfers("Month") %> points</p>
+<p>Year: <%= getTransfers("Year") %> points 3 Years: <%= getTransfers("Threeyears") %> points Bacon of Tomato: <%= getTransfers("BaconOfTomato") %> points</p>
+<br>
+<p>Points in the world: <%= getEconomy %> Average Income: <%= getAvgIncome %></p>
+<p>Total sourced: <%= getSourced("All") %> Total sunk: <%= getSunk("All") %> Total transfered: <%= getTransfers("All") %></p>
+<p>Contest points available: <%= getContest %></p>
+<br>
+<p>Referrals</p>
+<p>Today: <%= referralsSourced("Today") %> points Week: <%= referralsSourced("Week") %> points Month: <%= referralsSourced("Month") %> points</p>
+<p>Year: <%= referralsSourced("Year") %> points 3 Years: <%= referralsSourced("Threeyears") %> points Bacon of Tomato: <%= referralsSourced("BaconOfTomato") %> points</p>
+<p>Discovery referrals: <%= referrals("Discovery") %> User referrals: <%= referrals("User") %></p>
+<br>
+<p>Colorschemes</p>
+<p>Today: <%= colorschemesSourced("Today") %> points Week: <%= colorschemesSourced("Week") %> points Month: <%= colorschemesSourced("Month") %> points</p>
+<p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
+<p>Colorscheme total: <%= colorschemes %></p>
+<br>
+<p>Channels</p>
+<p>Today: <%= channelTime("Today") %> Week: <%= channelTime("Week") %> Month: <%= channelTime("Month") %> Year: <%= channelTime("Year") %> 3Years: <%= channelTime("Threeyears") %> Bacon of Tomato: <%= channelTime("BaconOfTomato") %></p>
+<p>Channel total: <%= channelTime("All") %></p>
+<br>
+<p>Mainplaylists</p>
+<p>Today: <%= mainplaylistTime("Today") %> Week: <%= mainplaylistTime("Week") %> Month: <%= mainplaylistTime("Month") %> Year: <%= mainplaylistTime("Year") %> 3Years: <%= mainplaylistTime("Threeyears") %> Bacon of Tomato: <%= mainplaylistTime("BaconOfTomato") %></p>
+<p>Mainplaylist total: <%= mainplaylistTime("All") %></p>
+<br>
+<p>Subplaylists</p>
+<p>Today: <%= subplaylistTime("Today") %> Week: <%= subplaylistTime("Week") %> Month: <%= subplaylistTime("Month") %> Year: <%= subplaylistTime("Year") %> 3Years: <%= subplaylistTime("Threeyears") %> Bacon of Tomato: <%= subplaylistTime("BaconOfTomato") %></p>
+<p>Subplaylist total: <%= subplaylistTime("All") %></p>
+<br>
+<p>Movies</p>
+<p>Sources</p>
+<p>Today: <%= moviesSourced("Today") %> points Week: <%= moviesSourced("Week") %> points Month: <%= moviesSourced("Month") %> points</p>
+<p>Year: <%= moviesSourced("Year") %> points 3 Years: <%= moviesSourced("Threeyears") %> points Bacon of Tomato: <%= moviesSourced("BaconOfTomato") %> points</p>
+<p>Movie total: <%= movies %></p>
+<br>
+<p>Blogs</p>
+<p>Sources</p>
+<p>Today: <%= blogsSourced("Today") %> points Week: <%= blogsSourced("Week") %> points Month: <%= blogsSourced("Month") %> points</p>
+<p>Year: <%= blogsSourced("Year") %> points 3 Years: <%= blogsSourced("Threeyears") %> points Bacon of Tomato: <%= blogsSourced("BaconOfTomato") %> points</p>
+<br>
+<p>Sinks</p>
+<p>Today: <%= blogsSunk("Today") %> points Week: <%= blogsSunk("Week") %> points Month: <%= blogsSunk("Month") %> points</p>
+<p>Year: <%= blogsSunk("Year") %> points 3 Years: <%= blogsSunk("Threeyears") %> points Bacon of Tomato: <%= blogsSunk("BaconOfTomato") %> points</p>
+<br>
+<p>Blogs points sourced: <%= blogsSourced("All") %> Ads points sunk: <%= blogsSunk("All") %></p>
+<p>Blog total: <%= blogs %></p>
+<br>
+<p>Replies</p>
+<p>Today: <%= repliesSourced("Today") %> points Week: <%= repliesSourced("Week") %> points Month: <%= repliesSourced("Month") %> points</p>
+<p>Year: <%= repliesSourced("Year") %> points 3 Years: <%= repliesSourced("Threeyears") %> points Bacon of Tomato: <%= repliesSourced("BaconOfTomato") %> points</p>
+<p>Reply total: <%= replies %></p>
+<br>
+<p>Shouts</p>
+<p>Today: <%= shoutTime("Today") %> Week: <%= shoutTime("Week") %> Month: <%= shoutTime("Month") %> Year: <%= shoutTime("Year") %> 3Years: <%= shoutTime("Threeyears") %> Bacon of Tomato: <%= shoutTime("BaconOfTomato") %></p>
+<p>Shouts total: <%= shoutTime("All") %></p>
+<br>
+<p>Groups</p>
+<p>Peter Rabbit: <%= getGroups("Rabbit") %> Dragons of Blueland: <%= getGroups("Blueland") %> The Dragon and The George: <%= getGroups("Dragon") %></p>
+<p>Silverwing: <%= getGroups("Silverwing") %> Harahpin: <%= getGroups("Harahpin") %> LOTR: <%= getGroups("Rings") %></p>
+<br>
+<p>Signups</p>
+<p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3 Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
+<p>Total users: <%= getSignups("All") %> Total bots: <%= getUserStatus("Bots") %></p>
+<br>
+<p>Art total: </p>
+<p>Pet total: </p>
+<p>Item total: </p>
+<p>Story total: </p>
+<p>Audio total: </p>
+<p>Forum total: </p>
+<p>Petowner total: </p>
+<br>
+<p class="navlinks"><%= link_to "Back", root_path %></p>

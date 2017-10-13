@@ -1,0 +1,22 @@
+<%= form_for(@pouch) do |f| %>
+  <% if @pouch.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@pouch.errors.count, "error") %> prohibited this pouch from being saved:</h2>
+
+      <ul>
+      <% @pouch.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :privilege %><br />
+    <%= f.text_field :privilege %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+<% end %>

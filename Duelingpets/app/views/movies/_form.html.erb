@@ -1,0 +1,55 @@
+<%= form_for([@subplaylist, @movie], :html => {:multipart => true}) do |f| %>
+  <% if @movie.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@movie.errors.count, "error") %> prohibited this movie from being saved:</h2>
+
+      <ul>
+      <% @movie.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :bookgroup_id, "Select Group" %><br />
+    <%= f.collection_select(:bookgroup_id, @group, :id, :name) %>
+  </div>
+  OGV files
+  <div class="field">
+     <%= video_tag @movie.ogv_url(:thumb).to_s, size: "200x200", :controls => true if @movie.ogv? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogv %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogv_url, "or OGV URL" %><br />
+    <%= f.text_field :remote_ogv_url %>
+    <%= f.hidden_field :ogv_cache %>
+  </div>
+  MP4 files
+  <div class="field">
+     <%= video_tag @movie.mp4_url(:thumb).to_s, size: "200x200", :controls => true if @movie.mp4? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp4 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp4_url, "or MP4 URL" %><br />
+    <%= f.text_field :remote_mp4_url %>
+    <%= f.hidden_field :mp4_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', mainplaylist_subplaylist_path(@movie.subplaylist.mainplaylist, @movie.subplaylist) %></p>
+<% end %>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  message: MyText
+  created_on: 2017-10-03 21:23:52
+  movie_id: 1
+  user_id: 1
+
+two:
+  message: MyText
+  created_on: 2017-10-03 21:23:52
+  movie_id: 1
+  user_id: 1

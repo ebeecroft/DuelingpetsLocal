@@ -1,0 +1,35 @@
+<% provide(:h1, "Pm Inbox") %>
+<p><%= paginate @pms %></p>
+<% @pms.each do |pm| %>
+   <br>
+   <p class="navlinks"><%= link_to pm.title, user_pm_path(pm.from_user, pm) %> (<%= postCount(pm) %>)</p>
+   <p>Created on: <%= pm.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pm.created_on %> ago)</p>
+   <p>
+   <% if current_user.id == pm.user_id %>
+      <% if pm.from_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(pm.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">From: <%= getUserPrivilege(pm.from_user) %><%= link_to pm.from_user.vname, user_path(pm.from_user) %></p>
+      <p>Status: <%= getActivity(pm.from_user) %>
+         <% if getActivity(pm.from_user) == "Offline" || getActivity(pm.from_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(pm.from_user) %>
+         <% end %>
+      </p>
+   <% elsif ((current_user.id == pm.from_user_id) && (postCount(pm) > 0)) %>
+      <% if pm.to_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(pm.to_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">To: <%= getUserPrivilege(pm.to_user) %><%= link_to pm.to_user.vname, user_path(pm.to_user) %></p>
+      <p>Status: <%= getActivity(pm.to_user) %>
+         <% if getActivity(pm.to_user) == "Offline" || getActivity(pm.to_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(pm.to_user) %>
+         <% end %>
+      </p>
+   <% end %>
+   <br>
+   <p><%= pm.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>

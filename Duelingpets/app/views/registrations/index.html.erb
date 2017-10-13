@@ -1,0 +1,21 @@
+<% provide(:h1, "Registration List") %>
+<% if gateStatus %>
+   <p class="navlinks"><%= button_to "Open Gate", registrations_gate_path, method: :post %></p>
+<% else %>
+   <p class="navlinks"><%= button_to "Close Gate", registrations_gate_path, method: :post %></p>
+<% end %>
+<br>
+<p><%= paginate @registrations %></p>
+<% @registrations.each do |registration| %>
+    <br>
+    <p class="navlinks">Vname: <%= registration.vname %><%= button_to 'Approve', registrations_review1_path(:id => registration.id), method: :post %><%= button_to 'Deny', registrations_review2_path(:id => registration.id), method: :post %></p>
+    <p>Name: <%= registration.first_name %> <%= registration.last_name %> joined: <%= distance_of_time_in_words_to_now registration.joined_on %> ago</p>
+    <p>Date joined: <%= registration.joined_on.strftime("%B-%d-%Y") %></p>
+    <p>Birthday: <%= registration.birthday.strftime("%B-%d-%Y") %></p>
+    <p>Email: <%= registration.email %></p>
+    <p>Country: <%= registration.country %></p>
+    <p>Timezone: <%= registration.country_timezone %></p>
+    <p>Group: <%= getGroup(registration) %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

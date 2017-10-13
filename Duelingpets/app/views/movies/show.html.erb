@@ -1,0 +1,67 @@
+<% provide(:h1, @movie.title) %>
+<p id="notice"><%= notice %></p>
+<br>
+<p><%= @movie.description %></p>
+<br>
+<p><%= video_tag(getVideo(@movie), width: "85%", :controls => true) %></p>
+<br>
+<p>Created on: <%= distance_of_time_in_words_to_now @movie.created_on %> ago on (<%= @movie.created_on.strftime("%B-%d-%Y") %>)</p>
+<p>Group: <%= @movie.bookgroup.name %></p>
+<p class="navlinks">Subplaylist: <%= link_to @movie.subplaylist.title, mainplaylist_subplaylist_path(@subplaylist.mainplaylist, @movie.subplaylist) %></p>
+<% if @movie.user.userinfo.miniavatar.to_s != "" %>
+   <br>
+   <p><%= image_tag(@movie.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks">Director: <%= getUserPrivilege(@movie.user) %><%= link_to @movie.user.vname, user_path(@movie.user) %>
+   <% if current_user && (current_user.id == @movie.user_id || current_user.admin) %>
+      <div class="container"><%= button_to 'Edit', edit_subplaylist_movie_path(@movie.subplaylist, @movie), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@movie.subplaylist, @movie], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@movie.user) %>
+   <% if getActivity(@movie.user) == "Offline" || getActivity(@movie.user) == "Inactive" %>
+      for <%= distance_of_time_in_words_to_now getTime(@movie.user) %>
+   <% end %>
+</p>
+<% if current_user && current_user.id != @movie.user_id %>
+   <% if retrieveStar(@movie) == 0 %>
+      <p><%= button_to 'Star', moviestars_star_path(:movie_id=>@movie.id), method: :post %></p>
+   <% else %>
+      <p><%= button_to 'Unstar', moviestars_star_path(:movie_id=>@movie.id), method: :post %></p>
+   <% end %>
+<% end %>
+<% if @stars > 0 %>
+   <br>
+   <p>Stars: <%= @stars %></p>
+<% end %>
+<% if current_user %>
+   <% if @moviecomments.count > 0 %>
+      <br>
+      <p>Comments:</p>
+      <br>
+      <p><%= paginate @moviecomments %></p>
+      <% @moviecomments.each do |moviecomment| %>
+         <br>
+         <% if moviecomment.user.userinfo.miniavatar.to_s != "" %>
+            <p><%= image_tag(moviecomment.user.userinfo.miniavatar_url(:thumb)) %></p>
+         <% end %>
+         <p class="navlinks">By: <%= getUserPrivilege(moviecomment.user) %><%= link_to moviecomment.user.vname, user_path(moviecomment.user) %>
+         <% if(current_user && ((current_user.id == moviecomment.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_movie_moviecomment_path(moviecomment.movie, moviecomment), method: :get %></div> <div class="container"><%= button_to 'Destroy', [moviecomment.movie, moviecomment], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         </p>
+         <br>
+         <p><%= moviecomment.message %></p>
+         <br>
+         <p>Created on: <%= distance_of_time_in_words_to_now moviecomment.created_on %> ago on (<%= moviecomment.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Status: <%= getActivity(moviecomment.user) %>
+            <% if getActivity(moviecomment.user) == "Offline" || getActivity(moviecomment.user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(moviecomment.user) %>
+            <% end %>
+         </p>
+      <% end %>
+   <% end %>
+   <br>
+   <p class="navlinks"><%= link_to 'New Moviecomment', new_movie_moviecomment_path(@movie) %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', mainplaylist_subplaylist_path(@subplaylist.mainplaylist, @movie.subplaylist) %></p>

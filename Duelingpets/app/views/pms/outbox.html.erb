@@ -1,0 +1,21 @@
+<% provide(:h1, "Pm Outbox") %>
+<p><%= paginate @pms %></p>
+<% @pms.each do |pm| %>
+   <br>
+   <p class="navlinks"><%= link_to pm.title, user_pm_path(pm.from_user, pm) %></p>
+   <% if pm.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(pm.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">From: <%= getUserPrivilege(pm.from_user) %><%= pm.from_user.vname %></p>
+   <p>Created on: <%= pm.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pm.created_on %> ago)</p>
+   <p>Status: <%= getActivity(pm.from_user) %>
+      <% if getActivity(pm.from_user) == "Offline" || getActivity(pm.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(pm.from_user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= pm.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>

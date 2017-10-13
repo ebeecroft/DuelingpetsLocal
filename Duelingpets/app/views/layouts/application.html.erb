@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Duelingpets</title>
+      <%= stylesheet_link_tag    "application", :media => "all" %>
+      <%= javascript_include_tag "application" %>
+      <%= csrf_meta_tags %>
+   </head>
+   <body id="pagestyle">
+      <style>
+         *{margin:0;padding:0;border:0;font-size:100%;vertical-align:baseline;}
+         #pageindent{padding: 0% 3%;color: <%= getColorAttribute("Text") %>}
+         .navindent{padding: 0% 3%;background: <%= getColorAttribute("Navigation") %>;text-align: center;font-weight: bold;}
+         .online{color: <%= getColorAttribute("Onlinestatus") %>}
+         .navindent a{color: <%= getColorAttribute("Navigationlink") %>}
+         .navindent a:hover{color: <%= getColorAttribute("Navigationhoverforc") %>;background: <%= getColorAttribute("Navigationhoverbackgc") %>}
+         .navwordindent{display: inline-block;padding: 1.5% 1%;}/*This can change*/
+         .navfont{font-size: 120%;}/*This can change*/
+         #pageheader{font-weight: bold;text-align: center;font-size: 160%; color: <%= getColorAttribute("Header") %>} /*This can change*/
+         #profile{padding: 0.7% 1% 0.7%;text-align: right;}
+         #profile a{color:<%= getColorAttribute("Profile") %>}
+         #profile a:visited{<%= getColorAttribute("Profilevisited") %>}
+         #profile a:hover{color: <%= getColorAttribute("Profilehovercolor") %>; background: <%= getColorAttribute("Profilehoverbackgc") %>}
+         #pagestyle{background-color: <%= getColorAttribute("Backgroundc") %>; font-family: 'Lucida Sans Unicode','Lucida Grande',Helvetica,Arial,sans-serif;max-width: 100%;}
+         #banner{width: 100%; height: 90px;}
+         #points{padding: 0.7% 1% 0.7%;text-align: right;color:<%= getColorAttribute("Profile") %>}
+         #sessionindent{padding: 0% 3%;color:<%= getColorAttribute("Sessionc") %>}
+         .alert-success{color: <%= getColorAttribute("Success") %>}
+         .alert-error{color: <%= getColorAttribute("Error") %>}
+         #adbanner{width: 100%; height: 80px;}
+         .centerad{text-align:center;}
+         .navlinks a{color: <%= getColorAttribute("Navlink") %>}
+         .navlinks a:hover{color: <%= getColorAttribute("Navlinkhovercolor") %>;background: <%= getColorAttribute("Navlinkhoverbackgc") %>}
+         .container{display: inline-block;}
+         #errorexplan {width: 450px;border: 2px solid <%= getColorAttribute("Explanationborder") %>;padding: 7px;
+         padding-bottom: 0;margin-bottom: 20px;background-color: <%= getColorAttribute("Explanationbackgc") %>;}
+         #errorheader{text-align: left;font-weight: bold;padding: 5px 5px 5px 15px;font-size: 12px;
+         margin: -7px;margin-bottom: 0px;background-color: <%= getColorAttribute("Explanheaderbackgc") %>;color: <%= getColorAttribute("Explanheadercolor") %>;} ul li {font-size: 12px;list-style: square;}
+      </style>
+      <%= image_tag("/Resources/Images/banner/duelingpetsbanner.jpeg", id: "banner") if Rails.env.development? %>
+      <%= image_tag("http://static.duelingpets.net/banner/duelingpetsbanner.jpeg", id: "banner") if Rails.env.production? %>
+      <% if current_user %>
+         <div id="profile"><%= link_to current_user.vname, current_user %> <%= link_to "Logout", logout_path, method: "delete" %></div>
+         <div id="points">Pouch: <%= current_user.pouch.amount %> points</div>
+         <p id="points"><%= getClock %></p>
+      <% else %>
+         <div id="profile"><%= link_to "Login", login_path %> <%= link_to "Register", register_path %></div>
+         <p id="points"><%= getClock %></p>
+      <% end %>
+      <div class="navindent">
+         <div class="navfont">
+            <div class="navwordindent"><div class="online">Online: <%= getUserStatus("Online") %> Inactive: <%= getUserStatus("Inactive") %> Offline: <%= getUserStatus("Offline") %></div></div>
+         </div>
+      </div>
+      <br>
+      <div class="navindent">
+         <div class="navfont">
+            <% unless current_page?(root_path) %>
+               <div class="navwordindent"><%= link_to "Home", root_path %></div>
+            <% end %>
+            <div class="navwordindent"><%= link_to "News", blogs_path %></div>
+            <div class="navwordindent"><%= link_to "Colorschemes", colorschemes_path %></div>
+            <div class="navwordindent"><%= link_to "Channels", channels_path %></div>
+         </div>
+      </div>
+      <% if current_user %>
+         <br>
+         <div id="sessionindent"><%= current_user.vname %>'s session expires in: <%= distance_of_time_in_words_to_now current_user.pouch.expiretime %></div>
+      <% end %>
+      <div id="pageindent">
+         <% if flash %>
+            <% flash.each do |key, value| %>
+              <br>
+              <div class="alert alert-<%= key %>"><%= value %></div>
+            <% end %>
+         <% end %>
+         <br>
+         <% if current_user && !current_user.userinfo.colorscheme.activate %>
+            <p><%= button_to 'Revert to Default Color', revertcolor_path, method: :post %></p>
+            <br>
+         <% end %>
+         <h1 id="pageheader"><%= yield(:h1) %></h1>
+         <br>
+         <%= yield %>
+      </div>
+      <br>
+      <div class="navindent">
+         <div class="navfont">
+            <% unless current_page?(root_path) %>
+               <div class="navwordindent"><%= link_to "Home", root_path %></div>
+            <% end %>
+            <div class="navwordindent"><%= link_to "Contact", contact_path %></div>
+            <div class="navwordindent"><%= link_to "Stats", stats_path %></div>
+            <div class="navwordindent"><%= link_to "Sitemap", sitemap_path %></div>
+            <% if current_user %>
+               <div class="navwordindent"><%= link_to "Active", active_path %></div>
+               <div class="navwordindent"><%= link_to "Suggestion", new_user_suggestion_path(current_user) %></div>
+            <% end %>
+         </div>
+      </div>
+   </body>
+</html>

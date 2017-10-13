@@ -1,0 +1,9 @@
+<% provide(:h1, "Contact") %>
+<%= form_for(:session, url: verify_path) do |f| %>
+   <p><%= f.label :color, "What is your favorite color?" %></p>
+   <p><%= f.text_field :color %></p>
+   <p><%= f.submit "Submit" %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to "Back", root_path %></p>
+

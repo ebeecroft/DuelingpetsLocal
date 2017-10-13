@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  created_on: 2017-01-16 21:27:41
+  maintenance_on: false
+
+two:
+  name: MyString
+  created_on: 2017-01-16 21:27:41
+  maintenance_on: false

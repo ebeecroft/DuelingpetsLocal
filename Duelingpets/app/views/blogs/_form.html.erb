@@ -1,0 +1,147 @@
+<%= form_for([@user, @blog], :html => {:multipart => true}) do |f| %>
+  <% if @blog.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@blog.errors.count, "error") %> prohibited this blog from being saved:</h2>
+
+      <ul>
+      <% @blog.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  Ad Banner
+  <div class="field">
+     <%= image_tag @blog.adbanner_url(:thumb).to_s if @blog.adbanner? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :adbanner %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_adbanner_url, "or Adbanner URL" %><br />
+    <%= f.text_field :remote_adbanner_url %>
+    <%= f.hidden_field :adbanner_cache %>
+  </div>
+  Ad Mascot
+  <div class="field">
+     <%= image_tag @blog.admascot_url(:thumb).to_s if @blog.admascot? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :admascot %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_admascot_url, "or Admascot URL" %><br />
+    <%= f.text_field :remote_admascot_url %>
+    <%= f.hidden_field :admascot_cache %>
+  </div>
+  Large Image1
+  <div class="field">
+     <%= image_tag @blog.largeimage1_url(:thumb).to_s if @blog.largeimage1? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :largeimage1 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_largeimage1_url, "or Largeimage1 URL" %><br />
+    <%= f.text_field :remote_largeimage1_url %>
+    <%= f.hidden_field :largeimage1_cache %>
+  </div>
+  Large Image2
+  <div class="field">
+     <%= image_tag @blog.largeimage2_url(:thumb).to_s if @blog.largeimage2? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :largeimage2 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_largeimage2_url, "or Largeimage2 URL" %><br />
+    <%= f.text_field :remote_largeimage2_url %>
+    <%= f.hidden_field :largeimage2_cache %>
+  </div>
+  Large Image3
+  <div class="field">
+     <%= image_tag @blog.largeimage3_url(:thumb).to_s if @blog.largeimage3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :largeimage3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_largeimage3_url, "or Largeimage3 URL" %><br />
+    <%= f.text_field :remote_largeimage3_url %>
+    <%= f.hidden_field :largeimage3_cache %>
+  </div>
+  Small Image1
+  <div class="field">
+     <%= image_tag @blog.smallimage1_url(:thumb).to_s if @blog.smallimage1? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :smallimage1 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_smallimage1_url, "or Smallimage1 URL" %><br />
+    <%= f.text_field :remote_smallimage1_url %>
+    <%= f.hidden_field :smallimage1_cache %>
+  </div>
+  Small Image2
+  <div class="field">
+     <%= image_tag @blog.smallimage2_url(:thumb).to_s if @blog.smallimage2? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :smallimage2 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_smallimage2_url, "or Smallimage2 URL" %><br />
+    <%= f.text_field :remote_smallimage2_url %>
+    <%= f.hidden_field :smallimage2_cache %>
+  </div>
+  Small Image3
+  <div class="field">
+     <%= image_tag @blog.smallimage3_url(:thumb).to_s if @blog.smallimage3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :smallimage3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_smallimage3_url, "or Smallimage3 URL" %><br />
+    <%= f.text_field :remote_smallimage3_url %>
+    <%= f.hidden_field :smallimage3_cache %>
+  </div>
+  Small Image4
+  <div class="field">
+     <%= image_tag @blog.smallimage4_url(:thumb).to_s if @blog.smallimage4? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :smallimage4 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_smallimage4_url, "or Smallimage4 URL" %><br />
+    <%= f.text_field :remote_smallimage4_url %>
+    <%= f.hidden_field :smallimage4_cache %>
+  </div>
+  Small Image5
+  <div class="field">
+     <%= image_tag @blog.smallimage5_url(:thumb).to_s if @blog.smallimage5? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :smallimage5 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_smallimage5_url, "or Smallimage5 URL" %><br />
+    <%= f.text_field :remote_smallimage5_url %>
+    <%= f.hidden_field :smallimage5_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_path(@blog.user) %></p>
+<% end %>

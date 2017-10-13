@@ -1,0 +1,21 @@
+<% provide(:h1, "User List") %>
+<p><%= paginate @users %></p>
+<% @users.each do |user| %>
+    <br>
+    <p class="navlinks">Vname: <%= link_to user.vname, user %><%= button_to 'Edit', edit_user_path(user), method: :get %><%= button_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+    <p>Name: <%= user.first_name %> <%= user.last_name %> joined: <%= distance_of_time_in_words_to_now user.joined_on %> ago</p>
+    <p>Date joined: <%= user.joined_on.strftime("%B-%d-%Y") %></p>
+    <p>Birthday: <%= user.birthday.strftime("%B-%d-%Y") %></p>
+    <p>Email: <%= user.email %></p>
+    <p>Country: <%= user.country %></p>
+    <p>Timezone: <%= user.country_timezone %></p>
+    <p>Group: <%= getGroup(user) %></p>
+    <p>Pouch: <%= user.pouch.amount %> points</p>
+    <p>Status: <%= getActivity(user) %>
+       <% if getActivity(user) == "Offline" || getActivity(user) == "Inactive" %>
+          for <%= distance_of_time_in_words_to_now getTime(user) %>
+       <% end %>
+    </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

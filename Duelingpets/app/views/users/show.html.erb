@@ -1,0 +1,205 @@
+<% provide(:h1, @user.vname + "'s profile") %>
+<p id="notice"><%= notice %></p>
+<% if @user.userinfo.ogg.to_s != "" || @user.userinfo.mp3.to_s != "" %>
+   <% if @user.userinfo.music_on %>
+      <% if checkMusicFlag == "On" && (!current_user || current_user.id != @user.id) %>
+         <p><%= audio_tag (getUserMusic(@user)), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
+      <% elsif current_user && @user.id == current_user.id %>
+         <p><%= audio_tag (getUserMusic(@user)), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
+      <% end %>
+   <% end %>
+   <% if current_user && current_user.id == @user.id %>
+      <% if @user.userinfo.music_on %>
+         <p><%= button_to 'Turn off music', users_music1_path(:id=>@user.id), method: :post %></p>
+      <% else %>
+         <p><%= button_to 'Turn on music', users_music1_path(:id=>@user.id), method: :post %></p>
+      <% end %>
+      <br>
+      <br>
+   <% else %>
+      <% if checkMusicFlag == "On" %>
+         <p><%= button_to 'Turn off music', users_music2_path(:id=>@user.id), method: :post %></p>
+      <% else %>
+         <p><%= button_to 'Turn on music', users_music2_path(:id=>@user.id), method: :post %></p>
+      <% end %>
+      <br>
+      <br>
+   <% end %>
+<% end %>
+<% if @user.userinfo.avatar.to_s != "" %>
+   <p><%= image_tag(@user.userinfo.avatar_url(:thumb)) %></p>
+<% end %>
+<% if current_user %>
+   <% if (current_user.id == @user.id) || current_user.admin %>
+      <div class="container">Name: <%= @user.first_name %> <%= @user.last_name %></div>
+      <div class="container"><%= button_to 'Edit', edit_user_path(@user), method: :get %></div> <div class="container"><%= button_to 'Destroy', @user, method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <p>Birthday: <%= @user.birthday.strftime("%B-%d-%Y") %></p>
+      <p>Email: <%= @user.email %></p>
+      <p>Pouch: <%= @user.pouch.amount %> points</p>
+      <p>Browser: <%= @user.userinfo.browser %></p>
+      <p>Video Browser: <%= @user.userinfo.vbrowser %></p>
+      <p><%= button_to 'Add Avatar and Edit Browser', edit_userinfo_path(@user.userinfo), method: :get %></p>
+      <br>
+   <% else %>
+      <p>Name: <%= @user.first_name %></p>
+      <p>Birthday: <%= @user.birthday.strftime("%B-%d") %></p>
+      <p>Audio Browser: <%= @user.userinfo.browser %></p>
+      <p>Video Browser: <%= @user.userinfo.vbrowser %></p>
+   <% end %>
+   <p>Group: <%= getGroup(@user) %></p>
+   <p>Vname: <%= @user.vname %> joined on: <%= @user.joined_on.strftime("%B-%d-%Y") %></p>
+   <p>Status: <%= getActivity(@user) %>
+   <% if getActivity(@user) == "Inactive" || getActivity(@user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@user) %>
+   <% end %>
+   </p>
+<% else %>
+   <p>Vname: <%= @user.vname %></p>
+<% end %>
+<p>Country: <%= @user.country %></p>
+<p>Timezone: <%= @user.country_timezone %></p>
+<% if !@user.referral.nil? %>
+   <p class="navlinks">Referred by: <%= link_to @user.referral.referred_by.vname, user_path(@user.referral.referred_by) %></p>
+<% else %>
+   <% if current_user && (current_user.id == @user.id) %>
+      <p><%= button_to 'Set Referral', new_referral_path, method: :get %></p>
+   <% end %>
+<% end %>
+<% if current_user %>
+   <br>
+   <% if @user.donationbox.turn_on %>
+      <p>Donation Box</p>
+      <p><%= @user.donationbox.description %></p>
+      <br>
+      <p>Donated: <%= @user.donationbox.progress %>/<%= @user.donationbox.goal %></p>
+      <p>Initialized on: <%= distance_of_time_in_words_to_now @user.donationbox.initialized_on %> ago on
+         <%= (@user.donationbox.initialized_on.strftime("%B-%d-%Y")) %></p>
+      <% if !@user.donationbox.hit_goal %>
+         <% if current_user.id == @user.id || current_user.admin %>
+            <br>
+            <p><%= button_to 'Refund Donors', donationboxes_refund_path(:id=>@user.donationbox), method: :post %></p>
+         <% end %>
+      <% else %>
+         <p>Congratulations you have just reached your donation goal!</p>
+         <% if current_user.id == @user.id %>
+            <br>
+            <p><%= button_to 'Retrieve Points', donationboxes_retrieve_path(:id=>@user.donationbox), method: :post %></p>
+         <% elsif current_user.admin %>
+            <br>
+            <p><%= button_to 'Refund Donors', donationboxes_refund_path(:id=>@user.donationbox), method: :post %></p>
+         <% end %>
+      <% end %>
+      <% if current_user.id != @user.id %>
+         <p><%= button_to 'Donate', new_donationbox_donor_path(@user.donationbox), method: :get %></p>
+      <% end %>
+   <% else %>
+      <% if current_user.id == @user.id || current_user.admin %>
+         <p><%= button_to 'Update Donationbox', edit_user_donationbox_path(@user, @user.donationbox), method: :get %></p>
+      <% end %>
+      <p>My donation box is not open for donations at this time.</p>
+   <% end %>
+   <% if(@user.donationbox.donors.count > 0) %>
+      <br>
+      <p>Donor list</p>
+      <p><%= button_to 'Donors', donationbox_donors_path(@user.donationbox), method: :get %></p>
+   <% end %>
+   <% if @user.id != current_user.id %>
+      <br>
+      <p>PM section</p>
+      <p class="navlinks"><%= button_to 'New PM', new_user_pm_path(@user), method: :get %></p>
+   <% else %>
+      <br>
+      <p>PM section</p>
+      <p class="navlinks">
+         <div class="container"><%= button_to 'Inbox', pms_inbox_path, method: :get %></div> <div class="container"><%= button_to 'Outbox', pms_outbox_path, method: :get %></div>
+      </p>
+   <% end %>
+<% end %>
+<% if getReferrals(@user) > 0 %>
+   <br>
+   <p><%= @user.vname %> has referred <%= getReferrals(@user) %> users</p>
+<% end %>
+<% if getColorschemes(@user) != 0 %>
+   <br>
+   <p>Colorscheme section</p>
+   <p>Colorschemes sourced: <%= getColorschemePoints(@user) %> points Colorschemes created: <%= getColorschemes(@user) %></p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Colorschemes", user_colorschemes_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Colorscheme", new_user_colorscheme_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Colorscheme section</p>
+      <p class="navlinks"><%= button_to "New Colorscheme", new_user_colorscheme_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
+<% if getChannels(@user) != 0 %>
+   <br>
+   <p>Channel section</p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Channel", user_channels_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Channel", new_user_channel_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Channel section</p>
+      <p class="navlinks"><%= button_to "New Channel", new_user_channel_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
+<% if getBlogs(@user) != 0 %>
+   <br>
+   <p>Blog section</p>
+   <p>Blogs sourced: <%= getBlogPoints(@user) %> points Blogs created: <%= getBlogs(@user) %> Blogs for ads: <%= getAdBlogs(@user) %></p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Blog", user_blogs_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Blog", new_user_blog_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Blog section</p>
+      <p class="navlinks"><%= button_to "New Blog", new_user_blog_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
+<br>
+<p><%= @user.userinfo.info %></p>
+<% if current_user %>
+   <% if getShouts(@user).count > 0 %>
+      <br>
+      <p>Shoutbox</p>
+      <% getShouts(@user).each do |shout| %>
+         <br>
+         <p><%= image_tag(shout.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+         <p class="navlinks">By: <%= getUserPrivilege(shout.from_user) %><%= link_to shout.from_user.vname, user_path(shout.from_user) %>
+            <% if shout.to_user.id == current_user.id || shout.from_user.id == current_user.id || current_user.admin %>
+               <%= button_to "Delete", [@user, shout], :confirm => "Are you sure?", :method => :delete %>
+            <% end %>
+         </p>
+         <p><%= shout.message %></p>
+         <p>Created on: <%= distance_of_time_in_words_to_now shout.created_on %> ago on (<%= shout.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Status: <%= getActivity(shout.from_user) %>
+            <% if getActivity(shout.from_user) == "Offline" || getActivity(shout.from_user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(shout.from_user) %>
+            <% end %></p>
+      <% end %>
+   <% end %>
+   <% if current_user.id != @user.id %>
+      <br>
+      <p>Write a shout</p>
+      <%= form_for [@user, Shout.new] do |form| %>
+         <p><%= form.label :message %></p>
+         <p><%= form.text_area :message, :placeholder => "Enter some text" %></p>
+         <p><%= form.submit %></p>
+      <% end %>
+   <% end %>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

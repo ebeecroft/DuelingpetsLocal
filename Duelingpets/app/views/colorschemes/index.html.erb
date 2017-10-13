@@ -1,0 +1,74 @@
+<% if optional %>
+   <% provide(:h1, @user.vname +  "'s colorschemes") %>
+<% else %>
+   <% provide(:h1, "Colorscheme List") %>
+<% end %>
+<p><%= paginate @colorschemes %></p>
+<% @colorschemes.each do |colorscheme| %>
+   <br>
+   <% if current_user && (current_user.id == colorscheme.user_id || current_user.admin) %>
+      <p><%= colorscheme.name %>
+         <%= button_to 'Edit', edit_user_colorscheme_path(colorscheme.user, colorscheme), method: :get %><%= button_to 'Destroy', [colorscheme.user, colorscheme], method: :delete, data: { confirm: 'Are you sure?' } %>
+      </p>
+      <p>Created on: <%= colorscheme.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now colorscheme.created_on %> ago)</p>
+      <% if !optional %>
+         <br>
+         <% if colorscheme.user.userinfo.miniavatar.to_s != "" %>
+            <p><%= image_tag(colorscheme.user.userinfo.miniavatar_url(:thumb)) %></p>
+         <% end %>
+         <p class="navlinks">Designer: <%= getUserPrivilege(colorscheme.user) %><%= link_to colorscheme.user.vname, user_path(colorscheme.user) %></p>
+         <p>Status: <%= getActivity(colorscheme.user) %>
+            <% if getActivity(colorscheme.user) == "Offline" || getActivity(colorscheme.user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(colorscheme.user) %>
+            <% end %>
+         </p>
+      <% end %>
+      <br>
+      <p><%= colorscheme.description %></p>
+      <br>
+      <p>Background color: <%= colorscheme.backgroundcolor %></p>
+      <p>Header color: <%= colorscheme.headercolor %></p>
+      <p>Text color: <%= colorscheme.textcolor %></p>
+      <p>Navigation color: <%= colorscheme.navigationcolor %></p>
+      <p>Navigationlink color: <%= colorscheme.navigationlinkcolor %></p>
+      <p>Navigationhover color: <%= colorscheme.navigationhovercolor %></p>
+      <p>Navigationhover backgroundcolor: <%= colorscheme.navigationhoverbackgcolor %></p>
+      <p>Online color: <%= colorscheme.onlinestatuscolor %></p>
+      <p>Profile color: <%= colorscheme.profilecolor %></p>
+      <p>Profilevisited color: <%= colorscheme.profilevisitedcolor %></p>
+      <p>Profilehover color: <%= colorscheme.profilehovercolor %></p>
+      <p>Profilehover backgroundcolor: <%= colorscheme.profilehoverbackgcolor %></p>
+      <p>Session color: <%= colorscheme.sessioncolor %></p>
+      <p>Navlink color: <%= colorscheme.navlinkcolor %></p>
+      <p>Navlinkhover color: <%= colorscheme.navlinkhovercolor %></p>
+      <p>Navlinkhover backgroundcolor: <%= colorscheme.navlinkhoverbackgcolor %></p>
+      <p>Error color: <%= colorscheme.errorcolor %></p>
+      <p>Warning color: <%= colorscheme.warningcolor %></p>
+      <p>Notification color: <%= colorscheme.notificationcolor %></p>
+      <p>Success color: <%= colorscheme.successcolor %></p>
+   <% else %>
+      <p><%= colorscheme.name %></p>
+      <p>Created on: <%= colorscheme.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now colorscheme.created_on %> ago)</p>
+      <% if !optional %>
+         <br>
+         <% if colorscheme.user.userinfo.miniavatar.to_s != "" %>
+            <p><%= image_tag(colorscheme.user.userinfo.miniavatar_url(:thumb)) %></p>
+         <% end %>
+         <p class="navlinks">Designer: <%= getUserPrivilege(colorscheme.user) %><%= link_to colorscheme.user.vname, user_path(colorscheme.user) %></p>
+         <p>Status: <%= getActivity(colorscheme.user) %>
+            <% if getActivity(colorscheme.user) == "Offline" || getActivity(colorscheme.user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(colorscheme.user) %>
+            <% end %>
+         </p>
+      <% end %>
+      <br>
+      <p><%= colorscheme.description %></p>
+   <% end %>
+<% end %>
+<% if optional %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>
+<% else %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', root_path %></p>
+<% end %>

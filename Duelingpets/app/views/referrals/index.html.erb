@@ -1,0 +1,18 @@
+<% provide(:h1, "Referral List") %>
+<p><%= paginate @referrals %></p>
+<% @referrals.each do |referral| %>
+    <br>
+    <% if referral.to_user.userinfo.miniavatar.to_s != "" %>
+       <p><%= image_tag(referral.to_user.userinfo.miniavatar_url(:thumb)) %></p>
+    <% end %>
+    <p class="navlinks">User: <%= getUserPrivilege(referral.to_user) %><%= link_to referral.to_user.vname, user_path(referral.to_user) %><%= button_to 'Edit', edit_referral_path(referral), method: :get %></p>
+    <p>Created on: <%= referral.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now referral.created_on %> ago)</p>
+    <p>Referred by: <%= getUserPrivilege(referral.referred_by) %><%= link_to referral.referred_by.vname, user_path(referral.referred_by) %></p>
+    <p>Status: <%= getActivity(referral.to_user) %>
+       <% if getActivity(referral.to_user) == "Offline" || getActivity(referral.to_user) == "Inactive" %>
+          for <%= distance_of_time_in_words_to_now getTime(referral.to_user) %>
+       <% end %>
+    </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

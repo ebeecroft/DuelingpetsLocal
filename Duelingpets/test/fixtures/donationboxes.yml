@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  description: MyText
+  currentPoints: 1
+  goalPoints: 1
+  hitgoal: false
+  openbox: false
+  user_id: 1
+  created_on: 2017-07-24 22:28:47
+
+two:
+  description: MyText
+  currentPoints: 1
+  goalPoints: 1
+  hitgoal: false
+  openbox: false
+  user_id: 1
+  created_on: 2017-07-24 22:28:47

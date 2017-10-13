@@ -1,0 +1,9 @@
+<% if object == "New" %>
+   <%= form_for(:session, url: referrals_path) do |f| %>
+      <%= render 'form2', object: [f, "New"] %>
+   <% end %>
+<% else %>
+   <%= form_for(:session, url: referral_path, method: :put) do |f| %>
+      <%= render 'form2', object: [f, "Edit"] %>
+   <% end %>
+<% end %>

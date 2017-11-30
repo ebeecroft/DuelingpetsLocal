@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyText
+  created_on: 2017-10-31 22:42:41
+  collab_mode: false
+  fave_folder: false
+  user_id: 1
+  mainfolder_id: 1
+  bookgroup_id: 1
+
+two:
+  title: MyString
+  description: MyText
+  created_on: 2017-10-31 22:42:41
+  collab_mode: false
+  fave_folder: false
+  user_id: 1
+  mainfolder_id: 1
+  bookgroup_id: 1

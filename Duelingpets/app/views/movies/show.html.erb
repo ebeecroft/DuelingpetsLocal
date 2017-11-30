@@ -28,6 +28,15 @@
    <% else %>
       <p><%= button_to 'Unstar', moviestars_star_path(:movie_id=>@movie.id), method: :post %></p>
    <% end %>
+   <% if retrieveFave(@movie, "Count").count == 0 %>
+      <p><%= button_to 'Fave', new_movie_favoritemovie_path(@movie), method: :get %></p>
+   <% else %>
+      <p><%= button_to 'Unfave', [@movie, retrieveFave(@movie, "Retrieve")], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <% end %>
+<% end %>
+<% if @faves > 0 %>
+   <br>
+   <p>Faves: <%= @faves %></p>
 <% end %>
 <% if @stars > 0 %>
    <br>

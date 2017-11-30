@@ -1,7 +1,7 @@
 <%= form_for(@userinfo, :html => {:multipart => true}) do |f| %>
   <% if @userinfo.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@userinfo.errors.count, "error") %> prohibited this userinfo from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@userinfo.errors.count, "error") %> prohibited this userinfo from being saved:</h2>
 
       <ul>
       <% @userinfo.errors.full_messages.each do |msg| %>

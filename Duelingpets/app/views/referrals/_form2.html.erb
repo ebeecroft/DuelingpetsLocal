@@ -1,6 +1,6 @@
 <% if @referral.errors.any? %>
-   <div id="error_explanation">
-      <h2><%= pluralize(@referral.errors.count, "error") %> prohibited this referral from being saved:</h2>
+   <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@referral.errors.count, "error") %> prohibited this referral from being saved:</h2>
       <ul>
          <% @referral.errors.full_messages.each do |msg| %>
             <li><%= msg %></li>

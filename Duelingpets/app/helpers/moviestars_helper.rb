@@ -72,8 +72,12 @@ module MoviestarsHelper
                            @moviestar = newStar
                            @movie = movieFound
                            if(@moviestar.save)
-                              #Points go here
-                              #Mailer goes here as well
+                              pouch = Pouch.find_by_user_id(movieFound.user_id)
+                              pointsForStar = 48
+                              pouch.amount += pointsForStar
+                              UserMailer.movie_starred(@moviestar, pointsForStar).deliver
+                              @pouch = pouch
+                              @pouch.save
                               flash[:success] = "A new star was successfully created."
                               redirect_to subplaylist_movie_path(@movie.subplaylist, @movie)
                            else

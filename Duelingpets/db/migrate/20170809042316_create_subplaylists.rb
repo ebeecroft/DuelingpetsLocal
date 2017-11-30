@@ -5,6 +5,7 @@ class CreateSubplaylists < ActiveRecord::Migration
       t.text :description
       t.datetime :created_on
       t.boolean :collab_mode, default: false
+      t.boolean :fave_folder, default: false
       t.integer :user_id
       t.integer :mainplaylist_id
       t.integer :bookgroup_id

@@ -24,6 +24,7 @@ class CreateColorschemes < ActiveRecord::Migration
       t.string :explanationbackgcolor
       t.string :explanheadercolor
       t.string :explanheaderbackgcolor
+      t.string :errorfieldcolor
       t.string :errorcolor
       t.string :warningcolor
       t.string :notificationcolor

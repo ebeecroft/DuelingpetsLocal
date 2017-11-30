@@ -1,6 +1,17 @@
 module MoviesHelper
 
    private
+      def retrieveFave(movie, type)
+         allFaves = movie.favoritemovies.order("created_on desc")
+         faveFound = allFaves.select{|fave| fave.user_id == current_user.id}
+         favorite = Favoritemovie.find_by_id(faveFound)
+         fave = favorite
+         if(type == "Count")
+            fave = faveFound
+         end
+         return fave
+      end
+
       def retrieveStar(movie)
          allStars = movie.moviestars.order("created_on desc")
          starFound = allStars.select{|star| star.user_id == current_user.id}
@@ -57,6 +68,8 @@ module MoviesHelper
                @moviecomments = Kaminari.paginate_array(moviecomments).page(params[:page]).per(10)
                stars = @movie.moviestars.count
                @stars = stars
+               faves = @movie.favoritemovies.count
+               @faves = faves
                if(type == "destroy")
                   logged_in = current_user
                   if(logged_in && ((logged_in.id == movieFound.user_id) || logged_in.admin))
@@ -131,26 +144,30 @@ module MoviesHelper
                   playlistFound = Subplaylist.find_by_id(params[:subplaylist_id])
                   if(playlistFound)
                      logged_in = current_user
-                     if(logged_in && playlistFound.user_id == logged_in.id || playlistFound.collab_mode)
-                        allGroups = Bookgroup.order("created_on desc")
-                        allowedGroups = allGroups.select{|bookgroup| bookgroup.id <= getBookGroups(logged_in)}
-                        @group = allowedGroups
-                        newMovie = playlistFound.movies.new
-                        if(type == "create")
-                           newMovie = playlistFound.movies.new(params[:movie])
-                           newMovie.created_on = currentTime
-                           newMovie.user_id = logged_in.id
-                        end
-                        @movie = newMovie
-                        @subplaylist = playlistFound
-                        if(type == "create")
-                           if(@movie.save)
-                              ContentMailer.movie_review(@movie).deliver
-                              flash[:success] = "Movie #{@movie.title} was successfully created."
-                              redirect_to subplaylist_movie_path(@movie.subplaylist, @movie)
-                           else
-                              render "new"
+                     if(logged_in && playlistFound.user_id == logged_in.id || (playlistFound.collab_mode && (playlistFound.bookgroup_id <= getBookGroups(logged_in))))
+                        if(!playlistFound.fave_folder)
+                           allGroups = Bookgroup.order("created_on desc")
+                           allowedGroups = allGroups.select{|bookgroup| bookgroup.id <= getBookGroups(logged_in)}
+                           @group = allowedGroups
+                           newMovie = playlistFound.movies.new
+                           if(type == "create")
+                              newMovie = playlistFound.movies.new(params[:movie])
+                              newMovie.created_on = currentTime
+                              newMovie.user_id = logged_in.id
                            end
+                           @movie = newMovie
+                           @subplaylist = playlistFound
+                           if(type == "create")
+                              if(@movie.save)
+                                 ContentMailer.movie_review(@movie).deliver
+                                 flash[:success] = "Movie #{@movie.title} was successfully created."
+                                 redirect_to subplaylist_movie_path(@movie.subplaylist, @movie)
+                              else
+                                 render "new"
+                              end
+                           end
+                        else
+                           redirect_to root_path
                         end
                      else
                         redirect_to root_path

@@ -1,7 +1,7 @@
 <%= form_for([@mainplaylist, @subplaylist]) do |f| %>
   <% if @subplaylist.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@subplaylist.errors.count, "error") %> prohibited this subplaylist from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@subplaylist.errors.count, "error") %> prohibited this subplaylist from being saved:</h2>
 
       <ul>
       <% @subplaylist.errors.full_messages.each do |msg| %>
@@ -22,6 +22,10 @@
   <div class="field">
     <%= f.label :collab_mode %><br />
     <%= f.check_box :collab_mode %>
+  </div>
+  <div class="field">
+    <%= f.label :fave_folder, "Favorite folder" %><br />
+    <%= f.check_box :fave_folder %>
   </div>
   <div class="field">
     <%= f.label :bookgroup_id, "Select Group" %><br />

@@ -1,0 +1,39 @@
+<%= form_for([@mainfolder, @subfolder]) do |f| %>
+  <% if @subfolder.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@subfolder.errors.count, "error") %> prohibited this subfolder from being saved:</h2>
+
+      <ul>
+      <% @subfolder.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :collab_mode %><br />
+    <%= f.check_box :collab_mode %>
+  </div>
+  <div class="field">
+    <%= f.label :fave_folder %><br />
+    <%= f.check_box :fave_folder %>
+  </div>
+  <div class="field">
+    <%= f.label :bookgroup_id, "Select Group" %><br />
+    <%= f.collection_select(:bookgroup_id, @group, :id, :name) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', gallery_mainfolder_path(@subfolder.mainfolder.gallery, @subfolder.mainfolder) %></p>
+<% end %>

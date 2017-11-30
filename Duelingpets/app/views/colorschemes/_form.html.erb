@@ -1,7 +1,7 @@
 <%= form_for([@user, @colorscheme]) do |f| %>
   <% if @colorscheme.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@colorscheme.errors.count, "error") %> prohibited this colorscheme from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@colorscheme.errors.count, "error") %> prohibited this colorscheme from being saved:</h2>
 
       <ul>
       <% @colorscheme.errors.full_messages.each do |msg| %>
@@ -102,6 +102,10 @@
   <div class="field">
     <%= f.label :explanheaderbackgcolor %><br />
     <%= f.text_field :explanheaderbackgcolor %>
+  </div>
+  <div class="field">
+    <%= f.label :errorfieldcolor %><br />
+    <%= f.text_field :errorfieldcolor %>
   </div>
   <div class="field">
     <%= f.label :errorcolor %><br />

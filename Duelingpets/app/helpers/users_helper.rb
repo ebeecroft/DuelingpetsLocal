@@ -26,9 +26,57 @@ module UsersHelper
          return value
       end
 
+      def getGalleries(user)
+         allUserGalleries = user.galleries.all
+         value = allUserGalleries.count
+         return value
+      end
+
+      def getMovies(user)
+         allMovies = Movie.all
+         reviewedMovies = allMovies.select{|movie| movie.reviewed && movie.user_id == user.id}
+         value = reviewedMovies.count
+         return value
+      end
+
+      def getArts(user)
+         allArts = Art.all
+         reviewedArts = allArts.select{|artwork| artwork.reviewed && artwork.user_id == user.id}
+         value = reviewedArts.count
+         return value
+      end
+
+      def getMovieFaves(user)
+         allFaves = Favoritemovie.all
+         userFaves = allFaves.select{|fave| fave.user_id == user.id}
+         value = userFaves.count
+         return value
+      end
+
+      def getMovieStars(user)
+         allStars = Moviestar.all
+         userStars = allStars.select{|star| star.user_id == user.id}
+         value = userStars.count
+         return value
+      end
+
+      def getMovieCritiques(user)
+         allCritiques = Moviecomment.all
+         userCritiques = allCritiques.select{|comment| comment.user_id == user.id && comment.critique}
+         value = userCritiques.count
+         return value
+      end
+
+      def getMovieComments(user)
+         allComments = Moviecomment.all
+         userComments = allComments.select{|comment| comment.user_id == user.id && !comment.critique}
+         value = userComments.count
+         return value
+      end
+
       def getBlogs(user)
          allUserBlogs = user.blogs.all
-         reviewedBlogs = allUserBlogs.select{|blog| blog.reviewed}
+         reviewedBlogs = allUserBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s == "" && blog.largeimage1.to_s == "" && blog.largeimage2.to_s == "" && blog.largeimage3.to_s == "" && blog.smallimage1.to_s == "" && blog.smallimage2.to_s == "" && blog.smallimage3.to_s == "" && blog.smallimage4.to_s == "" && blog.smallimage5.to_s == ""}
          value = reviewedBlogs.count
          return value
       end
@@ -37,15 +85,6 @@ module UsersHelper
          allUserBlogs = user.blogs.all
          adBlogs = allUserBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s != "" || blog.largeimage1.to_s != "" || blog.largeimage2.to_s != "" || blog.largeimage3.to_s != "" || blog.smallimage1.to_s != "" || blog.smallimage2.to_s != "" || blog.smallimage3.to_s != "" || blog.smallimage4.to_s != "" || blog.smallimage5.to_s != ""}
          value = adBlogs.count
-         return value
-      end
-
-      def getBlogPoints(user)
-         allUserBlogs = user.blogs.all
-         blogsWithoutAds = allUserBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s == "" && blog.largeimage1.to_s == "" && blog.largeimage2.to_s == "" && blog.largeimage3.to_s == "" && blog.smallimage1.to_s == "" && blog.smallimage2.to_s == "" && blog.smallimage3.to_s == "" && blog.smallimage4.to_s == "" && blog.smallimage5.to_s == ""}
-         textblogs = blogsWithoutAds.select{|blog| blog.admascot == ""}
-         mascot = blogsWithoutAds.select{|blog| blog.admascot != ""}
-         value = (textblogs.count * 30) + (mascot.count * 90)
          return value
       end
 

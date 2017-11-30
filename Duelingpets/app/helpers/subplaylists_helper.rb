@@ -40,22 +40,39 @@ module SubplaylistsHelper
          if(subplaylistFound)
             mainplaylistFound = Mainplaylist.find_by_id(params[:mainplaylist_id])
             if(mainplaylistFound && subplaylistFound.mainplaylist_id == mainplaylistFound.id)
-               subMovies = subplaylistFound.movies.order("created_on desc")
-               playlistMovies = subMovies.select{|movie| (movie.reviewed && ((current_user && movie.bookgroup_id <= getBookGroups(current_user)) || (!current_user && movie.bookgroup.name == "Peter Rabbit"))) || (!movie.reviewed && current_user && ((current_user.id == movie.user_id) || current_user.admin))}
+               type = ""
+               if(subplaylistFound.fave_folder)
+                  #Favorites to handle
+                  allFavorites = subplaylistFound.favoritemovies.order("created_on desc")
+                  playlistFavorites = allFavorites.select{|favorite| favorite.movie.reviewed && ((!current_user && favorite.movie.bookgroup.name == "Peter Rabbit") || (current_user && favorite.movie.bookgroup_id <= getBookGroups(current_user)))}
+                  type = playlistFavorites
+               else
+                  #Movies to handle
+                  allMovies = subplaylistFound.movies.order("created_on desc")
+                  playlistMovies = allMovies.select{|movie| (movie.reviewed && ((!current_user && movie.bookgroup.name == "Peter Rabbit") || (current_user && movie.bookgroup_id <= getBookGroups(current_user)))) || (!movie.reviewed && current_user && ((current_user.id == movie.user_id) || current_user.admin))}
+                  type = playlistMovies
+               end
 
-               #Defines the owners and guests
-               guest = (!current_user && playlistMovies.count > 0 && subplaylistFound.bookgroup.name == "Peter Rabbit")
+               #Defines the owners and guests for favorites and movies
+               guest = (!current_user && type.count > 0 && subplaylistFound.bookgroup.name == "Peter Rabbit")
                if(current_user)
                   owner = ((subplaylistFound.user_id == current_user.id) || current_user.admin)
-                  visitor = (((subplaylistFound.bookgroup_id <= getBookGroups(current_user)) && (playlistMovies.count > 0 || subplaylistFound.collab_mode)) && !owner)
-                  group = (((subplaylistFound.bookgroup_id <= getBookGroups(current_user)) && (playlistMovies.count == 0 || playlistMovies.count > 0)) && owner)
+                  visitor = (((subplaylistFound.bookgroup_id <= getBookGroups(current_user)) && (type.count > 0 || subplaylistFound.collab_mode)) && !owner)
+                  group = (((subplaylistFound.bookgroup_id <= getBookGroups(current_user)) && (type.count == 0 || type.count > 0)) && owner)
                end
 
                #Checks which user is using the show view
                if((current_user && (group || visitor)) || guest)
                   @subplaylist = subplaylistFound
                   @mainplaylist = mainplaylistFound
-                  @movies = Kaminari.paginate_array(playlistMovies).page(params[:page]).per(10)
+
+                  #Sets up the variables dependent on the folder type
+                  if(subplaylistFound.fave_folder)
+                     @favoritemovies = Kaminari.paginate_array(type).page(params[:page]).per(9)
+                  else
+                     @movies = Kaminari.paginate_array(type).page(params[:page]).per(9)
+                  end
+
                   if(type == "destroy")
                      logged_in = current_user
                      if(logged_in && ((logged_in.id == subplaylistFound.user_id) || logged_in.admin))

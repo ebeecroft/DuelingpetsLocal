@@ -1,0 +1,23 @@
+<% provide(:h1, "Gallery List") %>
+<p><%= paginate @galleries %></p>
+<% @galleries.each do |gallery| %>
+   <br>
+   <p class="navlinks"><%= link_to gallery.name, user_gallery_path(gallery.user, gallery) %><div class="container"><%= button_to 'Edit', edit_user_gallery_path(gallery.user, gallery), method: :get %></div> <div class="container"><%= button_to 'Destroy', [gallery.user, gallery], method: :delete, data: { confirm: 'Are you sure?' } %></div></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now gallery.created_on %> ago on (<%= gallery.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if !optional %>
+      <br>
+      <% if gallery.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(gallery.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Artist: <%= getUserPrivilege(gallery.user) %><%= link_to gallery.user.vname, user_path(gallery.user) %></p>
+      <p>Status: <%= getActivity(gallery.user) %>
+          <% if getActivity(gallery.user) == "Offline" || getActivity(gallery.user) == "Inactive" %>
+             for <%= distance_of_time_in_words_to_now getTime(gallery.user) %>
+          <% end %>
+      </p>
+      <br>
+   <% end %>
+   <p><%= gallery.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

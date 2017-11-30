@@ -1,5 +1,35 @@
 class ContentMailer < ActionMailer::Base
 
+   def art_approved(art, points)
+      @art = art
+      @points = points
+      mail(to: @art.user.email, from: "notification@duelingpets.net", subject: "Your art #{@art.title} was approved:[Duelingpets]")
+   end
+
+   def art_denied(art)
+      @art = art
+      mail(to: @art.user.email, from: "notification@duelingpets.net", subject: "Your art #{@art.title} was denied:[Duelingpets]")
+   end
+
+   def art_review(art)
+      @art = art
+      @url = "http://localhost:3000/arts/review"
+      allPouches = Pouch.all
+      keymasters = allPouches.select{|pouch| pouch.privilege == "Keymaster"}
+      if(keymasters.count > 0)
+         keymasters.each do |keymaster|
+            mail(to: keymaster.user.email, from: "notification@duelingpets.net", subject: "New art #{@art.title} is awaiting review:[Duelingpets]")
+         end
+      end
+
+      reviewers = allPouches.select{|pouch| pouch.privilege == "Reviewer"}
+      if(reviewers.count > 0)
+         reviewers.each do |reviewer|
+            mail(to: reviewer.user.email, from: "notification@duelingpets.net", subject: "New art #{@art.title} is awaiting review:[Duelingpets]")
+         end
+      end
+   end
+
    def movie_approved(movie, points)
       @movie = movie
       @points = points

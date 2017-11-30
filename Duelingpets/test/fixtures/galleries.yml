@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyText
+  mp3: MyString
+  ogg: MyString
+  created_on: 2017-10-20 15:20:50
+  user_id: 1
+
+two:
+  name: MyString
+  description: MyText
+  mp3: MyString
+  ogg: MyString
+  created_on: 2017-10-20 15:20:50
+  user_id: 1

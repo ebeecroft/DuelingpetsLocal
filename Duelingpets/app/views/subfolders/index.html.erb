@@ -1,0 +1,29 @@
+<% provide(:h1, "Subfolder List") %>
+<p><%= paginate @subfolders %></p>
+<% @subfolders.each do |subfolder| %>
+   <br>
+   <p class="navlinks"><%= link_to subfolder.title, mainfolder_subfolder_path(subfolder.mainfolder, subfolder) %><%= button_to 'Edit', edit_mainfolder_subfolder_path(subfolder.mainfolder, subfolder), method: :get %><%= button_to 'Destroy', [subfolder.mainfolder, subfolder], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now subfolder.created_on %> ago on (<%= subfolder.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Group: <%= subfolder.bookgroup.name %></p>
+   <p>Collab mode: <%= subfolder.collab_mode %></p>
+   <% if subfolder.fave_folder %>
+      <p>Favorite Folder</p>
+   <% else %>
+      <p>Art Folder</p>
+   <% end %>
+   <% if subfolder.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(subfolder.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Artist: <%= getUserPrivilege(subfolder.user) %><%= link_to subfolder.user.vname, user_path(subfolder.user) %></p>
+   <p>Status: <%= getActivity(subfolder.user) %>
+      <% if getActivity(subfolder.user) == "Offline" || getActivity(subfolder.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(subfolder.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Mainfolder: <%= link_to subfolder.mainfolder.title, gallery_mainfolder_path(subfolder.mainfolder.gallery, subfolder.mainfolder) %></p>
+   <br>
+   <p><%= subfolder.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -53,6 +53,8 @@ module CusersHelper
                value = usercolor.explanheadercolor
             elsif(attribute == "Explanheaderbackgc")
                value = usercolor.explanheaderbackgcolor
+            elsif(attribute == "Errorfieldcolor")
+               value = usercolor.errorfieldcolor
             end
          else
             default = Colorscheme.find_by_id(1)
@@ -97,6 +99,13 @@ module CusersHelper
             end
          end
          return value
+      end
+
+      def newestArts
+         allArts = Art.order("created_on desc")
+         reviewedArts = allArts.select{|art| art.reviewed && ((!current_user && art.bookgroup.name == "Peter Rabbit") || (current_user && (art.bookgroup.id <= getBookGroups(current_user))))}
+         arts = reviewedArts.take(3)
+         return arts
       end
 
       def newestMovies
@@ -175,6 +184,19 @@ module CusersHelper
             video = movie.ogv_url 
          end
          return video
+      end
+
+      def getGalleryMusic(gallery)
+         music = ""
+         if(current_user)
+            if(current_user.userinfo.browser == "ogg-browser")
+               music = gallery.ogg_url
+            elsif(current_user.userinfo.browser == "mp3-browser")
+               music = gallery.mp3_url
+            end
+         else
+            music = gallery.ogg_url
+         end
       end
 
       def getUserMusic(user)

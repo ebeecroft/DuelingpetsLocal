@@ -30,7 +30,7 @@ module ChannelsHelper
 
       def getSubplaylists(mainplaylist)
          mainplaylistSubplaylists = mainplaylist.subplaylists.order("created_on desc")
-         subplaylists = mainplaylistSubplaylists.select{|subplaylist| (((!current_user && subplaylist.bookgroup.name == "Peter Rabbit") || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user))) && subplaylist.movies.count > 0) || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subplaylist.user_id) || current_user.admin) || subplaylist.collab_mode))}
+         subplaylists = mainplaylistSubplaylists.select{|subplaylist| (((!current_user && subplaylist.bookgroup.name == "Peter Rabbit") || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user))) && ((subplaylist.movies.count > 0) || (subplaylist.favoritemovies.count > 0))) || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subplaylist.user_id) || current_user.admin) || subplaylist.collab_mode))}
          mainplaylist.subplaylists.each do |subplaylist|
             getCollabs
             if(subplaylist.collab_mode)

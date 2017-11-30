@@ -1,0 +1,104 @@
+<% provide(:h1, @gallery.name) %>
+<p id="notice"><%= notice %></p>
+<% if @gallery.ogg.to_s != "" || @gallery.mp3.to_s != "" %>
+   <% if @gallery.music_on %>
+      <% if checkMusicFlag == "On" && (!current_user || current_user.id != @gallery.user.id) %>
+         <p><%= audio_tag (getGalleryMusic(@gallery)), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
+      <% elsif current_user && @gallery.user.id == current_user.id %>
+         <p><%= audio_tag (getGalleryMusic(@gallery)), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
+      <% end %>
+   <% end %>
+   <% if current_user && current_user.id == @gallery.user.id %>
+      <% if @gallery.music_on %>
+         <p><%= button_to 'Turn off music', galleries_music1_path(:id=>@gallery.id), method: :post %></p>
+      <% else %>
+         <p><%= button_to 'Turn on music', galleries_music1_path(:id=>@gallery.id), method: :post %></p>
+      <% end %>
+      <br>
+   <% else %>
+      <% if @gallery.music_on %>
+         <% if checkMusicFlag == "On" %>
+            <p><%= button_to 'Turn off music', galleries_music2_path(:id=>@gallery.id), method: :post %></p>
+         <% else %>
+            <p><%= button_to 'Turn on music', galleries_music2_path(:id=>@gallery.id), method: :post %></p>
+         <% end %>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
+<p>Created on: <%= distance_of_time_in_words_to_now @gallery.created_on %> ago on (<%= @gallery.created_on.strftime("%B-%d-%Y") %>)</p>
+<% if @gallery.user.userinfo.miniavatar != "" %>
+   <br>
+   <p><%= image_tag(@gallery.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks"><div class="container">Artist: <%= getUserPrivilege(@gallery.user) %><%= @gallery.user.vname %></div>
+   <% if(current_user && ((current_user.id == @gallery.user_id) || current_user.admin)) %>
+      <div class="container"><%= button_to 'Edit', edit_user_gallery_path(@gallery.user, @gallery), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@gallery.user, @gallery], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@gallery.user) %>
+   <% if getActivity(@gallery.user) == "Inactive" || getActivity(@gallery.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@gallery.user) %>
+   <% end %>
+</p>
+<br>
+<p><%= @gallery.description %></p>
+<br>
+<% if @mainfolders.count > 9 %>
+   <p><%= paginate @mainfolders %></p>
+   <br>
+<% end %>
+<% @mainfolders.each_with_index do |mainfolder, index| %>
+   <% if(((getSubfolders(mainfolder).count > 0) && getFolderArts(getSubfolders(mainfolder).first, "Count") > 0) || (current_user && ((current_user.id == mainfolder.user_id) || (current_user.admin || getCollabs > 0)))) %>
+      <div class="container">
+         <p><%= link_to mainfolder.title, gallery_mainfolder_path(mainfolder.gallery, mainfolder) %></p>
+         <% if(current_user && ((current_user.id == mainfolder.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_gallery_mainfolder_path(mainfolder.gallery, mainfolder), method: :get %></div> <div class="container"><%= button_to 'Destroy', [mainfolder.gallery, mainfolder], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         <% if getSubfolders(mainfolder).count > 0 && getFolderArts(getSubfolders(mainfolder).first, "Count") > 0 %>
+            <% if getSubfolders(mainfolder).last.fave_folder %>
+               <p><%= image_tag(getFolderArts(getSubfolders(mainfolder).last.favoritearts, "Array").art.image_url(:thumb)) %></p>
+            <% else %>
+               <p><%= image_tag(getFolderArts(getSubfolders(mainfolder).last, "Art").last.image_url(:thumb)) %></p>
+            <% end %>
+         <% else %>
+            <p>No art available</p>
+         <% end %>
+         <% if getSubfolders(mainfolder).last.fave_folder %>
+            <p class="navlinks">Art owner: <%= getUserPrivilege(getFolderArts(getSubfolders(mainfolder).last.favoritearts, "Array").art.user) %><%= link_to getFolderArts(getSubfolders(mainfolder).last.favoritearts, "Array").art.user.vname, user_path(getFolderArts(getSubfolders(mainfolder).last.favoritearts, "Array").art.user) %></p>
+            <p>Art Group: <%= getSubfolders(mainfolder).last.bookgroup.name %></p>
+            <p>Type: Favorites Folder</p>
+            <p>Faved on: <%= distance_of_time_in_words_to_now mainfolder.created_on %> ago on (<%= mainfolder.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p class="navlinks">Faved by: <%= getUserPrivilege(mainfolder.user) %><%= link_to mainfolder.user.vname, user_path(mainfolder.user) %></p>
+            <p>Status: <%= getActivity(mainfolder.user) %>
+               <% if getActivity(mainfolder.user) == "Inactive" || getActivity(mainfolder.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(mainfolder.user) %>
+               <% end %>
+            </p>
+         <% else %>
+            <p>Created on: <%= distance_of_time_in_words_to_now mainfolder.created_on %> ago on (<%= mainfolder.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p>Group: <%= getSubfolders(mainfolder).last.bookgroup.name %></p>
+            <p>Type: Arts Folder</p>
+            <p class="navlinks">Director: <%= getUserPrivilege(mainfolder.user) %><%= link_to mainfolder.user.vname, user_path(mainfolder.user) %></p>
+            <p>Status: <%= getActivity(mainfolder.user) %>
+               <% if getActivity(mainfolder.user) == "Inactive" || getActivity(mainfolder.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(mainfolder.user) %>
+               <% end %>
+            </p>
+         <% end %>
+      </div>
+      <% if((index + 1) % 3 == 0 && ((index + 1) < @mainfolders.count)) %>
+         <br>
+         <br>
+      <% elsif((index + 1) == @mainfolders.count) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
+<% if current_user %>
+   <p><%= button_to 'New Mainfolder', new_gallery_mainfolder_path(@gallery), method: :get %></p>
+   <br>
+<% end %>
+<p class="navlinks"><%= link_to "User Galleries", user_galleries_path(@gallery.user) %> |
+<%= link_to "Gallery List", galleries_path %></p>

@@ -1,0 +1,23 @@
+<%= form_for([@movie, @favoritemovie]) do |f| %>
+  <% if @favoritemovie.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@favoritemovie.errors.count, "error") %> prohibited this favoritemovie from being saved:</h2>
+
+      <ul>
+      <% @favoritemovie.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :subplaylist_id, "Select favorite folder" %><br />
+    <%= f.collection_select(:subplaylist_id, @subplaylists, :id, :title) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', subplaylist_movie_path(@movie.subplaylist, @movie) %></p>
+<% end %>

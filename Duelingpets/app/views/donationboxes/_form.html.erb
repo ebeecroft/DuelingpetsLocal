@@ -1,7 +1,7 @@
 <%= form_for([@user, @donationbox]) do |f| %>
   <% if @donationbox.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@donationbox.errors.count, "error") %> prohibited this donationbox from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@donationbox.errors.count, "error") %> prohibited this donationbox from being saved:</h2>
 
       <ul>
       <% @donationbox.errors.full_messages.each do |msg| %>

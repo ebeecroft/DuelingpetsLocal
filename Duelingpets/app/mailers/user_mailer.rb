@@ -83,4 +83,22 @@ class UserMailer < ActionMailer::Base
       @netpoints = netpoints
       mail(to: @donationbox.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@donationbox.user.vname} you hit your goal!")
    end
+
+   def movie_favorited(movie, points)
+      @favoritemovie = movie
+      @points = points
+      mail(to: @favoritemovie.movie.user.email, from: "notification@duelingpets.net", subject: "Your movie #{@favoritemovie.movie.title} was favorited by #{@favoritemovie.user.vname}.")
+   end
+
+   def movie_starred(movie, points)
+      @moviestar = movie
+      @points = points
+      mail(to: @moviestar.movie.user.email, from: "notification@duelingpets.net", subject: "Your movie #{@moviestar.movie.title} was starred by #{@moviestar.user.vname}.")
+   end
+
+   def movie_critiqued(movie, points)
+      @moviecomment = movie
+      @points = points
+      mail(to: @moviecomment.movie.user.email, from: "notification@duelingpets.net", subject: "Your movie #{@moviecomment.movie.title} was critiqued by #{@moviecomment.user.vname}.")
+   end
 end

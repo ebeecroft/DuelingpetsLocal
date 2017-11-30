@@ -1,7 +1,7 @@
 <%= form_for([@channel, @mainplaylist]) do |f| %>
   <% if @mainplaylist.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@mainplaylist.errors.count, "error") %> prohibited this mainplaylist from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@mainplaylist.errors.count, "error") %> prohibited this mainplaylist from being saved:</h2>
 
       <ul>
       <% @mainplaylist.errors.full_messages.each do |msg| %>

@@ -11,7 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20171009045024) do
+ActiveRecord::Schema.define(:version => 20171103051154) do
+
+  create_table "arts", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subfolder_id"
+    t.integer  "bookgroup_id"
+    t.boolean  "reviewed",     :default => false
+    t.string   "image"
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
 
   create_table "blogs", :force => true do |t|
     t.string   "title"
@@ -73,6 +88,7 @@ ActiveRecord::Schema.define(:version => 20171009045024) do
     t.string   "explanationbackgcolor"
     t.string   "explanheadercolor"
     t.string   "explanheaderbackgcolor"
+    t.string   "errorfieldcolor"
     t.string   "errorcolor"
     t.string   "warningcolor"
     t.string   "notificationcolor"
@@ -105,6 +121,37 @@ ActiveRecord::Schema.define(:version => 20171009045024) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "favoritemovies", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subplaylist_id"
+    t.integer  "movie_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "galleries", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.boolean  "music_on",    :default => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "mainfolders", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "gallery_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "mainplaylists", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -125,11 +172,12 @@ ActiveRecord::Schema.define(:version => 20171009045024) do
 
   create_table "moviecomments", :force => true do |t|
     t.text     "message"
+    t.boolean  "critique",   :default => false
     t.datetime "created_on"
     t.integer  "movie_id"
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "movies", :force => true do |t|
@@ -230,11 +278,25 @@ ActiveRecord::Schema.define(:version => 20171009045024) do
     t.datetime "updated_at",   :null => false
   end
 
+  create_table "subfolders", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.boolean  "collab_mode",   :default => false
+    t.boolean  "fave_folder",   :default => false
+    t.integer  "user_id"
+    t.integer  "mainfolder_id"
+    t.integer  "bookgroup_id"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
   create_table "subplaylists", :force => true do |t|
     t.string   "title"
     t.text     "description"
     t.datetime "created_on"
     t.boolean  "collab_mode",     :default => false
+    t.boolean  "fave_folder",     :default => false
     t.integer  "user_id"
     t.integer  "mainplaylist_id"
     t.integer  "bookgroup_id"

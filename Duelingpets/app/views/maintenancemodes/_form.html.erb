@@ -1,7 +1,7 @@
 <%= form_for(@maintenancemode) do |f| %>
   <% if @maintenancemode.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@maintenancemode.errors.count, "error") %> prohibited this maintenancemode from being saved:</h2>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@maintenancemode.errors.count, "error") %> prohibited this maintenancemode from being saved:</h2>
 
       <ul>
       <% @maintenancemode.errors.full_messages.each do |msg| %>

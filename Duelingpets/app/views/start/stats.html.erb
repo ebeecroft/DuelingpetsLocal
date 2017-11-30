@@ -26,6 +26,24 @@
 <p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
 <p>Colorscheme total: <%= colorschemes %></p>
 <br>
+<p>Galleries</p>
+<p>Today: <%= galleryTime("Today") %> Week: <%= galleryTime("Week") %> Month: <%= galleryTime("Month") %> Year: <%= galleryTime("Year") %> 3Years: <%= galleryTime("Threeyears") %> Bacon of Tomato: <%= galleryTime("BaconOfTomato") %></p>
+<p>Gallery total: <%= galleryTime("All") %></p>
+<br>
+<p>Mainfolders</p>
+<p>Today: <%= mainfolderTime("Today") %> Week: <%= mainfolderTime("Week") %> Month: <%= mainfolderTime("Month") %> Year: <%= mainfolderTime("Year") %> 3Years: <%= mainfolderTime("Threeyears") %> Bacon of Tomato: <%= mainfolderTime("BaconOfTomato") %></p>
+<p>Mainfolder total: <%= mainfolderTime("All") %></p>
+<br>
+<p>Subfolders</p>
+<p>Today: <%= subfolderTime("Today") %> Week: <%= subfolderTime("Week") %> Month: <%= subfolderTime("Month") %> Year: <%= subfolderTime("Year") %> 3Years: <%= subfolderTime("Threeyears") %> Bacon of Tomato: <%= subfolderTime("BaconOfTomato") %></p>
+<p>Subfolder total: <%= subfolderTime("All") %></p>
+<br>
+<p>Arts</p>
+<p>Sources</p>
+<p>Today: <%= artsSourced("Today") %> points Week: <%= artsSourced("Week") %> points Month: <%= artsSourced("Month") %> points</p>
+<p>Year: <%= artsSourced("Year") %> points 3 Years: <%= artsSourced("Threeyears") %> points Bacon of Tomato: <%= artsSourced("BaconOfTomato") %> points</p>
+<p>Art total: <%= arts %></p>
+<br>
 <p>Channels</p>
 <p>Today: <%= channelTime("Today") %> Week: <%= channelTime("Week") %> Month: <%= channelTime("Month") %> Year: <%= channelTime("Year") %> 3Years: <%= channelTime("Threeyears") %> Bacon of Tomato: <%= channelTime("BaconOfTomato") %></p>
 <p>Channel total: <%= channelTime("All") %></p>
@@ -43,6 +61,28 @@
 <p>Today: <%= moviesSourced("Today") %> points Week: <%= moviesSourced("Week") %> points Month: <%= moviesSourced("Month") %> points</p>
 <p>Year: <%= moviesSourced("Year") %> points 3 Years: <%= moviesSourced("Threeyears") %> points Bacon of Tomato: <%= moviesSourced("BaconOfTomato") %> points</p>
 <p>Movie total: <%= movies %></p>
+<br>
+<p>Favorite Movies</p>
+<p>Sources</p>
+<p>Today: <%= favoritemoviesSourced("Today") %> points Week: <%= favoritemoviesSourced("Week") %> points Month: <%= favoritemoviesSourced("Month") %> points</p>
+<p>Year: <%= favoritemoviesSourced("Year") %> points 3 Years: <%= favoritemoviesSourced("Threeyears") %> points Bacon of Tomato: <%= favoritemoviesSourced("BaconOfTomato") %> points</p>
+<p>Favoritemovie total: <%= favoritemovies %></p>
+<br>
+<p>Movie Stars</p>
+<p>Sources</p>
+<p>Today: <%= moviestarsSourced("Today") %> points Week: <%= moviestarsSourced("Week") %> points Month: <%= moviestarsSourced("Month") %> points</p>
+<p>Year: <%= moviestarsSourced("Year") %> points 3 Years: <%= moviestarsSourced("Threeyears") %> points Bacon of Tomato: <%= moviestarsSourced("BaconOfTomato") %> points</p>
+<p>Moviestar total: <%= moviestars %></p>
+<br>
+<p>Movie Critiques</p>
+<p>Sources</p>
+<p>Today: <%= moviecritiquesSourced("Today") %> points Week: <%= moviecritiquesSourced("Week") %> points Month: <%= moviecritiquesSourced("Month") %> points</p>
+<p>Year: <%= moviecritiquesSourced("Year") %> points 3 Years: <%= moviecritiquesSourced("Threeyears") %> points Bacon of Tomato: <%= moviecritiquesSourced("BaconOfTomato") %> points</p>
+<p>Moviecritique total: <%= moviecritiques %></p>
+<br>
+<p>Moviecomments</p>
+<p>Today: <%= moviecommentTime("Today") %> Week: <%= moviecommentTime("Week") %> Month: <%= moviecommentTime("Month") %> Year: <%= moviecommentTime("Year") %> 3Years: <%= moviecommentTime("Threeyears") %> Bacon of Tomato: <%= moviecommentTime("BaconOfTomato") %></p>
+<p>Moviecomment total: <%= moviecommentTime("All") %></p>
 <br>
 <p>Blogs</p>
 <p>Sources</p>
@@ -73,7 +113,6 @@
 <p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3 Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
 <p>Total users: <%= getSignups("All") %> Total bots: <%= getUserStatus("Bots") %></p>
 <br>
-<p>Art total: </p>
 <p>Pet total: </p>
 <p>Item total: </p>
 <p>Story total: </p>

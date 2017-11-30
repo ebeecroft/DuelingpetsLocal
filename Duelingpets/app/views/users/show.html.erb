@@ -152,10 +152,25 @@
       <p class="navlinks"><%= button_to "New Channel", new_user_channel_path(@user), method: :get %></p>
    <% end %>
 <% end %>
+<% if getGalleries(@user) != 0 %>
+   <br>
+   <p>Gallery section</p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Gallery", user_galleries_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Gallery", new_user_gallery_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Gallery section</p>
+      <p class="navlinks"><%= button_to "New Gallery", new_user_gallery_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
 <% if getBlogs(@user) != 0 %>
    <br>
    <p>Blog section</p>
-   <p>Blogs sourced: <%= getBlogPoints(@user) %> points Blogs created: <%= getBlogs(@user) %> Blogs for ads: <%= getAdBlogs(@user) %></p>
    <p class="navlinks">
       <div class="container"><%= button_to "My Blog", user_blogs_path(@user), method: :get %></div>
       <% if current_user && current_user.id == @user.id %>
@@ -167,6 +182,36 @@
       <br>
       <p>Blog section</p>
       <p class="navlinks"><%= button_to "New Blog", new_user_blog_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
+<% if getBlogs(@user) > 0 || getAdBlogs(@user) > 0 || getArts(@user) > 0 || getMovies(@user) > 0 %>
+   <br>
+   <% if getBlogs(@user) > 0 %>
+      <p>Blogs Created: <%= getBlogs(@user) %></p>
+   <% end %>
+   <% if getAdBlogs(@user) > 0 %>
+      <p>Ads Created: <%= getAdBlogs(@user) %></p>
+   <% end %>
+   <% if getArts(@user) > 0 %>
+      <p>Artwork Created: <%= getArts(@user) %></p>
+   <% end %>
+   <% if getMovies(@user) > 0 %>
+      <p>Movies Created: <%= getMovies(@user) %></p>
+   <% end %>
+<% end %>
+<% if getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 %>
+   <br>
+   <% if getMovieFaves(@user) > 0 %>
+      <p>User Faved <%= getMovieFaves(@user) %> Movies</p>
+   <% end %>
+   <% if getMovieStars(@user) > 0 %>
+      <p>User Starred <%= getMovieStars(@user) %> Movies</p>
+   <% end %>
+   <% if getMovieCritiques(@user) > 0 %>
+      <p>User Critiqued <%= getMovieCritiques(@user) %> Movies</p>
+   <% end %>
+   <% if getMovieComments(@user) > 0 %>
+      <p>User Commented on <%= getMovieComments(@user) %> Movies</p>
    <% end %>
 <% end %>
 <br>

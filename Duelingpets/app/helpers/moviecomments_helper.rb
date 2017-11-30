@@ -94,16 +94,29 @@ module MoviecommentsHelper
                               newComment.created_on = currentTime
                               newComment.user_id = logged_in.id
                            end
-                           @moviecomment = newComment
-                           @movie = movieFound
-                           if(type == "create")
-                              if(@moviecomment.save)
-                                 #Mailer dependent on critique
-                                 flash[:success] = "Comment by #{@moviecomment.user.vname} was successfully created."
-                                 redirect_to subplaylist_movie_path(@movie.subplaylist, @movie)
-                              else
-                                 render "new"
+                           if(((newComment.user_id != movieFound.user_id) && newComment.critique) || !newComment.critique)
+                              @moviecomment = newComment
+                              @movie = movieFound
+                              if(type == "create")
+                                 if(@moviecomment.save)
+                                    if(@moviecomment.critique)
+                                       #Mailer dependent on critique
+                                       pouch = Pouch.find_by_user_id(movieFound.user_id)
+                                       pointsForCritique = 12
+                                       pouch.amount += pointsForCritique
+                                       UserMailer.movie_critiqued(@moviecomment, pointsForCritique).deliver
+                                       @pouch = pouch
+                                       @pouch.save
+                                    end
+                                    flash[:success] = "Comment by #{@moviecomment.user.vname} was successfully created."
+                                    redirect_to subplaylist_movie_path(@movie.subplaylist, @movie)
+                                 else
+                                    render "new"
+                                 end
                               end
+                           else
+                              flash[:error] = "You can't critique your own movie!"
+                              render "new"
                            end
                         else
                            redirect_to root_path

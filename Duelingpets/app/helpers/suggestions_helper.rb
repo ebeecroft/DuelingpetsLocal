@@ -25,19 +25,17 @@ module SuggestionsHelper
                   elsif(type == "applied")
                      suggestionFound = Suggestion.find_by_title(params[:suggestion_id])
                      if(suggestionFound)
-                        if(!suggestionFound.applied)
-                           suggestionFound.applied = true
+                        suggestionFound.applied = true
+                        @suggestion = suggestionFound
+                        if(@suggestion.save)
                            pouch = Pouch.find_by_user_id(suggestionFound.user_id)
                            pointsForSuggestion = 40
+                           ContentMailer.suggestion_applied(@suggestion, pointsForSuggestion).deliver
                            pouch.amount += pointsForSuggestion
                            @pouch = pouch
                            @pouch.save
-                           @suggestion = suggestionFound
-                           ContentMailer.suggestion_applied(@suggestion, pointsForSuggestion)
                            flash[:success] = "Suggestion was applied"
                         end
-                        @suggestion = suggestionFound
-                        @suggestion.save
                         redirect_to suggestions_path
                      else
                         render "start/crazybat"

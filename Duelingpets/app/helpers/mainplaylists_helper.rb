@@ -28,10 +28,33 @@ module MainplaylistsHelper
          return groupValue
       end
 
-      def getPlaylistMovies(subplaylist)
-         subplaylistMovies = subplaylist.movies.order("created_on desc")
-         movies = subplaylistMovies.select{|movie| (movie.reviewed && ((current_user && movie.bookgroup_id <= getBookGroups(current_user)) || (!current_user && movie.bookgroup.name == "Peter Rabbit"))) || (!movie.reviewed && current_user && ((current_user.id == movie.user_id) || current_user.admin))}
-         return movies
+      def getPlaylistMovies(subplaylist, type)
+         value = ""
+         if(type == "Array")
+            #Favorites to handle
+            allFavorites = subplaylist.order("created_on desc")
+            playlistFavorites = allFavorites.select{|favorite| favorite.movie.reviewed && ((!current_user && favorite.movie.bookgroup.name == "Peter Rabbit") || (current_user && favorite.movie.bookgroup_id <= getBookGroups(current_user)))}
+            favorite = playlistFavorites.first
+            value = favorite
+         elsif(type == "Count")
+            if(subplaylist.fave_folder)
+               #Favorites count
+               allFavorites = subplaylist.favoritemovies.order("created_on desc")
+               playlistFavorites = allFavorites.select{|favorite| favorite.movie.reviewed && ((!current_user && favorite.movie.bookgroup.name == "Peter Rabbit") || (current_user && favorite.movie.bookgroup_id <= getBookGroups(current_user)))}
+               value = playlistFavorites.count
+            else
+               #Movies count
+               allMovies = subplaylist.movies.order("created_on desc")
+               playlistMovies = allMovies.select{|movie| (movie.reviewed && ((!current_user && movie.bookgroup.name == "Peter Rabbit") || (current_user && movie.bookgroup_id <= getBookGroups(current_user)))) || (!movie.reviewed && current_user && ((current_user.id == movie.user_id) || current_user.admin))}
+               value = playlistMovies.count
+            end
+         elsif(type == "Movie")
+            #Movies to handle
+            allMovies = subplaylist.movies.order("created_on desc")
+            playlistMovies = allMovies.select{|movie| (movie.reviewed && ((!current_user && movie.bookgroup.name == "Peter Rabbit") || (current_user && movie.bookgroup_id <= getBookGroups(current_user)))) || (!movie.reviewed && current_user && ((current_user.id == movie.user_id) || current_user.admin))}
+            value = playlistMovies
+         end
+         return value
       end
 
       def showCommons(type)
@@ -47,7 +70,7 @@ module MainplaylistsHelper
             channelFound = Channel.find_by_name(params[:channel_id])
             if(channelFound && mainplaylistFound.channel_id == channelFound.id)
                playlistSublists = mainplaylistFound.subplaylists.order("created_on desc")
-               playlists = playlistSublists.select{|subplaylist| (((!current_user && subplaylist.bookgroup.name == "Peter Rabbit") || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user))) && subplaylist.movies.count > 0) || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subplaylist.user_id) || current_user.admin) || subplaylist.collab_mode))}
+               playlists = playlistSublists.select{|subplaylist| (((!current_user && subplaylist.bookgroup.name == "Peter Rabbit") || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user))) && ((subplaylist.movies.count > 0) || (subplaylist.favoritemovies.count > 0))) || (current_user && subplaylist.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subplaylist.user_id) || current_user.admin) || subplaylist.collab_mode))}
 
                guest = (!current_user && playlists.count > 0)
                if(current_user)

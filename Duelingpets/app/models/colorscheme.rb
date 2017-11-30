@@ -4,7 +4,8 @@ class Colorscheme < ActiveRecord::Base
    :onlinestatuscolor, :profilecolor, :profilevisitedcolor, :profilehovercolor,
    :profilehoverbackgcolor, :sessioncolor, :navlinkcolor, :navlinkhovercolor,
    :navlinkhoverbackgcolor, :explanationborder, :explanationbackgcolor, :explanheadercolor,
-   :explanheaderbackgcolor, :errorcolor, :warningcolor, :notificationcolor, :successcolor
+   :explanheaderbackgcolor, :errorfieldcolor, :errorcolor, :warningcolor, :notificationcolor,
+   :successcolor
 
    #Colorscheme related
    has_many :userinfos
@@ -37,6 +38,7 @@ class Colorscheme < ActiveRecord::Base
    validates :explanationbackgcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
    validates :explanheadercolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
    validates :explanheaderbackgcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
+   validates :errorfieldcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
    validates :errorcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
    validates :warningcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}
    validates :notificationcolor, presence: true, length: {is: 7}, format: {with: VALID_COLOR_REGEX}

@@ -1,0 +1,67 @@
+<%= form_for([@subfolder, @art]) do |f| %>
+  <% if @art.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@art.errors.count, "error") %> prohibited this art from being saved:</h2>
+
+      <ul>
+      <% @art.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :bookgroup_id, "Select Group" %><br />
+    <%= f.collection_select(:bookgroup_id, @group, :id, :name) %>
+  </div>
+  Art files
+  <div class="field">
+     <%= image_tag @art.image_url(:thumb).to_s if @art.image? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :image %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_image_url, "or Art URL" %><br />
+    <%= f.text_field :remote_image_url %>
+    <%= f.hidden_field :image_cache %>
+  </div>
+  OGG files
+  <div class="field">
+     <%= audio_tag(@art.ogg_url.to_s, :controls => true) if @art.ogg? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogg %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogg_url, "or OGG URL" %><br />
+    <%= f.text_field :remote_ogg_url %>
+    <%= f.hidden_field :ogg_cache %>
+  </div>
+  MP3 files
+  <div class="field">
+     <%= audio_tag(@art.mp3_url.to_s, :controls => true) if @art.mp3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp3_url, "or MP3 URL" %><br />
+    <%= f.text_field :remote_mp3_url %>
+    <%= f.hidden_field :mp3_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', mainfolder_subfolder_path(@art.subfolder.mainfolder, @art.subfolder) %></p>
+<% end %>

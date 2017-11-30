@@ -30,8 +30,29 @@
       <% end %>
    <% end %>
 <% end %>
+<% if newestArts.count > 0 %>
+   <p>Newest Arts</p>
+   <br>
+   <% newestArts.each_with_index do |art, index| %>
+      <div class="container">
+         <p class="navlinks"><%= link_to art.title, subfolder_art_path(art.subfolder, art) %></p>
+         <p><%= image_tag(art.image_url(:thumb)) %></p>
+         <p>Created on: <%= distance_of_time_in_words_to_now art.created_on %> ago on (<%= art.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Group: <%= art.bookgroup.name %></p>
+         <p class="navlinks">Artist: <%= getUserPrivilege(art.user) %><%= link_to art.user.vname, user_path(art.user) %></p>
+         <p>Status: <%= getActivity(art.user) %>
+            <% if getActivity(art.user) == "Inactive" || getActivity(art.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(art.user) %>
+            <% end %>
+         </p>
+      </div>
+      <% if newestArts.count == (index + 1) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
 <p>Pets</p>
-<p>Arts</p>
 <p>Audios</p>
 <p>Stories</p>
 <p>Items</p>

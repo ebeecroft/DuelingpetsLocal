@@ -56,7 +56,8 @@ module ColorschemesHelper
          else
             allColors = Colorscheme.order("created_on desc")
          end
-         @colorschemes = Kaminari.paginate_array(allColors).page(params[:page]).per(10)
+         activatedColors = allColors.select{|colorscheme| colorscheme.activate || (current_user && (colorscheme.user_id == current_user.id))}
+         @colorschemes = Kaminari.paginate_array(activatedColors).page(params[:page]).per(10)
       end
 
       def optional

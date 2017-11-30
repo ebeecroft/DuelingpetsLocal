@@ -1,11 +1,12 @@
 class Subplaylist < ActiveRecord::Base
-   attr_accessible :title, :description, :collab_mode, :bookgroup_id
+   attr_accessible :title, :description, :collab_mode, :fave_folder, :bookgroup_id
 
    #Subplaylist releated
    belongs_to :mainplaylist
    belongs_to :user
    belongs_to :bookgroup
    has_many :movies, :foreign_key => "subplaylist_id", :dependent => :destroy
+   has_many :favoritemovies, :foreign_key => "subplaylist_id", :dependent => :destroy
 
    #Regex information for colorscheme
    VALID_TITLE_REGEX = /\A[a-z][a-z][a-z0-9!-]+\z/i

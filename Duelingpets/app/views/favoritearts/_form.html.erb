@@ -1,0 +1,23 @@
+<%= form_for([@art, @favoriteart]) do |f| %>
+  <% if @favoriteart.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@favoriteart.errors.count, "error") %> prohibited this favoriteart from being saved:</h2>
+
+      <ul>
+      <% @favoriteart.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :subfolder_id, "Select favorite folder" %><br />
+    <%= f.collection_select(:subfolder_id, @subfolders, :id, :title) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', subfolder_art_path(@art.subfolder, @art) %></p>
+<% end %>

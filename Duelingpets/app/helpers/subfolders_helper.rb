@@ -213,5 +213,3 @@ module SubfoldersHelper
          end
       end
 end
-
-

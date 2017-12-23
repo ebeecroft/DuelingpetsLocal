@@ -8,12 +8,6 @@ module UsersHelper
          return value
       end
 
-      def getColorschemePoints(user)
-         colorsFound = getColorschemes(user)
-         value = colorsFound * 12
-         return value
-      end
-
       def getColorschemes(user)
          allUserColors = user.colorschemes.all
          value = allUserColors.count
@@ -32,6 +26,12 @@ module UsersHelper
          return value
       end
 
+      def getRadios(user)
+         allUserRadios = user.radiostations.all
+         value = allUserRadios.count
+         return value
+      end
+
       def getMovies(user)
          allMovies = Movie.all
          reviewedMovies = allMovies.select{|movie| movie.reviewed && movie.user_id == user.id}
@@ -43,6 +43,55 @@ module UsersHelper
          allArts = Art.all
          reviewedArts = allArts.select{|artwork| artwork.reviewed && artwork.user_id == user.id}
          value = reviewedArts.count
+         return value
+      end
+
+      def getSounds(user)
+         allSounds = Sound.all
+         reviewedSounds = allSounds.select{|sound| sound.reviewed && sound.user_id == user.id}
+         value = reviewedSounds.count
+         return value
+      end
+
+      def getBlogStars(user)
+         allStars = Blogstar.all
+         userStars = allStars.select{|star| star.user_id == user.id}
+         value = userStars.count
+         return value
+      end
+
+      def getBlogComments(user)
+         allComments = Reply.all
+         userComments = allComments.select{|comment| comment.user_id == user.id}
+         value = userComments.count
+         return value
+      end
+
+      def getArtFaves(user)
+         allFaves = Favoriteart.all
+         userFaves = allFaves.select{|fave| fave.user_id == user.id}
+         value = userFaves.count
+         return value
+      end
+
+      def getArtStars(user)
+         allStars = Artstar.all
+         userStars = allStars.select{|star| star.user_id == user.id}
+         value = userStars.count
+         return value
+      end
+
+      def getArtCritiques(user)
+         allCritiques = Artcomment.all
+         userCritiques = allCritiques.select{|comment| comment.user_id == user.id && comment.critique}
+         value = userCritiques.count
+         return value
+      end
+
+      def getArtComments(user)
+         allComments = Artcomment.all
+         userComments = allComments.select{|comment| comment.user_id == user.id && !comment.critique}
+         value = userComments.count
          return value
       end
 

@@ -27,5 +27,55 @@
       for <%= distance_of_time_in_words_to_now getTime(@art.user) %>
    <% end %>
 </p>
+<% if current_user && current_user.id != @art.user_id %>
+   <% if retrieveArtStar(@art) == 0 %>
+      <p><%= button_to 'Star', artstars_star_path(:art_id=>@art.id), method: :post %></p>
+   <% else %>
+      <p><%= button_to 'Unstar', artstars_star_path(:art_id=>@art.id), method: :post %></p>
+   <% end %>
+   <% if retrieveArtFave(@art, "Count").count == 0 %>
+      <p><%= button_to 'Fave', new_art_favoriteart_path(@art), method: :get %></p>
+   <% else %>
+      <p><%= button_to 'Unfave', [@art, retrieveArtFave(@art, "Retrieve")], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <% end %>
+<% end %>
+<% if @faves > 0 %>
+   <br>
+   <p>Faves: <%= @faves %></p>
+<% end %>
+<% if @stars > 0 %>
+   <br>
+   <p>Stars: <%= @stars %></p>
+<% end %>
+<% if current_user %>
+   <% if @artcomments.count > 0 %>
+      <br>
+      <p>Comments:</p>
+      <br>
+      <p><%= paginate @artcomments %></p>
+      <% @artcomments.each do |artcomment| %>
+         <br>
+         <% if artcomment.user.userinfo.miniavatar.to_s != "" %>
+            <p><%= image_tag(artcomment.user.userinfo.miniavatar_url(:thumb)) %></p>
+         <% end %>
+         <p class="navlinks">By: <%= getUserPrivilege(artcomment.user) %><%= link_to artcomment.user.vname, user_path(artcomment.user) %>
+         <% if(current_user && ((current_user.id == artcomment.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_art_artcomment_path(artcomment.art, artcomment), method: :get %></div> <div class="container"><%= button_to 'Destroy', [artcomment.art, artcomment], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         </p>
+         <br>
+         <p><%= artcomment.message %></p>
+         <br>
+         <p>Created on: <%= distance_of_time_in_words_to_now artcomment.created_on %> ago on (<%= artcomment.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Status: <%= getActivity(artcomment.user) %>
+            <% if getActivity(artcomment.user) == "Offline" || getActivity(artcomment.user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(artcomment.user) %>
+            <% end %>
+         </p>
+      <% end %>
+   <% end %>
+   <br>
+   <p class="navlinks"><%= link_to 'New Artcomment', new_art_artcomment_path(@art) %></p>
+<% end %>
 <br>
 <p class="navlinks"><%= link_to 'Back', mainfolder_subfolder_path(@subfolder.mainfolder, @art.subfolder) %></p>

@@ -1,0 +1,19 @@
+<% provide(:h1, "Blogstar List") %>
+<p><%= paginate @blogstars %></p>
+<% @blogstars.each do |blogstar| %>
+   <br>
+   <% if blogstar.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(blogstar.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(blogstar.user) %><%= link_to blogstar.user.vname, user_path(blogstar.user) %></p>
+   <p>Status: <%= getActivity(blogstar.user) %>
+      <% if getActivity(blogstar.user) == "Offline" || getActivity(blogstar.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(blogstar.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Starred blog: <%= link_to blogstar.blog.title, user_blog_path(blogstar.blog.user, blogstar.blog) %><%= button_to 'Destroy', [blogstar.blog, blogstar], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now blogstar.created_on %> ago on (<%= blogstar.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

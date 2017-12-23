@@ -1,0 +1,104 @@
+<% provide(:h1, @radiostation.name) %>
+<p id="notice"><%= notice %></p>
+<% if @radiostation.ogv.to_s != "" || @radiostation.mp4.to_s != "" %>
+   <% if current_user && current_user.id == @radiostation.user.id %>
+      <% if @radiostation.video_on %>
+         <p><%= button_to 'Turn off video', radiostations_video1_path(:id=>@radiostation.id), method: :post %></p>
+      <% else %>
+         <p><%= button_to 'Turn on video', radiostations_video1_path(:id=>@radiostation.id), method: :post %></p>
+      <% end %>
+      <br>
+   <% else %>
+      <% if @radiostation.video_on %>
+         <% if checkMusicFlag == "On" %>
+            <p><%= button_to 'Turn off video', radiostations_video2_path(:id=>@radiostation.id), method: :post %></p>
+         <% else %>
+            <p><%= button_to 'Turn on video', radiostations_video2_path(:id=>@radiostation.id), method: :post %></p>
+         <% end %>
+         <br>
+      <% end %>
+   <% end %>
+   <% if @radiostation.video_on %>
+      <% if checkMusicFlag == "On" && (!current_user || current_user.id != @radiostation.user.id) %>
+         <p><%= video_tag (getVideo(@radiostation)), :size => "200x200", :loop => true, :autoplay => true %></p>
+      <% elsif current_user && @radiostation.user.id == current_user.id %>
+         <p><%= video_tag (getVideo(@radiostation)), :size => "200x200", :loop => true, :autoplay => true %></p>
+      <% end %>
+   <% end %>
+<% end %>
+<p>Created on: <%= distance_of_time_in_words_to_now @radiostation.created_on %> ago on (<%= @radiostation.created_on.strftime("%B-%d-%Y") %>)</p>
+<% if @radiostation.user.userinfo.miniavatar != "" %>
+   <br>
+   <p><%= image_tag(@radiostation.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks"><div class="container">Announcer: <%= getUserPrivilege(@radiostation.user) %><%= @radiostation.user.vname %></div>
+   <% if(current_user && ((current_user.id == @radiostation.user_id) || current_user.admin)) %>
+      <div class="container"><%= button_to 'Edit', edit_user_radiostation_path(@radiostation.user, @radiostation), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@radiostation.user, @radiostation], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@radiostation.user) %>
+   <% if getActivity(@radiostation.user) == "Inactive" || getActivity(@radiostation.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@radiostation.user) %>
+   <% end %>
+</p>
+<br>
+<p><%= @radiostation.description %></p>
+<br>
+<% if @mainsheets.count > 9 %>
+   <p><%= paginate @mainsheets %></p>
+   <br>
+<% end %>
+<% @mainsheets.each_with_index do |mainsheet, index| %>
+   <% if(((getSubsheets(mainsheet).count > 0) && getSheetSounds(getSubsheets(mainsheet).first, "Count") > 0) || (current_user && ((current_user.id == mainsheet.user_id) || (current_user.admin || getCollabs > 0)))) %>
+      <div class="container">
+         <p><%= link_to mainsheet.title, radiostation_mainsheet_path(mainsheet.radiostation, mainsheet) %></p>
+         <% if(current_user && ((current_user.id == mainsheet.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_radiostation_mainsheet_path(mainsheet.radiostation, mainsheet), method: :get %></div> <div class="container"><%= button_to 'Destroy', [mainsheet.radiostation, mainsheet], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         <% if getSubsheets(mainsheet).count > 0 && getSheetSounds(getSubsheets(mainsheet).first, "Count") > 0 %>
+            <% if getSubsheets(mainsheet).last.fave_folder %>
+               <p><%= audio_tag(getGalleryMusic(getSheetSounds(getSubsheets(mainsheet).last.favoritesounds, "Array").sound), :controls => true) %></p>
+            <% else %>
+               <p><%= audio_tag(getGalleryMusic(getSheetSounds(getSubsheets(mainsheet).last, "Sound").last), :controls => true) %></p>
+            <% end %>
+         <% else %>
+            <p>No sound available</p>
+         <% end %>
+         <% if getSubsheets(mainsheet).last.fave_folder %>
+            <p class="navlinks">Sound owner: <%= getUserPrivilege(getSheetSounds(getSubsheets(mainsheet).last.favoritesounds, "Array").sound.user) %><%= link_to getSheetSounds(getSubsheets(mainsheet).last.favoritesounds, "Array").sound.user.vname, user_path(getSheetSounds(getSubsheets(mainsheet).last.favoritesounds, "Array").sound.user) %></p>
+            <p>Sound Group: <%= getSubsheets(mainsheet).last.bookgroup.name %></p>
+            <p>Type: Favorites Folder</p>
+            <p>Faved on: <%= distance_of_time_in_words_to_now mainsheet.created_on %> ago on (<%= mainsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p class="navlinks">Faved by: <%= getUserPrivilege(mainsheet.user) %><%= link_to mainsheet.user.vname, user_path(mainsheet.user) %></p>
+            <p>Status: <%= getActivity(mainsheet.user) %>
+               <% if getActivity(mainsheet.user) == "Inactive" || getActivity(mainsheet.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(mainsheet.user) %>
+               <% end %>
+            </p>
+         <% else %>
+            <p>Created on: <%= distance_of_time_in_words_to_now mainsheet.created_on %> ago on (<%= mainsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p>Group: <%= getSubsheets(mainsheet).last.bookgroup.name %></p>
+            <p>Type: Sounds Folder</p>
+            <p class="navlinks">Announcer: <%= getUserPrivilege(mainsheet.user) %><%= link_to mainsheet.user.vname, user_path(mainsheet.user) %></p>
+            <p>Status: <%= getActivity(mainsheet.user) %>
+               <% if getActivity(mainsheet.user) == "Inactive" || getActivity(mainsheet.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(mainsheet.user) %>
+               <% end %>
+            </p>
+         <% end %>
+      </div>
+      <% if((index + 1) % 3 == 0 && ((index + 1) < @mainsheets.count)) %>
+         <br>
+         <br>
+      <% elsif((index + 1) == @mainsheets.count) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
+<% if current_user %>
+   <p><%= button_to 'New Mainsheet', new_radiostation_mainsheet_path(@radiostation), method: :get %></p>
+   <br>
+<% end %>
+<p class="navlinks"><%= link_to "User Radiostations", user_radiostations_path(@radiostation.user) %> |
+<%= link_to "Radiostation List", radiostations_path %></p>

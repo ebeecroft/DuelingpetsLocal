@@ -12,11 +12,11 @@
 <br>
 <p><%= image_tag(@blog.user.userinfo.miniavatar_url(:thumb)) %></p>
 <% if @blog.adbanner.to_s == "" %>
-<p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %>
-   <% if current_user && (current_user.id == @blog.user_id || current_user.admin) %>
-      <%= button_to 'Edit Blog', edit_user_blog_path(@blog.user, @blog), method: :get %><%= button_to 'Destroy Blog', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %>
-   <% end %>
-</p>
+   <p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %>
+      <% if current_user && (current_user.id == @blog.user_id || current_user.admin) %>
+         <%= button_to 'Edit Blog', edit_user_blog_path(@blog.user, @blog), method: :get %><%= button_to 'Destroy Blog', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+   </p>
 <% else %>
    <p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %></p>
 <% end %>
@@ -25,44 +25,58 @@
       for <%= distance_of_time_in_words_to_now getTime(@blog.user) %>
    <% end %>
 </p>
-<br>
 <% if @blog.admascot.to_s != "" %>
-<p class="centerad"><%= image_tag(@blog.admascot_url(:thumb)) %></p>
+   <br>
+   <p class="centerad"><%= image_tag(@blog.admascot_url(:thumb)) %></p>
+<% end %>
+<% if @blog.largeimage1.to_s != "" || @blog.largeimage2.to_s != "" || @blog.largeimage3.to_s != "" %>
+   <br>
+   <p class="centerad">
+      <% if @blog.largeimage1.to_s != "" %>
+         <%= image_tag(@blog.largeimage1_url(:thumb)) %>
+      <% end %>
+      <% if @blog.largeimage2.to_s != "" %>
+         <%= image_tag(@blog.largeimage2_url(:thumb)) %>
+      <% end %>
+      <% if @blog.largeimage3.to_s != "" %>
+         <%= image_tag(@blog.largeimage3_url(:thumb)) %>
+      <% end %>
+   </p>
+<% end %>
+<% if @blog.smallimage1.to_s != "" || @blog.smallimage2.to_s != "" || @blog.smallimage3.to_s != "" ||  @blog.smallimage4.to_s != "" || @blog.smallimage5.to_s != "" %>
+   <br>
+   <p class="centerad">
+      <% if @blog.smallimage1.to_s != "" %>
+         <%= image_tag(@blog.smallimage1_url(:thumb)) %>
+      <% end %>
+      <% if @blog.smallimage2.to_s != "" %>
+         <%= image_tag(@blog.smallimage2_url(:thumb)) %>
+      <% end %>
+      <% if @blog.smallimage3.to_s != "" %>
+         <%= image_tag(@blog.smallimage3_url(:thumb)) %>
+      <% end %>
+      <% if @blog.smallimage4.to_s != "" %>
+         <%= image_tag(@blog.smallimage4_url(:thumb)) %>
+      <% end %>
+      <% if @blog.smallimage5.to_s != "" %>
+         <%= image_tag(@blog.smallimage5_url(:thumb)) %>
+      <% end %>
+   </p>
 <% end %>
 <br>
-<p class="centerad">
-  <% if @blog.largeimage1.to_s != "" %>
-  <%= image_tag(@blog.largeimage1_url(:thumb)) %>
-  <% end %>
-  <% if @blog.largeimage2.to_s != "" %>
-  <%= image_tag(@blog.largeimage2_url(:thumb)) %>
-  <% end %>
-  <% if @blog.largeimage3.to_s != "" %>
-  <%= image_tag(@blog.largeimage3_url(:thumb)) %>
-  <% end %>
-</p>
-<br>
-<p class="centerad">
-  <% if @blog.smallimage1.to_s != "" %>
-  <%= image_tag(@blog.smallimage1_url(:thumb)) %>
-  <% end %>
-  <% if @blog.smallimage2.to_s != "" %>
-  <%= image_tag(@blog.smallimage2_url(:thumb)) %>
-  <% end %>
-  <% if @blog.smallimage3.to_s != "" %>
-  <%= image_tag(@blog.smallimage3_url(:thumb)) %>
-  <% end %>
-  <% if @blog.smallimage4.to_s != "" %>
-  <%= image_tag(@blog.smallimage4_url(:thumb)) %>
-  <% end %>
-  <% if @blog.smallimage5.to_s != "" %>
-  <%= image_tag(@blog.smallimage5_url(:thumb)) %>
-  <% end %>
-</p>
-<br>
-<p>
-  <%= @blog.description %>
-</p>
+<p><%= @blog.description %></p>
+<% if current_user && current_user.id != @blog.user_id %>
+   <br>
+   <% if retrieveBlogStar(@blog) == 0 %>
+      <p><%= button_to 'Star', blogstars_star_path(:blog_id=>@blog.id), method: :post %></p>
+   <% else %>
+      <p><%= button_to 'Unstar', blogstars_star_path(:blog_id=>@blog.id), method: :post %></p>
+   <% end %>
+<% end %>
+<% if @stars > 0 %>
+   <br>
+   <p>Stars: <%= @stars %></p>
+<% end %>
 <% if @blog.replies.count != 0 %>
    <br>
    <p><%= paginate @replies %></p>
@@ -85,7 +99,6 @@
 <% if current_user %>
    <br>
    <p class="navlinks"><%= link_to 'New Reply', new_blog_reply_path(@blog) %></p>
-   <br>
 <% end %>
 <br>
 <p class="navlinks"><%= link_to "User Blogs", user_blogs_path(@blog.user) %> |

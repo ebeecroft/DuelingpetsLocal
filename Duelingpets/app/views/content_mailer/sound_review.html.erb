@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+     <h1><%= @sound.user.vname %>'s sound <%= @sound.title %> is awaiting your review.</h1>
+     <p>Greetings Review Team we have an announcer by the name of
+        <%= @sound.user.vname %> who has created new sound for
+        the site. I'd like you all to take the time to look
+        through the sound to see if it is appropriate.
+     </p>
+     <p>If you feel that the announcer has done a really good
+        job with it and the content is appropriate then
+        please click the approve button. However if you feel
+        that it doesn't seem to be appropriate then click the
+        deny button. However above all you should use your
+        best judment.
+     </p>
+     <p>To access the review section you will need to
+        use this url: <%= @url %>
+     </p>
+     <p>From Bolt Greywing the Admin</p>
+  </body>
+</html>

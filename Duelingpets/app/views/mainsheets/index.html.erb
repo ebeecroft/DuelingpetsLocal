@@ -1,0 +1,23 @@
+<% provide(:h1, "Mainsheet List") %>
+<p><%= paginate @mainsheets %></p>
+<% @mainsheets.each do |mainsheet| %>
+   <br>
+   <p class="navlinks"><%= link_to mainsheet.title, radiostation_mainsheet_path(mainsheet.radiostation, mainsheet) %><%= button_to 'Edit', edit_radiostation_mainsheet_path(mainsheet.radiostation, mainsheet), method: :get %><%= button_to 'Destroy', [mainsheet.radiostation, mainsheet], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now mainsheet.created_on %> ago on (<%= mainsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Group: <%= mainsheet.bookgroup.name %></p>
+   <% if mainsheet.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(mainsheet.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Announcer: <%= getUserPrivilege(mainsheet.user) %><%= link_to mainsheet.user.vname, user_path(mainsheet.user) %></p>
+   <p>Status: <%= getActivity(mainsheet.user) %>
+      <% if getActivity(mainsheet.user) == "Offline" || getActivity(mainsheet.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(mainsheet.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Radio: <%= link_to mainsheet.radiostation.name, user_radiostation_path(mainsheet.radiostation.user, mainsheet.radiostation) %></p>
+   <br>
+   <p><%= mainsheet.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

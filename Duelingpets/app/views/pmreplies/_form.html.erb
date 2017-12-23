@@ -35,6 +35,42 @@
     <%= f.text_field :remote_mp4_url %>
     <%= f.hidden_field :mp4_cache %>
   </div>
+  Image files
+  <div class="field">
+     <%= image_tag @pmreply.image_url(:thumb).to_s if @pmreply.image? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :image %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_image_url, "or Image URL" %><br />
+    <%= f.text_field :remote_image_url %>
+    <%= f.hidden_field :image_cache %>
+  </div>
+  OGG files
+  <div class="field">
+     <%= audio_tag @pmreply.ogg_url.to_s, width: 200, :controls => true if @pmreply.ogg? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogg %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogg_url, "or OGG URL" %><br />
+    <%= f.text_field :remote_ogg_url %>
+    <%= f.hidden_field :ogg_cache %>
+  </div>
+  MP3 files
+  <div class="field">
+     <%= audio_tag @pmreply.mp3_url.to_s, width: 200, :controls => true if @pmreply.mp3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp3_url, "or MP3 URL" %><br />
+    <%= f.text_field :remote_mp3_url %>
+    <%= f.hidden_field :mp3_cache %>
+  </div>
   <div class="field">
     <%= f.label :message %><br />
     <%= f.text_area :message %>

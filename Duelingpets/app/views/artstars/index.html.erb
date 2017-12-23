@@ -1,0 +1,19 @@
+<% provide(:h1, "Artstar List") %>
+<p><%= paginate @artstars %></p>
+<% @artstars.each do |artstar| %>
+   <br>
+   <% if artstar.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(artstar.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(artstar.user) %><%= link_to artstar.user.vname, user_path(artstar.user) %></p>
+   <p>Status: <%= getActivity(artstar.user) %>
+      <% if getActivity(artstar.user) == "Offline" || getActivity(artstar.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(artstar.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Starred art: <%= link_to artstar.art.title, subfolder_art_path(artstar.art.subfolder, artstar.art) %><%= button_to 'Destroy', [artstar.art, artstar], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now artstar.created_on %> ago on (<%= artstar.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

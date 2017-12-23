@@ -1,0 +1,48 @@
+<% provide(:h1, @sound.title) %>
+<p id="notice"><%= notice %></p>
+<br>
+<p><%= @sound.description %></p>
+<br>
+<% if @sound.ogg.to_s != "" || @sound.mp3.to_s != "" %>
+   <p><%= audio_tag(getGalleryMusic(@sound), :controls => true) %></p>
+   <br>
+<% end %>
+<p>Created on: <%= distance_of_time_in_words_to_now @sound.created_on %> ago on (<%= @sound.created_on.strftime("%B-%d-%Y") %>)</p>
+<p>Group: <%= @sound.bookgroup.name %></p>
+<p class="navlinks">Subsheet: <%= link_to @sound.subsheet.title, mainsheet_subsheet_path(@subsheet.mainsheet, @sound.subsheet) %></p>
+<% if @sound.user.userinfo.miniavatar.to_s != "" %>
+   <br>
+   <p><%= image_tag(@sound.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks">Announcer: <%= getUserPrivilege(@sound.user) %><%= link_to @sound.user.vname, user_path(@sound.user) %>
+   <% if current_user && (current_user.id == @sound.user_id || current_user.admin) %>
+      <div class="container"><%= button_to 'Edit', edit_subsheet_sound_path(@sound.subsheet, @sound), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@sound.subsheet, @sound], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@sound.user) %>
+   <% if getActivity(@sound.user) == "Offline" || getActivity(@sound.user) == "Inactive" %>
+      for <%= distance_of_time_in_words_to_now getTime(@sound.user) %>
+   <% end %>
+</p>
+<% if current_user && current_user.id != @sound.user_id %>
+   <%# if retrieveSoundStar(@sound) == 0 %>
+      <p><%#= button_to 'Star', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
+   <%# else %>
+      <p><%#= button_to 'Unstar', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
+   <%# end %>
+   <%# if retrieveSoundFave(@sound, "Count").count == 0 %>
+      <p><%#= button_to 'Fave', new_sound_favoritesound_path(@sound), method: :get %></p>
+   <%# else %>
+      <p><%#= button_to 'Unfave', [@sound, retrieveSoundFave(@sound, "Retrieve")], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <%# end %>
+<% end %>
+<%# if @faves > 0 %>
+   <br>
+   <p>Faves: <%#= @faves %></p>
+<%# end %>
+<%# if @stars > 0 %>
+   <br>
+   <p>Stars: <%#= @stars %></p>
+<%# end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', mainsheet_subsheet_path(@subsheet.mainsheet, @sound.subsheet) %></p>

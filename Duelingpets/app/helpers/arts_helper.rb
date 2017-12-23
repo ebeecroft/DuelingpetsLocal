@@ -1,6 +1,23 @@
 module ArtsHelper
 
    private
+      def retrieveArtFave(art, type)
+         allFaves = art.favoritearts.order("created_on desc")
+         faveFound = allFaves.select{|fave| fave.user_id == current_user.id}
+         favorite = Favoriteart.find_by_id(faveFound)
+         fave = favorite
+         if(type == "Count")
+            fave = faveFound
+         end
+         return fave
+      end
+
+      def retrieveArtStar(art)
+         allStars = art.artstars.order("created_on desc")
+         starFound = allStars.select{|star| star.user_id == current_user.id}
+         return starFound.count
+      end
+
       def getBookGroups(user)
          groupValue = ""
          age = (currentTime.year - user.birthday.year)
@@ -47,12 +64,12 @@ module ArtsHelper
             if((current_user && (art || visitor)) || guest)
                @art = artFound
                @subfolder = Subfolder.find_by_id(artFound.subfolder_id)
-               #artcomments = @art.artcomments.order("created_on desc")
-               #@artcomments = Kaminari.paginate_array(artcomments).page(params[:page]).per(10)
-               #stars = @art.artstars.count
-               #@stars = stars
-               #faves = @art.favoritearts.count
-               #@faves = faves
+               artcomments = @art.artcomments.order("created_on desc")
+               @artcomments = Kaminari.paginate_array(artcomments).page(params[:page]).per(10)
+               stars = @art.artstars.count
+               @stars = stars
+               faves = @art.favoritearts.count
+               @faves = faves
                if(type == "destroy")
                   logged_in = current_user
                   if(logged_in && ((logged_in.id == artFound.user_id) || logged_in.admin))

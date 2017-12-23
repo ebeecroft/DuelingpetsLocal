@@ -6,9 +6,9 @@ class Movie < ActiveRecord::Base
    belongs_to :user
    belongs_to :subplaylist
    belongs_to :bookgroup
-   has_many :moviecomments, :foreign_key => "movie_id", :dependent => :destroy
-   has_many :moviestars, :foreign_key => "movie_id", :dependent => :destroy
    has_many :favoritemovies, :foreign_key => "movie_id", :dependent => :destroy
+   has_many :moviestars, :foreign_key => "movie_id", :dependent => :destroy
+   has_many :moviecomments, :foreign_key => "movie_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :mp4, Mp4Uploader

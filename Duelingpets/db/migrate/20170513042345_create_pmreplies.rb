@@ -7,6 +7,9 @@ class CreatePmreplies < ActiveRecord::Migration
       t.integer :user_id
       t.string :mp4
       t.string :ogv
+      t.string :image
+      t.string :mp3
+      t.string :ogg
 
       t.timestamps
     end

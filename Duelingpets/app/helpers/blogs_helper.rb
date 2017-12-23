@@ -1,6 +1,12 @@
 module BlogsHelper
 
    private
+      def retrieveBlogStar(blog)
+         allStars = blog.blogstars.order("created_on desc")
+         starFound = allStars.select{|star| star.user_id == current_user.id}
+         return starFound.count
+      end
+
       def saveCommons(blog, user)
          @blog = blog
          @user = user
@@ -32,6 +38,8 @@ module BlogsHelper
                @blog = blogFound
                blogReplies = @blog.replies.order("created_on desc")
                @replies = Kaminari.paginate_array(blogReplies).page(params[:page]).per(6)
+               stars = @blog.blogstars.count
+               @stars = stars
                if(type == "destroy")
                   logged_in = current_user
                   if(logged_in && ((logged_in.id == blogFound.user_id) || logged_in.admin))
@@ -264,10 +272,10 @@ module BlogsHelper
                            blogFound.reviewed = true
                            pouch = Pouch.find_by_user_id(blogFound.user_id)
                            adsNotOn = (blogFound.adbanner.to_s == "" && blogFound.largeimage1.to_s == "" && blogFound.largeimage2.to_s == "" && blogFound.largeimage3.to_s == "" && blogFound.smallimage1.to_s == "" && blogFound.smallimage2.to_s == "" && blogFound.smallimage3.to_s == "" && blogFound.smallimage4.to_s == "" && blogFound.smallimage5.to_s == "")
-                           pointsForBlog = 30
+                           pointsForBlog = 60
                            if(adsNotOn)
                               if(blogFound.admascot.to_s != "")
-                                 pointsForBlog = 90
+                                 pointsForBlog = 100
                               end
                            else
                               #Keeps track of the price

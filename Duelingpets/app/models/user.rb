@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
 
    #Blogs
    has_many :replies, :foreign_key => "user_id", :dependent => :destroy
+   has_many :blogstars, :foreign_key => "user_id", :dependent => :destroy
    has_many :blogs, :foreign_key => "user_id", :dependent => :destroy
 
    #Shouts for messaging users
@@ -38,15 +39,24 @@ class User < ActiveRecord::Base
    has_many :mainplaylists, :foreign_key => "user_id", :dependent => :destroy
    has_many :subplaylists, :foreign_key => "user_id", :dependent => :destroy
    has_many :movies, :foreign_key => "user_id", :dependent => :destroy
-   has_many :moviecomments, :foreign_key => "user_id", :dependent => :destroy
-   has_many :moviestars, :foreign_key => "user_id", :dependent => :destroy
    has_many :favoritemovies, :foreign_key => "user_id", :dependent => :destroy
+   has_many :moviestars, :foreign_key => "user_id", :dependent => :destroy
+   has_many :moviecomments, :foreign_key => "user_id", :dependent => :destroy
 
    #Galleries
    has_many :galleries, :foreign_key => "user_id", :dependent => :destroy
    has_many :mainfolders, :foreign_key => "user_id", :dependent => :destroy
    has_many :subfolders, :foreign_key => "user_id", :dependent => :destroy
    has_many :arts, :foreign_key => "user_id", :dependent => :destroy
+   has_many :favoritearts, :foreign_key => "user_id", :dependent => :destroy
+   has_many :artstars, :foreign_key => "user_id", :dependent => :destroy
+   has_many :artcomments, :foreign_key => "user_id", :dependent => :destroy
+
+   #Radios
+   has_many :radiostations, :foreign_key => "user_id", :dependent => :destroy
+   has_many :mainsheets, :foreign_key => "user_id", :dependent => :destroy
+   has_many :subsheets, :foreign_key => "user_id", :dependent => :destroy
+   has_many :sounds, :foreign_key => "user_id", :dependent => :destroy
 
    #Regex code for managing the user section
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9]+\z/i

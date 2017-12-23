@@ -1,0 +1,23 @@
+<% provide(:h1, "Radiostation List") %>
+<p><%= paginate @radiostations %></p>
+<% @radiostations.each do |radiostation| %>
+   <br>
+   <p class="navlinks"><%= link_to radiostation.name, user_radiostation_path(radiostation.user, radiostation) %><div class="container"><%= button_to 'Edit', edit_user_radiostation_path(radiostation.user, radiostation), method: :get %></div> <div class="container"><%= button_to 'Destroy', [radiostation.user, radiostation], method: :delete, data: { confirm: 'Are you sure?' } %></div></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now radiostation.created_on %> ago on (<%= radiostation.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if !optional %>
+      <br>
+      <% if radiostation.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(radiostation.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Announcer: <%= getUserPrivilege(radiostation.user) %><%= link_to radiostation.user.vname, user_path(radiostation.user) %></p>
+      <p>Status: <%= getActivity(radiostation.user) %>
+          <% if getActivity(radiostation.user) == "Offline" || getActivity(radiostation.user) == "Inactive" %>
+             for <%= distance_of_time_in_words_to_now getTime(radiostation.user) %>
+          <% end %>
+      </p>
+      <br>
+   <% end %>
+   <p><%= radiostation.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

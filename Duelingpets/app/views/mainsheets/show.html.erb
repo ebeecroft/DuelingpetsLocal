@@ -1,0 +1,78 @@
+<% provide(:h1, @mainsheet.title) %>
+<p id="notice"><%= notice %></p>
+<p>Created on: <%= distance_of_time_in_words_to_now @mainsheet.created_on %> ago on (<%= @mainsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+<% if @mainsheet.user.userinfo.miniavatar != "" %>
+   <br>
+   <p><%= image_tag(@mainsheet.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks"><div class="container">Announcer: <%= getUserPrivilege(@mainsheet.user) %><%= @mainsheet.user.vname %></div>
+   <% if(current_user && ((current_user.id == @mainsheet.user_id) || current_user.admin)) %>
+      <div class="container"><%= button_to 'Edit', edit_radiostation_mainsheet_path(@mainsheet.radiostation, @mainsheet), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@mainsheet.radiostation, @mainsheet], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@mainsheet.user) %>
+   <% if getActivity(@mainsheet.user) == "Inactive" || getActivity(@mainsheet.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@mainsheet.user) %>
+   <% end %>
+</p>
+<p class="navlinks">Radio: <%= link_to @mainsheet.radiostation.name, user_radiostation_path(@mainsheet.radiostation.user, @mainsheet.radiostation) %></p>
+<br>
+<p><%= @mainsheet.description %></p>
+<br>
+<% if @subsheets.count > 9 %>
+   <p><%= paginate @subsheets %></p>
+   <br>
+<% end %>
+<% @subsheets.each_with_index do |subsheet, index| %>
+   <% if(getSheetSounds(subsheet, "Count") > 0 || current_user && (((current_user.id == subsheet.user_id) || current_user.admin) || subsheet.collab_mode)) %>
+      <div class="container">
+         <p><%= link_to subsheet.title, mainsheet_subsheet_path(subsheet.mainsheet, subsheet) %></p>
+         <% if(current_user && ((current_user.id == subsheet.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_mainsheet_subsheet_path(subsheet.mainsheet, subsheet), method: :get %></div> <div class="container"><%= button_to 'Destroy', [subsheet.mainsheet, subsheet], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         <% if getSheetSounds(subsheet, "Count") > 0 %>
+            <% if subsheet.fave_folder %>
+               <p><%= audio_tag(getGalleryMusic(getSheetSounds(subsheet.favoritesounds, "Array").sound), :controls => true) %></p>
+            <% else %>
+               <p><%= audio_tag(getGalleryMusic(getSheetSounds(subsheet, "Sound").first), :controls => true) %></p>
+            <% end %>
+         <% else %>
+            <p>No sound available</p>
+         <% end %>
+         <% if subsheet.fave_folder %>
+            <p class="navlinks">Sound owner: <%= getUserPrivilege(getSheetSounds(subsheet.favoritesounds, "Array").sound.user) %><%= link_to getSheetSounds(subsheet.favoritesounds, "Array").sound.user.vname, user_path(getSheetSounds(subsheet.favoritesounds, "Array").sound.user) %></p>
+            <p>Sound Group: <%= subsheet.bookgroup.name %></p>
+            <p>Type: Favorites Folder</p>
+            <p>Faved on: <%= distance_of_time_in_words_to_now subsheet.created_on %> ago on (<%= subsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p class="navlinks">Faved by: <%= getUserPrivilege(subsheet.user) %><%= link_to subsheet.user.vname, user_path(subsheet.user) %></p>
+            <p>Status: <%= getActivity(subsheet.user) %>
+               <% if getActivity(subsheet.user) == "Inactive" || getActivity(subsheet.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(subsheet.user) %>
+               <% end %>
+            </p>
+         <% else %>
+            <p>Created on: <%= distance_of_time_in_words_to_now subsheet.created_on %> ago on (<%= subsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p>Group: <%= subsheet.bookgroup.name %></p>
+            <p>Type: Sounds Folder</p>
+            <p class="navlinks">Announcer: <%= getUserPrivilege(subsheet.user) %><%= link_to subsheet.user.vname, user_path(subsheet.user) %></p>
+            <p>Status: <%= getActivity(subsheet.user) %>
+               <% if getActivity(subsheet.user) == "Inactive" || getActivity(subsheet.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(subsheet.user) %>
+               <% end %>
+            </p>
+         <% end %>
+      </div>
+      <% if((index + 1) % 3 == 0 && ((index + 1) < @subsheets.count)) %>
+         <br>
+         <br>
+      <% elsif((index + 1) == @subsheets.count) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
+<% if current_user %>
+   <p><%= button_to 'New Subsheet', new_mainsheet_subsheet_path(@mainsheet), method: :get %></p>
+   <br>
+<% end %>
+<p class="navlinks"><%= link_to "Back", user_radiostation_path(@mainsheet.radiostation.user, @mainsheet.radiostation) %></p>

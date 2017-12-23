@@ -1,0 +1,94 @@
+<% provide(:h1, @subsheet.title) %>
+<p id="notice"><%= notice %></p>
+<p>Created on: <%= distance_of_time_in_words_to_now @subsheet.created_on %> ago on (<%= @subsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+<% if @subsheet.user.userinfo.miniavatar != "" %>
+   <br>
+   <p><%= image_tag(@subsheet.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks"><div class="container">Announcer: <%= getUserPrivilege(@subsheet.user) %><%= @subsheet.user.vname %></div>
+   <% if(current_user && ((current_user.id == @subsheet.user_id) || current_user.admin)) %>
+      <div class="container"><%= button_to 'Edit', edit_mainsheet_subsheet_path(@subsheet.mainsheet, @subsheet), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@subsheet.mainsheet, @subsheet], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@subsheet.user) %>
+   <% if getActivity(@subsheet.user) == "Inactive" || getActivity(@subsheet.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@subsheet.user) %>
+   <% end %>
+</p>
+<p>Group: <%= @subsheet.bookgroup.name %></p>
+<p class="navlinks">Mainsheet: <%= link_to @subsheet.mainsheet.title, radiostation_mainsheet_path(@subsheet.mainsheet.radiostation, @subsheet.mainsheet) %></p>
+<% if @subsheet.fave_folder %>
+   <p>Type: Favorites Folder</p>
+<% else %>
+   <p>Type: Sounds Folder</p>
+<% end %>
+<br>
+<p><%= @subsheet.description %></p>
+<br>
+<% if @subsheet.fave_folder %>
+   <% if @favoritesounds.count > 9 %>
+      <p><%= paginate @favoritesounds %></p>
+      <br>
+   <% end %>
+   <% @favoritesounds.each_with_index do |favoritesound, index| %>
+      <!--This section requires two inline commands -->
+      <div class="container">
+         <p><%= link_to favoritesound.sound.title, subsheet_sound_path(favoritesound.sound.subsheet, favoritesound.sound) %></p>
+         <p><%= audio_tag(getGalleryMusic(favoritesound), :controls => true) %></p>
+         <p class="navlinks">Sound owner: <%= getUserPrivilege(favoritesound.sound.user) %><%= link_to favoritesound.sound.user.vname, user_path(favoritesound.sound.user) %></p>
+         <p>Sound Group: <%= favoritesound.sound.bookgroup.name %></p>
+         <p>Faved on: <%= distance_of_time_in_words_to_now favoritesound.created_on %> ago on (<%= favoritesound.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p class="navlinks">Faved by: <%= getUserPrivilege(favoritesound.user) %><%= link_to favoritesound.user.vname, user_path(favoritesound.user) %></p>
+         <p>Status: <%= getActivity(favoritesound.user) %>
+            <% if getActivity(favoritesound.user) == "Inactive" || getActivity(favoritesound.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(favoritesound.user) %>
+            <% end %>
+         </p>
+      </div>
+      <% if((index + 1) % 3 == 0 && ((index + 1) < @favoritesounds.count)) %>
+         <br>
+         <br>
+      <% elsif((index + 1) == @favoritesounds.count) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% else %>
+   <% if @sounds.count > 9 %>
+      <p><%= paginate @sounds %></p>
+      <br>
+   <% end %>
+   <% @sounds.each_with_index do |sound, index| %>
+      <!--This section requires two inline commands -->
+      <div class="container">
+         <p><%= link_to sound.title, subsheet_sound_path(sound.subsheet, sound) %></p>
+         <% if(current_user && ((current_user.id == sound.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_subsheet_sound_path(sound.subsheet, sound), method: :get %></div>
+         <% end %>
+         <% if(current_user && ((current_user.id == sound.user_id) || (current_user.id == sound.subsheet.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Destroy', [sound.subsheet, sound], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+        <p><%= audio_tag(getGalleryMusic(sound), :controls => true) %></p>
+        <p>Created on: <%= distance_of_time_in_words_to_now sound.created_on %> ago on (<%= sound.created_on.strftime("%B-%d-%Y") %>)</p>
+        <p>Group: <%= sound.bookgroup.name %></p>
+        <p class="navlinks">Announcer: <%= getUserPrivilege(sound.user) %><%= link_to sound.user.vname, user_path(sound.user) %></p>
+        <p>Status: <%= getActivity(sound.user) %>
+           <% if getActivity(sound.user) == "Inactive" || getActivity(sound.user) == "Offline" %>
+              for <%= distance_of_time_in_words_to_now getTime(sound.user) %>
+           <% end %>
+        </p>
+      </div>
+      <% if((index + 1) % 3 == 0 && ((index + 1) < @sounds.count)) %>
+         <br>
+         <br>
+      <% elsif((index + 1) == @sounds.count) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+   <% if current_user %>
+      <p><%= button_to 'New Sound', new_subsheet_sound_path(@subsheet), method: :get %></p>
+      <br>
+   <% end %>
+<% end %>
+<p class="navlinks"><%= link_to "Back", radiostation_mainsheet_path(@subsheet.mainsheet.radiostation, @subsheet.mainsheet) %></p>

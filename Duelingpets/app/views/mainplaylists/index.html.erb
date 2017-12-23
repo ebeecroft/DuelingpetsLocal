@@ -4,7 +4,7 @@
    <br>
    <p class="navlinks"><%= link_to mainplaylist.title, channel_mainplaylist_path(mainplaylist.channel, mainplaylist) %><%= button_to 'Edit', edit_channel_mainplaylist_path(mainplaylist.channel, mainplaylist), method: :get %><%= button_to 'Destroy', [mainplaylist.channel, mainplaylist], method: :delete, data: { confirm: 'Are you sure?' } %></p>
    <p>Created on: <%= distance_of_time_in_words_to_now mainplaylist.created_on %> ago on (<%= mainplaylist.created_on.strftime("%B-%d-%Y") %>)</p>
-   <p>Group: <%= subplaylist.bookgroup.name %></p>
+   <p>Group: <%= mainplaylist.bookgroup.name %></p>
    <% if mainplaylist.user.userinfo.miniavatar.to_s != "" %>
       <br>
       <p><%= image_tag(mainplaylist.user.userinfo.miniavatar_url(:thumb)) %></p>

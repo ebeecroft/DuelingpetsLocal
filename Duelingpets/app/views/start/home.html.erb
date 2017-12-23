@@ -52,7 +52,28 @@
       <% end %>
    <% end %>
 <% end %>
+<% if newestSounds.count > 0 %>
+   <p>Newest Audios</p>
+   <br>
+   <% newestSounds.each_with_index do |sound, index| %>
+      <div class="container">
+         <p class="navlinks"><%= link_to sound.title, subsheet_sound_path(sound.subsheet, sound) %></p>
+         <p><%= audio_tag(getGalleryMusic(sound), :controls => true) %></p>
+         <p>Created on: <%= distance_of_time_in_words_to_now sound.created_on %> ago on (<%= sound.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Group: <%= sound.bookgroup.name %></p>
+         <p class="navlinks">Composer: <%= getUserPrivilege(sound.user) %><%= link_to sound.user.vname, user_path(sound.user) %></p>
+         <p>Status: <%= getActivity(sound.user) %>
+            <% if getActivity(sound.user) == "Inactive" || getActivity(sound.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(sound.user) %>
+            <% end %>
+         </p>
+      </div>
+      <% if newestSounds.count == (index + 1) %>
+         <br>
+         <br>
+      <% end %>
+   <% end %>
+<% end %>
 <p>Pets</p>
-<p>Audios</p>
 <p>Stories</p>
 <p>Items</p>

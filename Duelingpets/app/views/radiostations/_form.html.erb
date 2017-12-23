@@ -1,0 +1,51 @@
+<%= form_for([@user, @radiostation]) do |f| %>
+  <% if @radiostation.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@radiostation.errors.count, "error") %> prohibited this radiostation from being saved:</h2>
+
+      <ul>
+      <% @radiostation.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  OGV files
+  <div class="field">
+     <%= video_tag(@radiostation.ogv_url(:thumb).to_s, size: "200x200", :controls => true) if @radiostation.ogv? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogv %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogv_url, "or OGV URL" %><br />
+    <%= f.text_field :remote_ogv_url %>
+    <%= f.hidden_field :ogv_cache %>
+  </div>
+  MP4 files
+  <div class="field">
+     <%= video_tag(@radiostation.mp4_url(:thumb).to_s, size: "200x200", :controls => true) if @radiostation.mp4? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp4 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp4_url, "or MP4 URL" %><br />
+    <%= f.text_field :remote_mp4_url %>
+    <%= f.hidden_field :mp4_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_path(@radiostation.user) %></p>
+<% end %>

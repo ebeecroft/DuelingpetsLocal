@@ -1,5 +1,35 @@
 class ContentMailer < ActionMailer::Base
 
+   def sound_approved(sound, points)
+      @sound = sound
+      @points = points
+      mail(to: @sound.user.email, from: "notification@duelingpets.net", subject: "Your sound #{@sound.title} was approved:[Duelingpets]")
+   end
+
+   def sound_denied(sound)
+      @sound = sound
+      mail(to: @sound.user.email, from: "notification@duelingpets.net", subject: "Your sound #{@sound.title} was denied:[Duelingpets]")
+   end
+
+   def sound_review(sound)
+      @sound = sound
+      @url = "http://localhost:3000/arts/review"
+      allPouches = Pouch.all
+      keymasters = allPouches.select{|pouch| pouch.privilege == "Keymaster"}
+      if(keymasters.count > 0)
+         keymasters.each do |keymaster|
+            mail(to: keymaster.user.email, from: "notification@duelingpets.net", subject: "New sound #{@sound.title} is awaiting review:[Duelingpets]")
+         end
+      end
+
+      reviewers = allPouches.select{|pouch| pouch.privilege == "Reviewer"}
+      if(reviewers.count > 0)
+         reviewers.each do |reviewer|
+            mail(to: reviewer.user.email, from: "notification@duelingpets.net", subject: "New sound #{@sound.title} is awaiting review:[Duelingpets]")
+         end
+      end
+   end
+
    def art_approved(art, points)
       @art = art
       @points = points

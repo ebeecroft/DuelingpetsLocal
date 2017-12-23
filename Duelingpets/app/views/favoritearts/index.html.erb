@@ -1,0 +1,20 @@
+<% provide(:h1, "Favoriteart List") %>
+<p><%= paginate @favoritearts %></p>
+<% @favoritearts.each do |favoriteart| %>
+   <br>
+   <% if favoriteart.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(favoriteart.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(favoriteart.user) %><%= link_to favoriteart.user.vname, user_path(favoriteart.user) %></p>
+   <p>Status: <%= getActivity(favoriteart.user) %>
+      <% if getActivity(favoriteart.user) == "Offline" || getActivity(favoriteart.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(favoriteart.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Favorite art: <%= link_to favoriteart.art.title, subfolder_art_path(favoriteart.art.subfolder, favoriteart.art) %><%= button_to 'Destroy', [favoriteart.art, favoriteart], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now favoriteart.created_on %> ago on (<%= favoriteart.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p class="navlinks">Favorite folder: <%= link_to favoriteart.subfolder.title, mainfolder_subfolder_path(favoriteart.subfolder.mainfolder, favoriteart.subfolder) %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

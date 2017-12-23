@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  created_on: 2017-12-05 20:01:59
+  user_id: 1
+  art_id: 1
+
+two:
+  created_on: 2017-12-05 20:01:59
+  user_id: 1
+  art_id: 1

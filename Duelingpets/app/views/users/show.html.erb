@@ -36,7 +36,7 @@
       <p>Birthday: <%= @user.birthday.strftime("%B-%d-%Y") %></p>
       <p>Email: <%= @user.email %></p>
       <p>Pouch: <%= @user.pouch.amount %> points</p>
-      <p>Browser: <%= @user.userinfo.browser %></p>
+      <p>Audio Browser: <%= @user.userinfo.browser %></p>
       <p>Video Browser: <%= @user.userinfo.vbrowser %></p>
       <p><%= button_to 'Add Avatar and Edit Browser', edit_userinfo_path(@user.userinfo), method: :get %></p>
       <br>
@@ -71,7 +71,7 @@
       <p>Donation Box</p>
       <p><%= @user.donationbox.description %></p>
       <br>
-      <p>Donated: <%= @user.donationbox.progress %>/<%= @user.donationbox.goal %></p>
+      <p>Points donated: <%= @user.donationbox.progress %>/<%= @user.donationbox.goal %></p>
       <p>Initialized on: <%= distance_of_time_in_words_to_now @user.donationbox.initialized_on %> ago on
          <%= (@user.donationbox.initialized_on.strftime("%B-%d-%Y")) %></p>
       <% if !@user.donationbox.hit_goal %>
@@ -122,7 +122,6 @@
 <% if getColorschemes(@user) != 0 %>
    <br>
    <p>Colorscheme section</p>
-   <p>Colorschemes sourced: <%= getColorschemePoints(@user) %> points Colorschemes created: <%= getColorschemes(@user) %></p>
    <p class="navlinks">
       <div class="container"><%= button_to "My Colorschemes", user_colorschemes_path(@user), method: :get %></div>
       <% if current_user && current_user.id == @user.id %>
@@ -168,6 +167,22 @@
       <p class="navlinks"><%= button_to "New Gallery", new_user_gallery_path(@user), method: :get %></p>
    <% end %>
 <% end %>
+<% if getRadios(@user) != 0 %>
+   <br>
+   <p>Radio section</p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Radio", user_radiostations_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Radio", new_user_radiostation_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Radio section</p>
+      <p class="navlinks"><%= button_to "New Radio", new_user_radiostation_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
 <% if getBlogs(@user) != 0 %>
    <br>
    <p>Blog section</p>
@@ -184,8 +199,11 @@
       <p class="navlinks"><%= button_to "New Blog", new_user_blog_path(@user), method: :get %></p>
    <% end %>
 <% end %>
-<% if getBlogs(@user) > 0 || getAdBlogs(@user) > 0 || getArts(@user) > 0 || getMovies(@user) > 0 %>
+<% if getColorschemes(@user) > 0 || getBlogs(@user) > 0 || getAdBlogs(@user) > 0 || getArts(@user) > 0 || getMovies(@user) > 0 || getSounds(@user) > 0 %>
    <br>
+   <% if getColorschemes(@user) > 0 %>
+      <p>Colorschemes Created: <%= getColorschemes(@user) %></p>
+   <% end %>
    <% if getBlogs(@user) > 0 %>
       <p>Blogs Created: <%= getBlogs(@user) %></p>
    <% end %>
@@ -198,9 +216,26 @@
    <% if getMovies(@user) > 0 %>
       <p>Movies Created: <%= getMovies(@user) %></p>
    <% end %>
+   <% if getSounds(@user) > 0 %>
+      <p>Sounds Created: <%= getSounds(@user) %></p>
+   <% end %>
 <% end %>
-<% if getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 %>
+<% if getArtFaves(@user) > 0 || getArtStars(@user) > 0 || getArtCritiques(@user) > 0 || getArtComments(@user) > 0 || getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 || getBlogStars(@user) > 0 || getBlogComments(@user) > 0 %>
    <br>
+   <!--This section is all art related-->
+   <% if getArtFaves(@user) > 0 %>
+      <p>User Faved <%= getArtFaves(@user) %> Arts</p>
+   <% end %>
+   <% if getArtStars(@user) > 0 %>
+      <p>User Starred <%= getArtStars(@user) %> Arts</p>
+   <% end %>
+   <% if getArtCritiques(@user) > 0 %>
+      <p>User Critiqued <%= getArtCritiques(@user) %> Arts</p>
+   <% end %>
+   <% if getArtComments(@user) > 0 %>
+      <p>User Commented on <%= getArtComments(@user) %> Arts</p>
+   <% end %>
+   <!--This section is all movie related-->
    <% if getMovieFaves(@user) > 0 %>
       <p>User Faved <%= getMovieFaves(@user) %> Movies</p>
    <% end %>
@@ -212,6 +247,13 @@
    <% end %>
    <% if getMovieComments(@user) > 0 %>
       <p>User Commented on <%= getMovieComments(@user) %> Movies</p>
+   <% end %>
+   <!--This section is all blog related-->
+   <% if getBlogStars(@user) > 0 %>
+      <p>User Starred <%= getBlogStars(@user) %> Blogs</p>
+   <% end %>
+   <% if getBlogComments(@user) > 0 %>
+      <p>User Commented on <%= getBlogComments(@user) %> Blogs</p>
    <% end %>
 <% end %>
 <br>

@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyText
+  created_on: 2017-12-14 23:23:28
+  user_id: 1
+  subsheet_id: 1
+  bookgroup_id: 1
+  reviewed: false
+  mp3: MyString
+  ogg: MyString
+
+two:
+  title: MyString
+  description: MyText
+  created_on: 2017-12-14 23:23:28
+  user_id: 1
+  subsheet_id: 1
+  bookgroup_id: 1
+  reviewed: false
+  mp3: MyString
+  ogg: MyString

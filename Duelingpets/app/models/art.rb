@@ -7,6 +7,9 @@ class Art < ActiveRecord::Base
    belongs_to :user
    belongs_to :subfolder
    belongs_to :bookgroup
+   has_many :favoritearts, :foreign_key => "art_id", :dependent => :destroy
+   has_many :artstars, :foreign_key => "art_id", :dependent => :destroy
+   has_many :artcomments, :foreign_key => "art_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :image, ImageUploader

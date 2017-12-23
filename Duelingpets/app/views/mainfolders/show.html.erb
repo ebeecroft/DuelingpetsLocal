@@ -5,7 +5,7 @@
    <br>
    <p><%= image_tag(@mainfolder.user.userinfo.miniavatar_url(:thumb)) %></p>
 <% end %>
-<p class="navlinks"><div class="container">Director: <%= getUserPrivilege(@mainfolder.user) %><%= @mainfolder.user.vname %></div>
+<p class="navlinks"><div class="container">Artist: <%= getUserPrivilege(@mainfolder.user) %><%= @mainfolder.user.vname %></div>
    <% if(current_user && ((current_user.id == @mainfolder.user_id) || current_user.admin)) %>
       <div class="container"><%= button_to 'Edit', edit_gallery_mainfolder_path(@mainfolder.gallery, @mainfolder), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@mainfolder.gallery, @mainfolder], method: :delete, data: { confirm: 'Are you sure?' } %></div>
    <% end %>

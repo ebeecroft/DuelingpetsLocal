@@ -84,6 +84,24 @@ class UserMailer < ActionMailer::Base
       mail(to: @donationbox.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@donationbox.user.vname} you hit your goal!")
    end
 
+   def art_favorited(art, points)
+      @favoriteart = art
+      @points = points
+      mail(to: @favoriteart.art.user.email, from: "notification@duelingpets.net", subject: "Your art #{@favoriteart.art.title} was favorited by #{@favoriteart.user.vname}.")
+   end
+
+   def art_starred(art, points)
+      @artstar = art
+      @points = points
+      mail(to: @artstar.art.user.email, from: "notification@duelingpets.net", subject: "Your art #{@artstar.art.title} was starred by #{@artstar.user.vname}.")
+   end
+
+   def art_critiqued(art, points)
+      @artcomment = art
+      @points = points
+      mail(to: @artcomment.art.user.email, from: "notification@duelingpets.net", subject: "Your art #{@artcomment.art.title} was critiqued by #{@artcomment.user.vname}.")
+   end
+
    def movie_favorited(movie, points)
       @favoritemovie = movie
       @points = points
@@ -100,5 +118,11 @@ class UserMailer < ActionMailer::Base
       @moviecomment = movie
       @points = points
       mail(to: @moviecomment.movie.user.email, from: "notification@duelingpets.net", subject: "Your movie #{@moviecomment.movie.title} was critiqued by #{@moviecomment.user.vname}.")
+   end
+
+   def blog_starred(blog, points)
+      @blogstar = blog
+      @points = points
+      mail(to: @blogstar.blog.user.email, from: "notification@duelingpets.net", subject: "Your blog #{@blogstar.blog.title} was starred by #{@blogstar.user.vname}.")
    end
 end

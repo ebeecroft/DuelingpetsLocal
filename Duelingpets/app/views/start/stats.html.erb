@@ -1,4 +1,5 @@
 <% provide(:h1, "Stats") %>
+<!--Economy Related Attributes-->
 <p>Economy</p>
 <p>Sources</p>
 <p>Today: <%= getSourced("Today") %> points Week: <%= getSourced("Week") %> points Month: <%= getSourced("Month") %> points</p>
@@ -16,6 +17,7 @@
 <p>Total sourced: <%= getSourced("All") %> Total sunk: <%= getSunk("All") %> Total transfered: <%= getTransfers("All") %></p>
 <p>Contest points available: <%= getContest %></p>
 <br>
+<!--Referrals and Colorschemes Related Attributes-->
 <p>Referrals</p>
 <p>Today: <%= referralsSourced("Today") %> points Week: <%= referralsSourced("Week") %> points Month: <%= referralsSourced("Month") %> points</p>
 <p>Year: <%= referralsSourced("Year") %> points 3 Years: <%= referralsSourced("Threeyears") %> points Bacon of Tomato: <%= referralsSourced("BaconOfTomato") %> points</p>
@@ -26,6 +28,26 @@
 <p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
 <p>Colorscheme total: <%= colorschemes %></p>
 <br>
+<!--Audio Related Attributes-->
+<p>Radios</p>
+<p>Today: <%= radioTime("Today") %> Week: <%= radioTime("Week") %> Month: <%= radioTime("Month") %> Year: <%= radioTime("Year") %> 3Years: <%= radioTime("Threeyears") %> Bacon of Tomato: <%= radioTime("BaconOfTomato") %></p>
+<p>Radio total: <%= radioTime("All") %></p>
+<br>
+<p>Mainsheets</p>
+<p>Today: <%= mainsheetTime("Today") %> Week: <%= mainsheetTime("Week") %> Month: <%= mainsheetTime("Month") %> Year: <%= mainsheetTime("Year") %> 3Years: <%= mainsheetTime("Threeyears") %> Bacon of Tomato: <%= mainsheetTime("BaconOfTomato") %></p>
+<p>Mainsheet total: <%= mainsheetTime("All") %></p>
+<br>
+<p>Subsheets</p>
+<p>Today: <%= subsheetTime("Today") %> Week: <%= subsheetTime("Week") %> Month: <%= subsheetTime("Month") %> Year: <%= subsheetTime("Year") %> 3Years: <%= subsheetTime("Threeyears") %> Bacon of Tomato: <%= subsheetTime("BaconOfTomato") %></p>
+<p>Subsheet total: <%= subsheetTime("All") %></p>
+<br>
+<p>Sounds</p>
+<p>Sources</p>
+<p>Today: <%= soundsSourced("Today") %> points Week: <%= soundsSourced("Week") %> points Month: <%= soundsSourced("Month") %> points</p>
+<p>Year: <%= soundsSourced("Year") %> points 3 Years: <%= soundsSourced("Threeyears") %> points Bacon of Tomato: <%= soundsSourced("BaconOfTomato") %> points</p>
+<p>Sound total: <%= sounds %></p>
+<br>
+<!--Art Related Attributes-->
 <p>Galleries</p>
 <p>Today: <%= galleryTime("Today") %> Week: <%= galleryTime("Week") %> Month: <%= galleryTime("Month") %> Year: <%= galleryTime("Year") %> 3Years: <%= galleryTime("Threeyears") %> Bacon of Tomato: <%= galleryTime("BaconOfTomato") %></p>
 <p>Gallery total: <%= galleryTime("All") %></p>
@@ -44,6 +66,29 @@
 <p>Year: <%= artsSourced("Year") %> points 3 Years: <%= artsSourced("Threeyears") %> points Bacon of Tomato: <%= artsSourced("BaconOfTomato") %> points</p>
 <p>Art total: <%= arts %></p>
 <br>
+<p>Favorite Arts</p>
+<p>Sources</p>
+<p>Today: <%= favoriteartsSourced("Today") %> points Week: <%= favoriteartsSourced("Week") %> points Month: <%= favoriteartsSourced("Month") %> points</p>
+<p>Year: <%= favoriteartsSourced("Year") %> points 3 Years: <%= favoriteartsSourced("Threeyears") %> points Bacon of Tomato: <%= favoriteartsSourced("BaconOfTomato") %> points</p>
+<p>Favoriteart total: <%= favoritearts %></p>
+<br>
+<p>Art Stars</p>
+<p>Sources</p>
+<p>Today: <%= artstarsSourced("Today") %> points Week: <%= artstarsSourced("Week") %> points Month: <%= artstarsSourced("Month") %> points</p>
+<p>Year: <%= artstarsSourced("Year") %> points 3 Years: <%= artstarsSourced("Threeyears") %> points Bacon of Tomato: <%= artstarsSourced("BaconOfTomato") %> points</p>
+<p>Artstar total: <%= artstars %></p>
+<br>
+<p>Art Critiques</p>
+<p>Sources</p>
+<p>Today: <%= artcritiquesSourced("Today") %> points Week: <%= artcritiquesSourced("Week") %> points Month: <%= artcritiquesSourced("Month") %> points</p>
+<p>Year: <%= artcritiquesSourced("Year") %> points 3 Years: <%= artcritiquesSourced("Threeyears") %> points Bacon of Tomato: <%= artcritiquesSourced("BaconOfTomato") %> points</p>
+<p>Artcritique total: <%= artcritiques %></p>
+<br>
+<p>Art Comments</p>
+<p>Today: <%= artcommentTime("Today") %> Week: <%= artcommentTime("Week") %> Month: <%= artcommentTime("Month") %> Year: <%= artcommentTime("Year") %> 3Years: <%= artcommentTime("Threeyears") %> Bacon of Tomato: <%= artcommentTime("BaconOfTomato") %></p>
+<p>Artcomment total: <%= artcommentTime("All") %></p>
+<br>
+<!--Movie Related Attributes-->
 <p>Channels</p>
 <p>Today: <%= channelTime("Today") %> Week: <%= channelTime("Week") %> Month: <%= channelTime("Month") %> Year: <%= channelTime("Year") %> 3Years: <%= channelTime("Threeyears") %> Bacon of Tomato: <%= channelTime("BaconOfTomato") %></p>
 <p>Channel total: <%= channelTime("All") %></p>
@@ -80,10 +125,11 @@
 <p>Year: <%= moviecritiquesSourced("Year") %> points 3 Years: <%= moviecritiquesSourced("Threeyears") %> points Bacon of Tomato: <%= moviecritiquesSourced("BaconOfTomato") %> points</p>
 <p>Moviecritique total: <%= moviecritiques %></p>
 <br>
-<p>Moviecomments</p>
+<p>Movie Comments</p>
 <p>Today: <%= moviecommentTime("Today") %> Week: <%= moviecommentTime("Week") %> Month: <%= moviecommentTime("Month") %> Year: <%= moviecommentTime("Year") %> 3Years: <%= moviecommentTime("Threeyears") %> Bacon of Tomato: <%= moviecommentTime("BaconOfTomato") %></p>
 <p>Moviecomment total: <%= moviecommentTime("All") %></p>
 <br>
+<!--Blog Related Attributes-->
 <p>Blogs</p>
 <p>Sources</p>
 <p>Today: <%= blogsSourced("Today") %> points Week: <%= blogsSourced("Week") %> points Month: <%= blogsSourced("Month") %> points</p>
@@ -96,11 +142,18 @@
 <p>Blogs points sourced: <%= blogsSourced("All") %> Ads points sunk: <%= blogsSunk("All") %></p>
 <p>Blog total: <%= blogs %></p>
 <br>
+<p>Blog Stars</p>
+<p>Sources</p>
+<p>Today: <%= blogstarsSourced("Today") %> points Week: <%= blogstarsSourced("Week") %> points Month: <%= blogstarsSourced("Month") %> points</p>
+<p>Year: <%= blogstarsSourced("Year") %> points 3 Years: <%= blogstarsSourced("Threeyears") %> points Bacon of Tomato: <%= blogstarsSourced("BaconOfTomato") %> points</p>
+<p>Blogstar total: <%= blogstars %></p>
+<br>
 <p>Replies</p>
 <p>Today: <%= repliesSourced("Today") %> points Week: <%= repliesSourced("Week") %> points Month: <%= repliesSourced("Month") %> points</p>
 <p>Year: <%= repliesSourced("Year") %> points 3 Years: <%= repliesSourced("Threeyears") %> points Bacon of Tomato: <%= repliesSourced("BaconOfTomato") %> points</p>
 <p>Reply total: <%= replies %></p>
 <br>
+<!--User Related Attributes-->
 <p>Shouts</p>
 <p>Today: <%= shoutTime("Today") %> Week: <%= shoutTime("Week") %> Month: <%= shoutTime("Month") %> Year: <%= shoutTime("Year") %> 3Years: <%= shoutTime("Threeyears") %> Bacon of Tomato: <%= shoutTime("BaconOfTomato") %></p>
 <p>Shouts total: <%= shoutTime("All") %></p>
@@ -116,7 +169,6 @@
 <p>Pet total: </p>
 <p>Item total: </p>
 <p>Story total: </p>
-<p>Audio total: </p>
 <p>Forum total: </p>
 <p>Petowner total: </p>
 <br>

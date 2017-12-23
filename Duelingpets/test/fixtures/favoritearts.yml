@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  created_on: 2017-12-06 21:07:18
+  user_id: 1
+  subfolder_id: 1
+  art_id: 1
+
+two:
+  created_on: 2017-12-06 21:07:18
+  user_id: 1
+  subfolder_id: 1
+  art_id: 1

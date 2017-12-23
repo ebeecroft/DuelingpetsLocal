@@ -7,16 +7,28 @@ module StartHelper
       end
 
       def getSourced(timeframe)
+         #Feedback points
+         blogstars = blogstarsSourced(timeframe)
+         favoritearts = favoriteartsSourced(timeframe)
+         artstars = artstarsSourced(timeframe)
+         artcritiques = artcritiquesSourced(timeframe)
          favoritemovies = favoritemoviesSourced(timeframe)
          moviestars = moviestarsSourced(timeframe)
          moviecritiques = moviecritiquesSourced(timeframe)
+
+         #Content points
+         sounds = soundsSourced(timeframe)
          arts = artsSourced(timeframe)
          movies = moviesSourced(timeframe)
          blogs = blogsSourced(timeframe)
          colors = colorschemesSourced(timeframe)
          replies = repliesSourced(timeframe)
          referrals = referralsSourced(timeframe)
-         points = colors + blogs + replies + referrals + movies + arts + favoritemovies + moviestars + moviecritiques
+
+         #Sum points
+         userFeedback = favoritemovies + moviestars + moviecritiques + favoritearts + artstars + artcritiques + blogstars
+         userContent = colors + blogs + replies + referrals + movies + arts + sounds
+         points = userFeedback + userContent
          return points
       end
 
@@ -65,12 +77,14 @@ module StartHelper
 
       def referrals(type)
          allReferrals = Referral.all
+         nonBot = allReferrals.select{|referral| referral.to_user.pouch.privilege != "Bot"}
+
          value = 0
          if(type == "Discovery")
-            discovery = allReferrals.select{|referral| referral.referred_by.vname == "none"}
+            discovery = nonBot.select{|referral| referral.referred_by.vname == "none"}
             value = discovery.count
          else
-            userReferral = allReferrals.select{|referral| referral.referred_by.vname != "none"}
+            userReferral = nonBot.select{|referral| referral.referred_by.vname != "none"}
             value = userReferral.count
          end
          return value
@@ -157,6 +171,170 @@ module StartHelper
             points = bacotSources
          elsif(timeframe == "All")
             points = colorSources
+         end
+         return points
+      end
+
+      def radioTime(timeframe)
+         allRadios = Radiostation.all
+         firstRadio = Radiostation.first
+         nonBot = allRadios.select{|radiostation| radiostation.user.pouch.privilege != "Bot"}
+
+         #Time values
+         day = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 1.day}
+         week = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 1.week}
+         month = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 1.month}
+         year = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 1.year}
+         threeyear = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 3.years}
+         bacot = nonBot.select{|radiostation| (currentTime - radiostation.created_on) > (firstRadio.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def mainsheetTime(timeframe)
+         allMainsheets = Mainsheet.all
+         firstSheet = Mainsheet.first
+         nonBot = allMainsheets.select{|mainsheet| mainsheet.user.pouch.privilege != "Bot"}
+
+         #Time values
+         day = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 1.day}
+         week = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 1.week}
+         month = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 1.month}
+         year = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 1.year}
+         threeyear = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 3.years}
+         bacot = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) > (firstSheet.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def subsheetTime(timeframe)
+         allSubsheets = Subsheet.all
+         firstSheet = Subsheet.first
+         nonBot = allSubsheets.select{|subsheet| subsheet.user.pouch.privilege != "Bot"}
+
+         #Time values
+         day = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 1.day}
+         week = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 1.week}
+         month = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 1.month}
+         year = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 1.year}
+         threeyear = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 3.years}
+         bacot = nonBot.select{|subsheet| (currentTime - subsheet.created_on) > (firstSheet.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def sounds
+         allSounds = Sound.all
+         reviewedSounds = allSounds.select{|sound| sound.reviewed}
+         nonBot = reviewedSounds.select{|sound| sound.user.pouch.privilege != "Bot"}
+         value = nonBot.count
+         return value
+      end
+
+      def soundsSourced(timeframe)
+         allSounds = Art.all
+         reviewedSounds = allSounds.select{|sound| sound.reviewed}
+         nonBot = reviewedSounds.select{|sound| sound.user.pouch.privilege != "Bot"}
+         points = 0
+         if(reviewedSounds)
+            #Time values
+            day = nonBot.select{|sound| (currentTime - sound.created_on) <= 1.day}
+            week = nonBot.select{|sound| (currentTime - sound.created_on) <= 1.week}
+            month = nonBot.select{|sound| (currentTime - sound.created_on) <= 1.month}
+            year = nonBot.select{|sound| (currentTime - sound.created_on) <= 1.year}
+            threeyear = nonBot.select{|sound| (currentTime - sound.created_on) <= 3.years}
+            firstSound = Sound.first
+            bacot = nonBot.select{|sound| (currentTime - sound.created_on) > (firstSound.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 200
+            weekSources = week.count * 200 - daySources
+            monthSources = month.count * 200 - weekSources - daySources
+            yearSources = year.count * 200 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 200 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 200 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            soundSources = nonBot.count * 200
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = soundSources
+            end
          end
          return points
       end
@@ -323,6 +501,188 @@ module StartHelper
             end
          end
          return points
+      end
+
+      def favoriteartsSourced(timeframe)
+         allFavoritearts = Favoriteart.all
+         nonBot = allFavoritearts.select{|favoriteart| favoriteart.user.pouch.privilege != "Bot"}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) <= 1.day}
+            week = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) <= 1.week}
+            month = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) <= 1.month}
+            year = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) <= 1.year}
+            threeyear = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) <= 3.years}
+            firstFavorite = Favoriteart.first
+            bacot = nonBot.select{|favoriteart| (currentTime - favoriteart.created_on) > (firstFavorite.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 144
+            weekSources = week.count * 144 - daySources
+            monthSources = month.count * 144 - weekSources - daySources
+            yearSources = year.count * 144 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 144 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 144 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            favoriteartSources = nonBot.count * 144
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = favoriteartSources
+            end
+         end
+         return points
+      end
+
+      def favoritearts
+         allFavoritearts = Favoriteart.all
+         nonBot = allFavoritearts.select{|favoriteart| favoriteart.user.pouch.privilege != "Bot"}
+         value = nonBot.count
+         return value
+      end
+
+      def artstarsSourced(timeframe)
+         allArtstars = Artstar.all
+         nonBot = allArtstars.select{|artstar| artstar.user.pouch.privilege != "Bot"}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|artstar| (currentTime - artstar.created_on) <= 1.day}
+            week = nonBot.select{|artstar| (currentTime - artstar.created_on) <= 1.week}
+            month = nonBot.select{|artstar| (currentTime - artstar.created_on) <= 1.month}
+            year = nonBot.select{|artstar| (currentTime - artstar.created_on) <= 1.year}
+            threeyear = nonBot.select{|artstar| (currentTime - artstar.created_on) <= 3.years}
+            firstStar = Artstar.first
+            bacot = nonBot.select{|artstar| (currentTime - artstar.created_on) > (firstStar.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 48
+            weekSources = week.count * 48 - daySources
+            monthSources = month.count * 48 - weekSources - daySources
+            yearSources = year.count * 48 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 48 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 48 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            artstarSources = nonBot.count * 48
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = artstarSources
+            end
+         end
+         return points
+      end
+
+      def artstars
+         allArtstars = Artstar.all
+         nonBot = allArtstars.select{|artstar| artstar.user.pouch.privilege != "Bot"}
+         value = nonBot.count
+         return value
+      end
+
+      def artcritiquesSourced(timeframe)
+         allArtcritiques = Artcomment.all
+         nonBot = allArtcritiques.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && artcomment.critique}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.day}
+            week = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.week}
+            month = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.month}
+            year = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.year}
+            threeyear = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 3.years}
+            firstCritique = Artcomment.first
+            bacot = nonBot.select{|artcomment| (currentTime - artcomment.created_on) > (firstCritique.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 12
+            weekSources = week.count * 12 - daySources
+            monthSources = month.count * 12 - weekSources - daySources
+            yearSources = year.count * 12 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 12 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 12 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            artcritiqueSources = nonBot.count * 12
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = artcritiqueSources
+            end
+         end
+         return points
+      end
+
+      def artcritiques
+         allArtcritiques = Artcomment.all
+         nonBot = allArtcritiques.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && artcomment.critique}
+         value = nonBot.count
+         return value
+      end
+
+      def artcommentTime(timeframe)
+         allArtcomments = Artcomment.all
+         firstComment = Artcomment.first
+         nonBot = allArtcomments.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && !artcomment.critique}
+
+         #Time values
+         day = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.day}
+         week = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.week}
+         month = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.month}
+         year = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.year}
+         threeyear = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 3.years}
+         bacot = nonBot.select{|artcomment| (currentTime - artcomment.created_on) > (firstComment.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
       end
 
       def channelTime(timeframe)
@@ -717,6 +1077,54 @@ module StartHelper
          return points
       end
 
+      def blogstarsSourced(timeframe)
+         allBlogstars = Blogstar.all
+         nonBot = allBlogstars.select{|blogstar| blogstar.user.pouch.privilege != "Bot"}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|blogstar| (currentTime - blogstar.created_on) <= 1.day}
+            week = nonBot.select{|blogstar| (currentTime - blogstar.created_on) <= 1.week}
+            month = nonBot.select{|blogstar| (currentTime - blogstar.created_on) <= 1.month}
+            year = nonBot.select{|blogstar| (currentTime - blogstar.created_on) <= 1.year}
+            threeyear = nonBot.select{|blogstar| (currentTime - blogstar.created_on) <= 3.years}
+            firstStar = Blogstar.first
+            bacot = nonBot.select{|blogstar| (currentTime - blogstar.created_on) > (firstStar.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 20
+            weekSources = week.count * 20 - daySources
+            monthSources = month.count * 20 - weekSources - daySources
+            yearSources = year.count * 20 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 20 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 20 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            blogstarSources = nonBot.count * 20
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = blogstarSources
+            end
+         end
+         return points
+      end
+
+      def blogstars
+         allBlogstars = Blogstar.all
+         nonBot = allBlogstars.select{|blogstar| blogstar.user.pouch.privilege != "Bot"}
+         value = nonBot.count
+         return value
+      end
+
       def blogsSourced(timeframe)
          allBlogs = Blog.all
          regularBlogs = allBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s == "" && blog.largeimage1.to_s == "" && blog.largeimage2.to_s == "" && blog.largeimage3.to_s == "" && blog.smallimage1.to_s == "" && blog.smallimage2.to_s == "" && blog.smallimage3.to_s == "" && blog.smallimage4.to_s == "" && blog.smallimage5.to_s == ""}
@@ -735,43 +1143,43 @@ module StartHelper
             #Daily values
             mascots = day.select{|blog| blog.admascot.to_s != ""}
             textblogs = day.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             daySources = sources
 
             #Week values
             mascots = week.select{|blog| blog.admascot.to_s != ""}
             textblogs = week.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             weekSources = sources - daySources
 
             #Month values
             mascots = month.select{|blog| blog.admascot.to_s != ""}
             textblogs = month.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             monthSources = sources - weekSources - daySources
 
             #Year values
             mascots = year.select{|blog| blog.admascot.to_s != ""}
             textblogs = year.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             yearSources = sources - monthSources - weekSources - daySources
 
             #3 Years values
             mascots = threeyear.select{|blog| blog.admascot.to_s != ""}
             textblogs = threeyear.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             dreiJahreSources = sources - yearSources - monthSources - weekSources - daySources
 
             #Bacon of Tomato values
             mascots = bacot.select{|blog| blog.admascot.to_s != ""}
             textblogs = bacot.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             bacotSources = sources - dreiJahreSources - yearSources - monthSources - weekSources - daySources
 
             #Blog sources
             mascots = nonBot.select{|blog| blog.admascot.to_s != ""}
             textblogs = nonBot.select{|blog| blog.admascot.to_s == ""}
-            sources = (textblogs.count * 30) + (mascots.count * 90)
+            sources = (textblogs.count * 60) + (mascots.count * 100)
             blogSources = sources
 
             points = daySources

@@ -136,7 +136,13 @@ module MainfoldersHelper
             redirect_to root_path
          else
             if(type == "index")
-
+               logged_in = current_user
+               if(logged_in && logged_in.admin)
+                  allMainfolders = Mainfolder.order("created_on desc")
+                  @mainfolders = Kaminari.paginate_array(allMainfolders).page(params[:page]).per(10)
+               else
+                  redirect_to root_path
+               end
             elsif(type == "new" || type == "create")
                allMode = Maintenancemode.find_by_id(1)
                galleryMode = Maintenancemode.find_by_id(8)

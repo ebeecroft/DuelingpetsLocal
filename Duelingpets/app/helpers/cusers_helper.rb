@@ -115,6 +115,13 @@ module CusersHelper
          return movies
       end
 
+      def newestSounds
+         allSounds = Sound.order("created_on desc")
+         reviewedSounds = allSounds.select{|sound| sound.reviewed && ((!current_user && sound.bookgroup.name == "Peter Rabbit") || (current_user && (sound.bookgroup.id <= getBookGroups(current_user))))}
+         sounds = reviewedSounds.take(3)
+         return sounds
+      end
+
       def checkMusicFlag
          if(cookies[:music_on].nil?)
             cookies[:music_on] = "On"

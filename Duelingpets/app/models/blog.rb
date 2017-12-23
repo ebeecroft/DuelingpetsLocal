@@ -8,8 +8,9 @@ class Blog < ActiveRecord::Base
    :smallimage4, :remote_smallimage4_url, :smallimage4_cache, :smallimage5,
    :remote_smallimage5_url, :smallimage5_cache
 
-   #Replies related
+   #Blogs related
    has_many :replies, :foreign_key => "blog_id", :dependent => :destroy
+   has_many :blogstars, :foreign_key => "blog_id", :dependent => :destroy
    belongs_to :user
 
    #Uploader section

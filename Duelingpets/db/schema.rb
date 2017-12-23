@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20171103051154) do
+ActiveRecord::Schema.define(:version => 20171215072328) do
+
+  create_table "artcomments", :force => true do |t|
+    t.text     "message"
+    t.boolean  "critique",   :default => false
+    t.datetime "created_on"
+    t.integer  "art_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
 
   create_table "arts", :force => true do |t|
     t.string   "title"
@@ -26,6 +36,14 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.string   "ogg"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+  end
+
+  create_table "artstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "art_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "blogs", :force => true do |t|
@@ -46,6 +64,14 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.boolean  "reviewed",    :default => false
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "blogstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "blog_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "bookgroups", :force => true do |t|
@@ -121,6 +147,15 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "favoritearts", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subfolder_id"
+    t.integer  "art_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "favoritemovies", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
@@ -160,6 +195,16 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.integer  "channel_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "mainsheets", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "radiostation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "maintenancemodes", :force => true do |t|
@@ -209,6 +254,9 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.integer  "user_id"
     t.string   "mp4"
     t.string   "ogv"
+    t.string   "image"
+    t.string   "mp3"
+    t.string   "ogg"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -235,6 +283,18 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.integer  "amount"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
+  end
+
+  create_table "radiostations", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "mp4"
+    t.string   "ogv"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.boolean  "video_on",    :default => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "referrals", :force => true do |t|
@@ -278,6 +338,20 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.datetime "updated_at",   :null => false
   end
 
+  create_table "sounds", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subsheet_id"
+    t.integer  "bookgroup_id"
+    t.boolean  "reviewed",     :default => false
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
   create_table "subfolders", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -302,6 +376,19 @@ ActiveRecord::Schema.define(:version => 20171103051154) do
     t.integer  "bookgroup_id"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
+  end
+
+  create_table "subsheets", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.boolean  "collab_mode",  :default => false
+    t.boolean  "fave_folder",  :default => false
+    t.integer  "user_id"
+    t.integer  "mainsheet_id"
+    t.integer  "bookgroup_id"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "suggestions", :force => true do |t|

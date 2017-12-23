@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  message: MyText
+  critique: false
+  created_on: 2017-12-03 14:18:21
+  art_id: 1
+  user_id: 1
+
+two:
+  message: MyText
+  critique: false
+  created_on: 2017-12-03 14:18:21
+  art_id: 1
+  user_id: 1

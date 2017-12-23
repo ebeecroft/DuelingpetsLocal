@@ -1,0 +1,29 @@
+<% provide(:h1, "Subsheet List") %>
+<p><%= paginate @subsheets %></p>
+<% @subsheets.each do |subsheet| %>
+   <br>
+   <p class="navlinks"><%= link_to subsheet.title, mainsheet_subsheet_path(subsheet.mainsheet, subsheet) %><%= button_to 'Edit', edit_mainsheet_subsheet_path(subsheet.mainsheet, subsheet), method: :get %><%= button_to 'Destroy', [subsheet.mainsheet, subsheet], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now subsheet.created_on %> ago on (<%= subsheet.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Group: <%= subsheet.bookgroup.name %></p>
+   <p>Collab mode: <%= subsheet.collab_mode %></p>
+   <% if subsheet.fave_folder %>
+      <p>Favorite Folder</p>
+   <% else %>
+      <p>Sound Folder</p>
+   <% end %>
+   <% if subsheet.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(subsheet.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Announcer: <%= getUserPrivilege(subsheet.user) %><%= link_to subsheet.user.vname, user_path(subsheet.user) %></p>
+   <p>Status: <%= getActivity(subsheet.user) %>
+      <% if getActivity(subsheet.user) == "Offline" || getActivity(subsheet.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(subsheet.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Mainsheet: <%= link_to subsheet.mainsheet.title, radiostation_mainsheet_path(subsheet.mainsheet.radiostation, subsheet.mainsheet) %></p>
+   <br>
+   <p><%= subsheet.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

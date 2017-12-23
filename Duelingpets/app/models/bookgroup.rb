@@ -7,4 +7,8 @@ class Bookgroup < ActiveRecord::Base
    #Galleries
    has_many :subfolders, :foreign_key => "bookgroup_id", :dependent => :destroy
    has_many :arts, :foreign_key => "bookgroup_id", :dependent => :destroy
+
+   #Radios
+   has_many :subsheets, :foreign_key => "bookgroup_id", :dependent => :destroy
+   has_many :sounds, :foreign_key => "bookgroup_id", :dependent => :destroy
 end

@@ -6,11 +6,12 @@ class Subfolder < ActiveRecord::Base
    belongs_to :user
    belongs_to :bookgroup
    has_many :arts, :foreign_key => "subfolder_id", :dependent => :destroy
+   has_many :favoritearts, :foreign_key => "subfolder_id", :dependent => :destroy
 
    #Regex information for subfolder
    VALID_TITLE_REGEX = /\A[a-z][a-z][a-z0-9!-]+\z/i
 
-   #Validates the subplaylist information upon submission
+   #Validates the subfolder information upon submission
    validates :title, presence: true, format: {with: VALID_TITLE_REGEX}
    validates :description, presence: true
 end

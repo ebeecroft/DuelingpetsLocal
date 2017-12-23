@@ -1,3 +1,33 @@
 == Duelingpets Home of the Imaginative Creatures
 
 A website that allows users to create their own creatures.
+
+== Current Features:
+
+Radiostation allows users to create their very own music
+
+Gallery allows users to create their very own art
+
+Channel allows users to create their very own movies
+
+Suggestions allows users to suggest new features to site
+
+Contact page allows users to ask question or report bugs about the site
+
+Donation box allows users to store points received from other users
+
+Private messaging allows users to send messages between specific set of users
+
+Shouts allows users to comment on another user's profile
+
+Blogs allows users to create a set of news that users can comment on
+
+Colorscheme allows users to change the colors of the site to whatever they wish
+
+Active allows users to see if one of their friends is online at the moment
+
+Stats allows users to see the state of the economy as well as other stat related info
+
+Sitemap allows users to travel from one section to another with relative ease
+
+

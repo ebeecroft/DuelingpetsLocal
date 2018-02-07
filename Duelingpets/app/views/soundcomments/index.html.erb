@@ -1,0 +1,21 @@
+<% provide(:h1, "Soundcomment List") %>
+<p><%= paginate @soundcomments %></p>
+<% @soundcomments.each do |soundcomment| %>
+   <br>
+   <p class="navlinks">Sound title: <%= link_to soundcomment.sound.title, subsheet_sound_path(soundcomment.sound.subsheet, soundcomment.sound) %><%= button_to 'Edit', edit_sound_soundcomment_path(soundcomment.sound, soundcomment), method: :get %><%= button_to 'Destroy', [soundcomment.sound, souncomment], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now soundcomment.created_on %> ago on (<%= soundcomment.created_on.strftime("%B-%d-%Y") %>)</p>
+   <br>
+   <p><%= soundcomment.message %></p>
+   <% if soundcomment.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(soundcomment.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Composer: <%= getUserPrivilege(soundcomment.user) %><%= link_to soundcomment.user.vname, user_path(soundcomment.user) %></p>
+   <p>Status: <%= getActivity(soundcomment.user) %>
+      <% if getActivity(soundcomment.user) == "Offline" || getActivity(soundcomment.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(soundcomment.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

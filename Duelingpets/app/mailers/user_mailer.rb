@@ -84,6 +84,24 @@ class UserMailer < ActionMailer::Base
       mail(to: @donationbox.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@donationbox.user.vname} you hit your goal!")
    end
 
+   def sound_favorited(sound, points)
+      @favoritesound = sound
+      @points = points
+      mail(to: @favoritesound.sound.user.email, from: "notification@duelingpets.net", subject: "Your sound #{@favoritesound.sound.title} was favorited by #{@favoritesound.user.vname}.")
+   end
+
+   def sound_starred(sound, points)
+      @soundstar = sound
+      @points = points
+      mail(to: @soundstar.sound.user.email, from: "notification@duelingpets.net", subject: "Your sound #{@soundstar.sound.title} was starred by #{@soundstar.user.vname}.")
+   end
+
+   def sound_critiqued(sound, points)
+      @soundcomment = sound
+      @points = points
+      mail(to: @soundcomment.sound.user.email, from: "notification@duelingpets.net", subject: "Your sound #{@soundcomment.sound.title} was critiqued by #{@soundcomment.user.vname}.")
+   end
+
    def art_favorited(art, points)
       @favoriteart = art
       @points = points

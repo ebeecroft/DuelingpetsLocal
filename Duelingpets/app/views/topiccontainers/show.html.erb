@@ -1,0 +1,77 @@
+<% provide(:h1, @topiccontainer.title) %>
+<p id="notice"><%= notice %></p>
+<p>Created on: <%= distance_of_time_in_words_to_now @topiccontainer.created_on %> ago on (<%= @topiccontainer.created_on.strftime("%B-%d-%Y") %>)</p>
+<% if @topiccontainer.user.userinfo.miniavatar != "" %>
+   <br>
+   <p><%= image_tag(@topiccontainer.user.userinfo.miniavatar_url(:thumb)) %></p>
+<% end %>
+<p class="navlinks"><div class="container">Owner: <%= getForumPrivilege(@topiccontainer.forum, @topiccontainer.user) %><%= link_to @topiccontainer.user.vname, user_path(@topiccontainer.user) %></div>
+   <% if(current_user && ((current_user.id == @topiccontainer.user_id) || current_user.admin)) %>
+      <div class="container"><%= button_to 'Edit', edit_forum_topiccontainer_path(@topiccontainer.forum, @topiccontainer), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@topiccontainer.forum, @topiccontainer], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+</p>
+<p>Status: <%= getActivity(@topiccontainer.user) %>
+   <% if getActivity(@topiccontainer.user) == "Inactive" || getActivity(@topiccontainer.user) == "Offline" %>
+      for <%= distance_of_time_in_words_to_now getTime(@topiccontainer.user) %>
+   <% end %>
+</p>
+<p class="navlinks">Forum: <%= link_to @topiccontainer.forum.name, user_forum_path(@topiccontainer.forum.user, @topiccontainer.forum) %></p>
+<br>
+<p><%= textFormater("Multi", @topiccontainer.description, "All").html_safe %></p>
+<br>
+<% if @topiccontainer.maintopics.count > 10 %>
+   <p><%= paginate @maintopics %></p>
+   <br>
+<% end %>
+<% if @maintopics.count > 0 %>
+   <% @maintopics.each_with_index do |maintopic, index| %>
+      <% if maintopic.topicavatar != "" %>
+         <div class="container">
+            <p><%= image_tag(maintopic.topicavatar_url(:thumb)) %></p>
+         </div>
+      <% end %>
+      <div class="container">
+         <p><%= link_to maintopic.title, topiccontainer_maintopic_path(maintopic.topiccontainer, maintopic) %></p>
+         <% if(current_user && ((current_user.id == maintopic.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_topiccontainer_maintopic_path(maintopic.topiccontainer, maintopic), method: :get %></div> <div class="container"><%= button_to 'Destroy', [maintopic.topiccontainer, maintopic], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         <p>Created on: <%= distance_of_time_in_words_to_now maintopic.created_on %> ago on (<%= maintopic.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p class="navlinks">Owner: <%= getForumPrivilege(maintopic.topiccontainer.forum, maintopic.user) %><%= link_to maintopic.user.vname, user_path(maintopic.user) %></p>
+         <p>Status: <%= getActivity(maintopic.user) %>
+            <% if getActivity(maintopic.user) == "Inactive" || getActivity(maintopic.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(maintopic.user) %>
+            <% end %>
+         </p>
+         <br>
+         <p><%= textFormater("Multi", maintopic.description, "All").html_safe %></p>
+      </div>
+      <div class="container">
+         <% if getCurrentSubtopic(maintopic).count > 0 %>
+            <p><%= link_to getCurrentSubtopic(maintopic).last.title, maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last) %></p>
+            <% if(current_user && ((current_user.id == getCurrentSubtopic(maintopic).last.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last), method: :get %></div> <div class="container"><%= button_to 'Destroy', [getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         <p>Created on: <%= distance_of_time_in_words_to_now getCurrentSubtopic(maintopic).last.created_on %> ago on (<%= getCurrentSubtopic(maintopic).last.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p class="navlinks">Owner: <%= getForumPrivilege(getCurrentSubtopic(maintopic).last.maintopic.topiccontainer.forum, getCurrentSubtopic(maintopic).last.user) %><%= link_to getCurrentSubtopic(maintopic).last.user.vname, user_path(getCurrentSubtopic(maintopic).last.user) %></p>
+         <p>Status: <%= getActivity(getCurrentSubtopic(maintopic).last.user) %>
+            <% if getActivity(getCurrentSubtopic(maintopic).last.user) == "Inactive" || getActivity(getCurrentSubtopic(maintopic).last.user) == "Offline" %>
+               for <%= distance_of_time_in_words_to_now getTime(getCurrentSubtopic(maintopic).last.user) %>
+            <% end %>
+         </p>
+         <p>Forum group: <%= getCurrentSubtopic(maintopic).last.forumgroup.name %></p>
+         <% else %>
+            <p>There are no subtopics available</p>
+         <% end %>
+      </div>
+      <br>
+      <br>
+   <% end %>
+<% else %>
+   <p>There are no maintopics available in this topiccontainer.</p>
+   <br>
+<% end %>
+<% if current_user %>
+   <p><%= button_to 'New Maintopic', new_topiccontainer_maintopic_path(@topiccontainer), method: :get %></p>
+   <br>
+<% end %>
+<p class="navlinks"><%= link_to "Back", user_forum_path(@topiccontainer.forum.user, @topiccontainer.forum) %></p>

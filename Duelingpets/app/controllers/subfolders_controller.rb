@@ -1,4 +1,4 @@
-class SubfoldersController < ApplicationController
+class SubfoldersController < GroupController
    include SubfoldersHelper
 
    def index

@@ -1,0 +1,8 @@
+<% provide(:h1, "Memberprivilege List") %>
+<% @memberprivileges.each do |memberprivilege| %>
+   <br>
+   <p>Privilege: <%= memberprivilege.name %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now memberprivilege.created_on %> ago on (<%= memberprivilege.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

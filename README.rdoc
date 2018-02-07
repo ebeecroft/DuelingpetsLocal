@@ -4,6 +4,8 @@ A website that allows users to create their own creatures.
 
 == Current Features:
 
+Forums allows users to communicate with the community
+
 Radiostation allows users to create their very own music
 
 Gallery allows users to create their very own art

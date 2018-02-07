@@ -135,6 +135,22 @@
       <p class="navlinks"><%= button_to "New Colorscheme", new_user_colorscheme_path(@user), method: :get %></p>
    <% end %>
 <% end %>
+<% if getForums(@user) != 0 %>
+   <br>
+   <p>Forum section</p>
+   <p class="navlinks">
+      <div class="container"><%= button_to "My Forum", user_forums_path(@user), method: :get %></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to "New Forum", new_user_forum_path(@user), method: :get %></div>
+      <% end %>
+   </p>
+<% else %>
+   <% if current_user && current_user.id == @user.id %>
+      <br>
+      <p>Forum section</p>
+      <p class="navlinks"><%= button_to "New Forum", new_user_forum_path(@user), method: :get %></p>
+   <% end %>
+<% end %>
 <% if getChannels(@user) != 0 %>
    <br>
    <p>Channel section</p>
@@ -199,10 +215,22 @@
       <p class="navlinks"><%= button_to "New Blog", new_user_blog_path(@user), method: :get %></p>
    <% end %>
 <% end %>
-<% if getColorschemes(@user) > 0 || getBlogs(@user) > 0 || getAdBlogs(@user) > 0 || getArts(@user) > 0 || getMovies(@user) > 0 || getSounds(@user) > 0 %>
+<% if getColorschemes(@user) > 0 || getTopicContainers(@user) > 0 || getMaintopics(@user) > 0 || getSubtopics(@user) > 0 || getNarratives(@user) > 0 || getBlogs(@user) > 0 || getAdBlogs(@user) > 0 || getArts(@user) > 0 || getMovies(@user) > 0 || getSounds(@user) > 0 %>
    <br>
    <% if getColorschemes(@user) > 0 %>
       <p>Colorschemes Created: <%= getColorschemes(@user) %></p>
+   <% end %>
+   <% if getTopicContainers(@user) > 0 %>
+      <p>Containers Created: <%= getTopicContainers(@user) %></p>
+   <% end %>
+   <% if getMaintopics(@user) > 0 %>
+      <p>Maintopics Created: <%= getMaintopics(@user) %></p>
+   <% end %>
+   <% if getSubtopics(@user) > 0 %>
+      <p>Subtopics Created: <%= getSubtopics(@user) %></p>
+   <% end %>
+   <% if getNarratives(@user) > 0 %>
+      <p>Narratives Created: <%= getNarratives(@user) %></p>
    <% end %>
    <% if getBlogs(@user) > 0 %>
       <p>Blogs Created: <%= getBlogs(@user) %></p>
@@ -220,7 +248,7 @@
       <p>Sounds Created: <%= getSounds(@user) %></p>
    <% end %>
 <% end %>
-<% if getArtFaves(@user) > 0 || getArtStars(@user) > 0 || getArtCritiques(@user) > 0 || getArtComments(@user) > 0 || getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 || getBlogStars(@user) > 0 || getBlogComments(@user) > 0 %>
+<% if getArtFaves(@user) > 0 || getArtStars(@user) > 0 || getArtCritiques(@user) > 0 || getArtComments(@user) > 0 || getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 || getSoundFaves(@user) > 0 || getSoundStars(@user) > 0 || getSoundCritiques(@user) > 0 || getSoundComments(@user) > 0 || getBlogStars(@user) > 0 || getBlogComments(@user) > 0 %>
    <br>
    <!--This section is all art related-->
    <% if getArtFaves(@user) > 0 %>
@@ -248,6 +276,19 @@
    <% if getMovieComments(@user) > 0 %>
       <p>User Commented on <%= getMovieComments(@user) %> Movies</p>
    <% end %>
+   <!--This section is all sound related-->
+   <% if getSoundFaves(@user) > 0 %>
+      <p>User Faved <%= getSoundFaves(@user) %> Sounds</p>
+   <% end %>
+   <% if getSoundStars(@user) > 0 %>
+      <p>User Starred <%= getSoundStars(@user) %> Sounds</p>
+   <% end %>
+   <% if getSoundCritiques(@user) > 0 %>
+      <p>User Critiqued <%= getSoundCritiques(@user) %> Sounds</p>
+   <% end %>
+   <% if getSoundComments(@user) > 0 %>
+      <p>User Commented on <%= getSoundComments(@user) %> Sounds</p>
+   <% end %>
    <!--This section is all blog related-->
    <% if getBlogStars(@user) > 0 %>
       <p>User Starred <%= getBlogStars(@user) %> Blogs</p>
@@ -258,6 +299,10 @@
 <% end %>
 <br>
 <p><%= @user.userinfo.info %></p>
+<% if @user.shouts.count > 10 %>
+   <br>
+   <p><%= paginate getShouts(@user) %></p>
+<% end %>
 <% if current_user %>
    <% if getShouts(@user).count > 0 %>
       <br>

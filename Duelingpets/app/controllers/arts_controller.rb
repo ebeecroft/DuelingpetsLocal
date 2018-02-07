@@ -1,4 +1,4 @@
-class ArtsController < ApplicationController
+class ArtsController < GroupController
    include ArtsHelper
 
    def index

@@ -1,0 +1,51 @@
+<%= form_for([@subtopic, @narrative]) do |f| %>
+  <% if @narrative.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@narrative.errors.count, "error") %> prohibited this narrative from being saved:</h2>
+
+      <ul>
+      <% @narrative.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :story %><br />
+    <%= f.text_area :story %>
+  </div>
+  <div class="field">
+    <%= f.label :forumgroup_id, "Select Group" %><br />
+    <%= f.collection_select(:forumgroup_id, @group, :id, :name) %>
+  </div>
+  OGG files
+  <div class="field">
+     <%= audio_tag(@narrative.ogg_url.to_s, :controls => true) if @narrative.ogg? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogg %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogg_url, "or OGG URL" %><br />
+    <%= f.text_field :remote_ogg_url %>
+    <%= f.hidden_field :ogg_cache %>
+  </div>
+  MP3 files
+  <div class="field">
+     <%= audio_tag(@narrative.mp3_url.to_s, :controls => true) if @narrative.mp3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp3_url, "or MP3 URL" %><br />
+    <%= f.text_field :remote_mp3_url %>
+    <%= f.hidden_field :mp3_cache %>
+  </div> 
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', maintopic_subtopic_path(@subtopic.maintopic, @subtopic) %></p>
+<% end %>

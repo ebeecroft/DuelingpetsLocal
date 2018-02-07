@@ -6,7 +6,7 @@ class Subsheet < ActiveRecord::Base
    belongs_to :user
    belongs_to :bookgroup
    has_many :sounds, :foreign_key => "subsheet_id", :dependent => :destroy
-   #has_many :favoritesounds, :foreign_key => "subsheet_id", :dependent => :destroy
+   has_many :favoritesounds, :foreign_key => "subsheet_id", :dependent => :destroy
 
    #Regex information for subsheet
    VALID_TITLE_REGEX = /\A[a-z][a-z][a-z0-9!-]+\z/i

@@ -73,7 +73,7 @@ module ArtcommentsHelper
                   redirect_to root_path
                end
             elsif(type == "new" || type == "create")
-               allMode = Maintenancemode.find_by_id(7)
+               allMode = Maintenancemode.find_by_id(1)
                galleryMode = Maintenancemode.find_by_id(8)
                if(allMode.maintenance_on || galleryMode.maintenance_on)
                   if(allMode.maintenance_on)

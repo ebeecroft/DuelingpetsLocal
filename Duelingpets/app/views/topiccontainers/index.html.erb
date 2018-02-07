@@ -1,0 +1,23 @@
+<% provide(:h1, "Topiccontainer List") %>
+<p><%= paginate @topiccontainers %></p>
+<% @topiccontainers.each do |topiccontainer| %>
+   <br>
+   <p class="navlinks"><%= link_to topiccontainer.title, forum_topiccontainer_path(topiccontainer.forum, topiccontainer) %><%= button_to 'Edit', edit_forum_topiccontainer_path(topiccontainer.forum, topiccontainer), method: :get %><%= button_to 'Destroy', [topiccontainer.forum, topiccontainer], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now topiccontainer.created_on %> ago on (<%= topiccontainer.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Group: <%= topiccontainer.bookgroup.name %></p>
+   <% if topiccontainer.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(topiccontainer.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Owner: <%= getUserPrivilege(topiccontainer.user) %><%= link_to topiccontainer.user.vname, user_path(topiccontainer.user) %></p>
+   <p>Status: <%= getActivity(topiccontainer.user) %>
+      <% if getActivity(topiccontainer.user) == "Offline" || getActivity(topiccontainer.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(topiccontainer.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Forum: <%= link_to topiccontainer.forum.name, user_forum_path(topiccontainer.forum.user, topiccontainer.forum) %></p>
+   <br>
+   <p><%= topiccontainer.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

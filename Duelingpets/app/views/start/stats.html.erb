@@ -28,6 +28,35 @@
 <p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
 <p>Colorscheme total: <%= colorschemes %></p>
 <br>
+<!--Forum Related Attributes-->
+<p>Forums</p>
+<p>Today: <%= forumTime("Today") %> Week: <%= forumTime("Week") %> Month: <%= forumTime("Month") %> Year: <%= forumTime("Year") %> 3Years: <%= forumTime("Threeyears") %> Bacon of Tomato: <%= forumTime("BaconOfTomato") %></p>
+<p>Forum total: <%= forumTime("All") %></p>
+<br>
+<p>Topiccontainers</p>
+<p>Sources</p>
+<p>Today: <%= containersSourced("Today") %> points Week: <%= containersSourced("Week") %> points Month: <%= containersSourced("Month") %> points</p>
+<p>Year: <%= containersSourced("Year") %> points 3 Years: <%= containersSourced("Threeyears") %> points Bacon of Tomato: <%= containersSourced("BaconOfTomato") %> points</p>
+<p>Topiccontainer total: <%= containers %></p>
+<br>
+<p>Maintopics</p>
+<p>Sources</p>
+<p>Today: <%= maintopicsSourced("Today") %> points Week: <%= maintopicsSourced("Week") %> points Month: <%= maintopicsSourced("Month") %> points</p>
+<p>Year: <%= maintopicsSourced("Year") %> points 3 Years: <%= maintopicsSourced("Threeyears") %> points Bacon of Tomato: <%= maintopicsSourced("BaconOfTomato") %> points</p>
+<p>Maintopic total: <%= maintopics %></p>
+<br>
+<p>Subtopics</p>
+<p>Sources</p>
+<p>Today: <%= subtopicsSourced("Today") %> points Week: <%= subtopicsSourced("Week") %> points Month: <%= subtopicsSourced("Month") %> points</p>
+<p>Year: <%= subtopicsSourced("Year") %> points 3 Years: <%= subtopicsSourced("Threeyears") %> points Bacon of Tomato: <%= subtopicsSourced("BaconOfTomato") %> points</p>
+<p>Subtopic total: <%= subtopics %></p>
+<br>
+<p>Narratives</p>
+<p>Sources</p>
+<p>Today: <%= narrativesSourced("Today") %> points Week: <%= narrativesSourced("Week") %> points Month: <%= narrativesSourced("Month") %> points</p>
+<p>Year: <%= narrativesSourced("Year") %> points 3 Years: <%= narrativesSourced("Threeyears") %> points Bacon of Tomato: <%= narrativesSourced("BaconOfTomato") %> points</p>
+<p>Narrative total: <%= narratives %></p>
+<br>
 <!--Audio Related Attributes-->
 <p>Radios</p>
 <p>Today: <%= radioTime("Today") %> Week: <%= radioTime("Week") %> Month: <%= radioTime("Month") %> Year: <%= radioTime("Year") %> 3Years: <%= radioTime("Threeyears") %> Bacon of Tomato: <%= radioTime("BaconOfTomato") %></p>
@@ -46,6 +75,28 @@
 <p>Today: <%= soundsSourced("Today") %> points Week: <%= soundsSourced("Week") %> points Month: <%= soundsSourced("Month") %> points</p>
 <p>Year: <%= soundsSourced("Year") %> points 3 Years: <%= soundsSourced("Threeyears") %> points Bacon of Tomato: <%= soundsSourced("BaconOfTomato") %> points</p>
 <p>Sound total: <%= sounds %></p>
+<br>
+<p>Favorite Sounds</p>
+<p>Sources</p>
+<p>Today: <%= favoritesoundsSourced("Today") %> points Week: <%= favoritesoundsSourced("Week") %> points Month: <%= favoritesoundsSourced("Month") %> points</p>
+<p>Year: <%= favoritesoundsSourced("Year") %> points 3 Years: <%= favoritesoundsSourced("Threeyears") %> points Bacon of Tomato: <%= favoritesoundsSourced("BaconOfTomato") %> points</p>
+<p>Favoritesound total: <%= favoritesounds %></p>
+<br>
+<p>Sound Stars</p>
+<p>Sources</p>
+<p>Today: <%= soundstarsSourced("Today") %> points Week: <%= soundstarsSourced("Week") %> points Month: <%= soundstarsSourced("Month") %> points</p>
+<p>Year: <%= soundstarsSourced("Year") %> points 3 Years: <%= soundstarsSourced("Threeyears") %> points Bacon of Tomato: <%= soundstarsSourced("BaconOfTomato") %> points</p>
+<p>Soundstar total: <%= soundstars %></p>
+<br>
+<p>Sound Critiques</p>
+<p>Sources</p>
+<p>Today: <%= soundcritiquesSourced("Today") %> points Week: <%= soundcritiquesSourced("Week") %> points Month: <%= soundcritiquesSourced("Month") %> points</p>
+<p>Year: <%= soundcritiquesSourced("Year") %> points 3 Years: <%= soundcritiquesSourced("Threeyears") %> points Bacon of Tomato: <%= soundcritiquesSourced("BaconOfTomato") %> points</p>
+<p>Soundcritique total: <%= soundcritiques %></p>
+<br>
+<p>Sound Comments</p>
+<p>Today: <%= soundcommentTime("Today") %> Week: <%= soundcommentTime("Week") %> Month: <%= soundcommentTime("Month") %> Year: <%= soundcommentTime("Year") %> 3Years: <%= soundcommentTime("Threeyears") %> Bacon of Tomato: <%= soundcommentTime("BaconOfTomato") %></p>
+<p>Soundcomment total: <%= soundcommentTime("All") %></p>
 <br>
 <!--Art Related Attributes-->
 <p>Galleries</p>
@@ -165,11 +216,5 @@
 <p>Signups</p>
 <p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3 Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
 <p>Total users: <%= getSignups("All") %> Total bots: <%= getUserStatus("Bots") %></p>
-<br>
-<p>Pet total: </p>
-<p>Item total: </p>
-<p>Story total: </p>
-<p>Forum total: </p>
-<p>Petowner total: </p>
 <br>
 <p class="navlinks"><%= link_to "Back", root_path %></p>

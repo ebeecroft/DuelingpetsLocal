@@ -1,0 +1,39 @@
+<%= form_for([@topiccontainer, @maintopic]) do |f| %>
+  <% if @maintopic.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@maintopic.errors.count, "error") %> prohibited this maintopic from being saved:</h2>
+
+      <ul>
+      <% @maintopic.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  Topicavatar files
+  <div class="field">
+     <%= image_tag @maintopic.topicavatar_url(:thumb).to_s if @maintopic.topicavatar? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :topicavatar %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_topicavatar_url, "or Topicavatar URL" %><br />
+    <%= f.text_field :remote_topicavatar_url %>
+    <%= f.hidden_field :topicavatar_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', forum_topiccontainer_path(@topiccontainer.forum, @topiccontainer) %></p>
+<% end %>

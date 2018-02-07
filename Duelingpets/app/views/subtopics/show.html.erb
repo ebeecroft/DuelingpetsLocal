@@ -1,0 +1,62 @@
+<% provide(:h1, @subtopic.title) %>
+<p id="notice"><%= notice %></p>
+<% if @narratives.last_page? %>
+   <p>Created on: <%= distance_of_time_in_words_to_now @subtopic.created_on %> ago on (<%= @subtopic.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if @subtopic.user.userinfo.miniavatar != "" %>
+      <br>
+      <p><%= image_tag(@subtopic.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks"><div class="container">Owner: <%= getForumPrivilege(@subtopic.maintopic.topiccontainer.forum, @subtopic.user) %><%= link_to @subtopic.user.vname, user_path(@subtopic.user) %></div>
+      <% if(current_user && ((current_user.id == @subtopic.user_id) || current_user.admin)) %>
+         <div class="container"><%= button_to 'Edit', edit_maintopic_subtopic_path(@subtopic.maintopic, @subtopic), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@subtopic.maintopic, @subtopic], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% end %>
+   </p>
+   <p>Status: <%= getActivity(@subtopic.user) %>
+      <% if getActivity(@subtopic.user) == "Inactive" || getActivity(@subtopic.user) == "Offline" %>
+         for <%= distance_of_time_in_words_to_now getTime(@subtopic.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Maintopic: <%= link_to @subtopic.maintopic.title, topiccontainer_maintopic_path(@subtopic.maintopic.topiccontainer, @subtopic.maintopic) %></p>
+   <p>Forum group: <%= @subtopic.forumgroup.name %></p>
+   <br>
+   <p><%= textFormater("Multi", @subtopic.description, "All").html_safe %></p>
+<% end %>
+<% if @subtopic.narratives.count > 10 %>
+   <br>
+   <p><%= paginate @narratives %></p>
+<% end %>
+<% if @narratives.count > 0 %>
+   <% @narratives.each_with_index do |narrative, index| %>
+      <br>
+      <% if narrative.ogg.to_s != "" || narrative.mp3.to_s != "" %>
+         <p><%= audio_tag(getGalleryMusic(narrative), :controls => true) %></p>
+      <% end %>
+      <p>RE: <%= narrative.subtopic.title %></p>
+      <% if(current_user && ((current_user.id == narrative.user_id) || current_user.admin)) %>
+         <div class="container"><%= button_to 'Edit', edit_subtopic_narrative_path(narrative.subtopic, narrative), method: :get %></div> <div class="container"><%= button_to 'Destroy', [narrative.subtopic, narrative], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% end %>
+      <p>Created on: <%= distance_of_time_in_words_to_now narrative.created_on %> ago on (<%= narrative.created_on.strftime("%B-%d-%Y") %>)</p>
+      <% if narrative.user.userinfo.miniavatar != "" %>
+         <br>
+         <p><%= image_tag(narrative.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Owner: <%= getForumPrivilege(narrative.subtopic.maintopic.topiccontainer.forum, narrative.user) %><%= link_to narrative.user.vname, user_path(narrative.user) %></p>
+      <p>Status: <%= getActivity(narrative.user) %>
+         <% if getActivity(narrative.user) == "Inactive" || getActivity(narrative.user) == "Offline" %>
+            for <%= distance_of_time_in_words_to_now getTime(narrative.user) %>
+         <% end %>
+      </p>
+      <p>Forum group: <%= narrative.forumgroup.name %></p>
+      <br>
+      <p><%= textFormater("Multi", narrative.story, "All").html_safe %></p>
+   <% end %>
+<% else %>
+   <br>
+   <p>There are no narratives available in this subtopic.</p>
+<% end %>
+<% if current_user %>
+   <br>
+   <p><%= button_to 'New Narrative', new_subtopic_narrative_path(@subtopic), method: :get %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to "Back", topiccontainer_maintopic_path(@subtopic.maintopic.topiccontainer, @subtopic.maintopic) %></p>

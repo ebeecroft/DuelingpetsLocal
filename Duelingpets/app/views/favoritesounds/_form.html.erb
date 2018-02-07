@@ -1,0 +1,23 @@
+<%= form_for(@favoritesound) do |f| %>
+  <% if @favoritesound.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@favoritesound.errors.count, "error") %> prohibited this favoritesound from being saved:</h2>
+
+      <ul>
+      <% @favoritesound.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :subsheet_id, "Select favorite folder" %><br />
+    <%= f.collection_select(:subsheet_id, @subsheets, :id, :title) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', subsheet_sound_path(@sound.subsheet, @sound) %></p>
+<% end %>

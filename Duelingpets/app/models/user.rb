@@ -57,6 +57,16 @@ class User < ActiveRecord::Base
    has_many :mainsheets, :foreign_key => "user_id", :dependent => :destroy
    has_many :subsheets, :foreign_key => "user_id", :dependent => :destroy
    has_many :sounds, :foreign_key => "user_id", :dependent => :destroy
+   has_many :favoritesounds, :foreign_key => "user_id", :dependent => :destroy
+   has_many :soundstars, :foreign_key => "user_id", :dependent => :destroy
+   has_many :soundcomments, :foreign_key => "user_id", :dependent => :destroy
+
+   #Forums
+   has_many :forums, :foreign_key => "user_id", :dependent => :destroy
+   has_many :topiccontainers, :foreign_key => "user_id", :dependent => :destroy
+   has_many :maintopics, :foreign_key => "user_id", :dependent => :destroy
+   has_many :subtopics, :foreign_key => "user_id", :dependent => :destroy
+   has_many :narratives, :foreign_key => "user_id", :dependent => :destroy
 
    #Regex code for managing the user section
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9]+\z/i

@@ -1,0 +1,20 @@
+<% provide(:h1, "Favoritesound List") %>
+<p><%= paginate @favoritesounds %></p>
+<% @favoritesounds.each do |favoritesound| %>
+   <br>
+   <% if favoritesound.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(favoritesound.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(favoritesound.user) %><%= link_to favoritesound.user.vname, user_path(favoritesound.user) %></p>
+   <p>Status: <%= getActivity(favoritesound.user) %>
+      <% if getActivity(favoritesound.user) == "Offline" || getActivity(favoritesound.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(favoritesound.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Favorite sound: <%= link_to favoritesound.sound.title, subsheet_sound_path(favoritesound.sound.subsheet, favoritesound.sound) %><%= button_to 'Destroy', [favoritesound.sound, favoritesound], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now favoritesound.created_on %> ago on (<%= favoritesound.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p class="navlinks">Favorite folder: <%= link_to favoritesound.subsheet.title, mainsheet_subsheet_path(favoritesound.subsheet.mainsheet, favoritesound.subsheet) %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

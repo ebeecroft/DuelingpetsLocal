@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20171215072328) do
+ActiveRecord::Schema.define(:version => 20180121213030) do
 
   create_table "artcomments", :force => true do |t|
     t.text     "message"
@@ -165,6 +165,44 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "favoritesounds", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subsheet_id"
+    t.integer  "sound_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "forumgroups", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "forums", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "forumtype_id"
+    t.integer  "memberprivilege_id"
+    t.string   "banner"
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.boolean  "music_on",           :default => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+  end
+
+  create_table "forumtypes", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "galleries", :force => true do |t|
     t.string   "name"
     t.text     "description"
@@ -215,6 +253,24 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.datetime "updated_at",                        :null => false
   end
 
+  create_table "maintopics", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.string   "topicavatar"
+    t.integer  "user_id"
+    t.integer  "topiccontainer_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  create_table "memberprivileges", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "moviecomments", :force => true do |t|
     t.text     "message"
     t.boolean  "critique",   :default => false
@@ -245,6 +301,18 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.integer  "movie_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "narratives", :force => true do |t|
+    t.text     "story"
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subtopic_id"
+    t.integer  "forumgroup_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "pmreplies", :force => true do |t|
@@ -338,6 +406,16 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.datetime "updated_at",   :null => false
   end
 
+  create_table "soundcomments", :force => true do |t|
+    t.text     "message"
+    t.boolean  "critique",   :default => false
+    t.datetime "created_on"
+    t.integer  "sound_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
   create_table "sounds", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -350,6 +428,14 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.string   "ogg"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+  end
+
+  create_table "soundstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "sound_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "subfolders", :force => true do |t|
@@ -391,6 +477,18 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.datetime "updated_at",                      :null => false
   end
 
+  create_table "subtopics", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.string   "topicavatar"
+    t.integer  "user_id"
+    t.integer  "maintopic_id"
+    t.integer  "forumgroup_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "suggestions", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -399,6 +497,16 @@ ActiveRecord::Schema.define(:version => 20171215072328) do
     t.boolean  "applied",     :default => false
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "topiccontainers", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "forum_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "userinfos", :force => true do |t|

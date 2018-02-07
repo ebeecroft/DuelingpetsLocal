@@ -1,4 +1,4 @@
-class MoviesController < ApplicationController
+class MoviesController < GroupController
    include MoviesHelper
 
    def index

@@ -25,24 +25,54 @@
    <% end %>
 </p>
 <% if current_user && current_user.id != @sound.user_id %>
-   <%# if retrieveSoundStar(@sound) == 0 %>
-      <p><%#= button_to 'Star', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
-   <%# else %>
-      <p><%#= button_to 'Unstar', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
-   <%# end %>
-   <%# if retrieveSoundFave(@sound, "Count").count == 0 %>
-      <p><%#= button_to 'Fave', new_sound_favoritesound_path(@sound), method: :get %></p>
-   <%# else %>
-      <p><%#= button_to 'Unfave', [@sound, retrieveSoundFave(@sound, "Retrieve")], method: :delete, data: { confirm: 'Are you sure?' } %></p>
-   <%# end %>
+   <% if retrieveSoundStar(@sound) == 0 %>
+      <p><%= button_to 'Star', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
+   <% else %>
+      <p><%= button_to 'Unstar', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>
+   <% end %>
+   <% if retrieveSoundFave(@sound, "Count").count == 0 %>
+      <p><%= button_to 'Fave', new_sound_favoritesound_path(@sound), method: :get %></p>
+   <% else %>
+      <p><%= button_to 'Unfave', [@sound, retrieveSoundFave(@sound, "Retrieve")], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <% end %>
 <% end %>
-<%# if @faves > 0 %>
+<% if @faves > 0 %>
    <br>
-   <p>Faves: <%#= @faves %></p>
-<%# end %>
-<%# if @stars > 0 %>
+   <p>Faves: <%= @faves %></p>
+<% end %>
+<% if @stars > 0 %>
    <br>
-   <p>Stars: <%#= @stars %></p>
-<%# end %>
+   <p>Stars: <%= @stars %></p>
+<% end %>
+<% if current_user %>
+   <% if @soundcomments.count > 0 %>
+      <br>
+      <p>Comments:</p>
+      <br>
+      <p><%= paginate @soundcomments %></p>
+      <% @soundcomments.each do |soundcomment| %>
+         <br>
+         <% if soundcomment.user.userinfo.miniavatar.to_s != "" %>
+            <p><%= image_tag(soundcomment.user.userinfo.miniavatar_url(:thumb)) %></p>
+         <% end %>
+         <p class="navlinks">By: <%= getUserPrivilege(soundcomment.user) %><%= link_to soundcomment.user.vname, user_path(soundcomment.user) %>
+         <% if(current_user && ((current_user.id == soundcomment.user_id) || current_user.admin)) %>
+            <div class="container"><%= button_to 'Edit', edit_sound_soundcomment_path(soundcomment.sound, soundcomment), method: :get %></div> <div class="container"><%= button_to 'Destroy', [soundcomment.sound, soundcomment], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
+         </p>
+         <br>
+         <p><%= soundcomment.message %></p>
+         <br>
+         <p>Created on: <%= distance_of_time_in_words_to_now soundcomment.created_on %> ago on (<%= soundcomment.created_on.strftime("%B-%d-%Y") %>)</p>
+         <p>Status: <%= getActivity(soundcomment.user) %>
+            <% if getActivity(soundcomment.user) == "Offline" || getActivity(soundcomment.user) == "Inactive" %>
+               for <%= distance_of_time_in_words_to_now getTime(soundcomment.user) %>
+            <% end %>
+         </p>
+      <% end %>
+   <% end %>
+   <br>
+   <p class="navlinks"><%= link_to 'New Soundcomment', new_sound_soundcomment_path(@sound) %></p>
+<% end %>
 <br>
 <p class="navlinks"><%= link_to 'Back', mainsheet_subsheet_path(@subsheet.mainsheet, @sound.subsheet) %></p>

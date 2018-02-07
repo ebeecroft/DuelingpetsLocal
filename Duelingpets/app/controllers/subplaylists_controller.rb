@@ -1,4 +1,4 @@
-class SubplaylistsController < ApplicationController
+class SubplaylistsController < GroupController
    include SubplaylistsHelper
 
    def index

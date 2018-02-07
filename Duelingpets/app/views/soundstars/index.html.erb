@@ -1,0 +1,19 @@
+<% provide(:h1, "Soundstar List") %>
+<p><%= paginate @soundstars %></p>
+<% @soundstars.each do |soundstar| %>
+   <br>
+   <% if soundstar.user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(soundstar.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Fan: <%= getUserPrivilege(soundstar.user) %><%= link_to soundstar.user.vname, user_path(soundstar.user) %></p>
+   <p>Status: <%= getActivity(soundstar.user) %>
+      <% if getActivity(soundstar.user) == "Offline" || getActivity(soundstar.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(soundstar.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p class="navlinks">Starred sound: <%= link_to soundstar.sound.title, subsheet_sound_path(soundstar.sound.subsheet, soundstar.sound) %><%= button_to 'Destroy', [soundstar.sound, soundstar], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now soundstar.created_on %> ago on (<%= soundstar.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

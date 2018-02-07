@@ -1,0 +1,23 @@
+<% provide(:h1, "Forum List") %>
+<p><%= paginate @forums %></p>
+<% @forums.each do |forum| %>
+   <br>
+   <p class="navlinks"><%= link_to forum.name, user_forum_path(forum.user, forum) %><div class="container"><%= button_to 'Edit', edit_user_forum_path(forum.user, forum), method: :get %></div> <div class="container"><%= button_to 'Destroy', [forum.user, forum], method: :delete, data: { confirm: 'Are you sure?' } %></div></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now forum.created_on %> ago on (<%= forum.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if !optional %>
+      <br>
+      <% if forum.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(forum.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Owner: <%= getUserPrivilege(forum.user) %><%= link_to forum.user.vname, user_path(forum.user) %></p>
+      <p>Status: <%= getActivity(forum.user) %>
+          <% if getActivity(forum.user) == "Offline" || getActivity(forum.user) == "Inactive" %>
+             for <%= distance_of_time_in_words_to_now getTime(forum.user) %>
+          <% end %>
+      </p>
+      <br>
+   <% end %>
+   <p><%= forum.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

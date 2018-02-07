@@ -1,5 +1,29 @@
 class ContentMailer < ActionMailer::Base
 
+   def topiccontainer_created(topiccontainer, points)
+      @topiccontainer = topiccontainer
+      @points = points
+      mail(to: @topiccontainer.user.email, from: "notification@duelingpets.net", subject: "Your topiccontainer #{@topiccontainer.title} was created:[Duelingpets]")
+   end
+
+   def maintopic_created(maintopic, points)
+      @maintopic = maintopic
+      @points = points
+      mail(to: @maintopic.user.email, from: "notification@duelingpets.net", subject: "Your maintopic #{@maintopic.title} was created:[Duelingpets]")
+   end
+
+   def subtopic_created(subtopic, points)
+      @subtopic = subtopic
+      @points = points
+      mail(to: @subtopic.user.email, from: "notification@duelingpets.net", subject: "Your subtopic #{@subtopic.title} was created:[Duelingpets]")
+   end
+
+   def narrative_created(narrative, points)
+      @narrative = narrative
+      @points = points
+      mail(to: @narrative.user.email, from: "notification@duelingpets.net", subject: "Your narrative #{@narrative.subtopic.title} was created:[Duelingpets]")
+   end
+
    def sound_approved(sound, points)
       @sound = sound
       @points = points

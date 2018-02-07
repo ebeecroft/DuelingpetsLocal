@@ -37,6 +37,9 @@
          #errorheader{text-align: left;font-weight: bold;padding: 5px 5px 5px 15px;font-size: 12px;
          margin: -7px;margin-bottom: 0px;background-color: <%= getColorAttribute("Explanheaderbackgc") %>;color: <%= getColorAttribute("Explanheadercolor") %>;} ul li {font-size: 12px;list-style: square;}
          .field_with_errors{padding: 2px;background-color: <%= getColorAttribute("Errorfieldcolor") %>;display: table;}
+         .forumcolor{background: <%= getColorAttribute("Navigation") %>;}
+         .forumcolor a{color: <%= getColorAttribute("Navigationlink") %>}
+         .forumcolor a:hover{color: <%= getColorAttribute("Navigationhoverforc") %>;background: <%= getColorAttribute("Navigationhoverbackgc") %>}
       </style>
       <%= image_tag("/Resources/Images/banner/duelingpetsbanner.jpeg", id: "banner") if Rails.env.development? %>
       <%= image_tag("http://static.duelingpets.net/banner/duelingpetsbanner.jpeg", id: "banner") if Rails.env.production? %>
@@ -64,6 +67,7 @@
             <div class="navwordindent"><%= link_to "Channels", channels_path %></div>
             <div class="navwordindent"><%= link_to "Galleries", galleries_path %></div>
             <div class="navwordindent"><%= link_to "Radios", radiostations_path %></div>
+            <div class="navwordindent"><%= link_to "Forums", forums_path %></div>
          </div>
       </div>
       <% if current_user %>

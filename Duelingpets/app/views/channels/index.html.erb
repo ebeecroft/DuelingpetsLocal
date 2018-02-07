@@ -15,9 +15,9 @@
       <% end %>
       <p class="navlinks">Director: <%= getUserPrivilege(channel.user) %><%= link_to channel.user.vname, user_path(channel.user) %></p>
       <p>Status: <%= getActivity(channel.user) %>
-          <% if getActivity(channel.user) == "Offline" || getActivity(channel.user) == "Inactive" %>
-             for <%= distance_of_time_in_words_to_now getTime(channel.user) %>
-          <% end %>
+         <% if getActivity(channel.user) == "Offline" || getActivity(channel.user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(channel.user) %>
+         <% end %>
       </p>
       <br>
    <% end %>

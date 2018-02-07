@@ -1,0 +1,23 @@
+<% provide(:h1, "Subtopic List") %>
+<p><%= paginate @subtopics %></p>
+<% @subtopics.each do |subtopic| %>
+   <br>
+   <p class="navlinks"><%= link_to subtopic.title, maintopic_subtopic_path(subtopic.maintopic, subtopic) %><%= button_to 'Edit', edit_maintopic_subtopic_path(subtopic.maintopic, subtopic), method: :get %><%= button_to 'Destroy', [subtopic.maintopic, subtopic], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now subtopic.created_on %> ago on (<%= subtopic.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Group: <%= subtopic.bookgroup.name %></p>
+   <% if subtopic.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(subtopic.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Owner: <%= getUserPrivilege(subtopic.user) %><%= link_to subtopic.user.vname, user_path(subtopic.user) %></p>
+   <p>Status: <%= getActivity(subtopic.user) %>
+      <% if getActivity(subtopic.user) == "Offline" || getActivity(subtopic.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(subtopic.user) %>
+      <% end %>
+   </p>
+   <p class="navlinks">Maintopic: <%= link_to subtopic.maintopic.title, topiccontainer_maintopic_path(subtopic.maintopic.topiccontainer, subtopic.maintopic) %></p>
+   <br>
+   <p><%= subtopic.description %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

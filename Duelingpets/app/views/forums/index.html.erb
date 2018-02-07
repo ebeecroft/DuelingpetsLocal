@@ -1,0 +1,39 @@
+<% if optional %>
+   <% provide(:h1, @user.vname +  "'s forums") %>
+<% else %>
+   <% provide(:h1, "Forum List") %>
+<% end %>
+<p><%= paginate @forums %></p>
+<% @forums.each do |forum| %>
+   <br>
+   <p class="navlinks"><%= link_to forum.name, user_forum_path(forum.user, forum) %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now forum.created_on %> ago on (<%= forum.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if !optional %>
+      <br>
+      <% if forum.user.userinfo.miniavatar.to_s != "" %>
+         <p><%= image_tag(forum.user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">Owner: <%= getUserPrivilege(forum.user) %><%= link_to forum.user.vname, user_path(forum.user) %></p>
+      <p>Status: <%= getActivity(forum.user) %>
+         <% if getActivity(forum.user) == "Offline" || getActivity(forum.user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(forum.user) %>
+         <% end %>
+      </p>
+   <% end %>
+   <p>Type: <%= forum.forumtype.name %></p>
+   <p>Privilege: <%= forum.memberprivilege.name %></p>
+   <br>
+   <p>Containers: <%= getForumMakeup(forum, "Container") %></p>
+   <p>Maintopics: <%= getForumMakeup(forum, "Maintopic") %></p>
+   <p>Subtopics: <%= getForumMakeup(forum, "Subtopic") %></p>
+   <p>Narratives: <%= getForumMakeup(forum, "Narrative") %></p>
+   <br>
+   <p><%= textFormater("Multi", forum.description, "All").html_safe %></p>
+<% end %>
+<% if optional %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>
+<% else %>
+   <br>
+   <p class="navlinks"><%= link_to 'Back', root_path %></p>
+<% end %>

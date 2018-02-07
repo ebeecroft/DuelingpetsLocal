@@ -1,0 +1,71 @@
+<%= form_for([@user, @forum]) do |f| %>
+  <% if @forum.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@forum.errors.count, "error") %> prohibited this forum from being saved:</h2>
+
+      <ul>
+      <% @forum.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :forumtype_id, "Forum Type" %><br />
+    <%= f.collection_select(:forumtype_id, @type, :id, :name) %>
+  </div>
+  <div class="field">
+    <%= f.label :forumtype_id, "Member Privilege" %><br />
+    <%= f.collection_select(:memberprivilege_id, @privilege, :id, :name) %>
+  </div>
+  Banner files
+  <div class="field">
+     <%= image_tag @forum.banner_url(:thumb).to_s if @forum.banner? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :banner %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_banner_url, "or Banner URL" %><br />
+    <%= f.text_field :remote_banner_url %>
+    <%= f.hidden_field :banner_cache %>
+  </div>
+  OGG files
+  <div class="field">
+     <%= audio_tag(@forum.ogg_url.to_s, :controls => true) if @forum.ogg? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :ogg %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_ogg_url, "or OGG URL" %><br />
+    <%= f.text_field :remote_ogg_url %>
+    <%= f.hidden_field :ogg_cache %>
+  </div>
+  MP3 files
+  <div class="field">
+     <%= audio_tag(@forum.mp3_url.to_s, :controls => true) if @forum.mp3? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :mp3 %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_mp3_url, "or MP3 URL" %><br />
+    <%= f.text_field :remote_mp3_url %>
+    <%= f.hidden_field :mp3_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_path(@forum.user) %></p>
+<% end %>

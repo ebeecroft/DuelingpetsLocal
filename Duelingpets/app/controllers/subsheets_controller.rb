@@ -1,4 +1,4 @@
-class SubsheetsController < ApplicationController
+class SubsheetsController < GroupController
    include SubsheetsHelper
 
    def index

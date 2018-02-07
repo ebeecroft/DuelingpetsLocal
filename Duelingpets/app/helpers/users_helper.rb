@@ -14,6 +14,12 @@ module UsersHelper
          return value
       end
 
+      def getForums(user)
+         allUserForums = user.forums.all
+         value = allUserForums.count
+         return value
+      end
+
       def getChannels(user)
          allUserChannels = user.channels.all
          value = allUserChannels.count
@@ -29,6 +35,34 @@ module UsersHelper
       def getRadios(user)
          allUserRadios = user.radiostations.all
          value = allUserRadios.count
+         return value
+      end
+
+      def getTopicContainers(user)
+         allContainers = Topiccontainer.all
+         userContainers = allContainers.select{|container| container.user_id == user.id}
+         value = userContainers.count
+         return value
+      end
+
+      def getMaintopics(user)
+         allMaintopics = Maintopic.all
+         userTopics = allMaintopics.select{|maintopic| maintopic.user_id == user.id}
+         value = userTopics.count
+         return value
+      end
+
+      def getSubtopics(user)
+         allSubtopics = Subtopic.all
+         userTopics = allSubtopics.select{|subtopic| subtopic.user_id == user.id}
+         value = userTopics.count
+         return value
+      end
+
+      def getNarratives(user)
+         allNarratives = Narrative.all
+         userNarratives = allNarratives.select{|narrative| narrative.user_id == user.id}
+         value = userNarratives.count
          return value
       end
 
@@ -123,6 +157,34 @@ module UsersHelper
          return value
       end
 
+      def getSoundFaves(user)
+         allFaves = Favoritesound.all
+         userFaves = allFaves.select{|fave| fave.user_id == user.id}
+         value = userFaves.count
+         return value
+      end
+
+      def getSoundStars(user)
+         allStars = Soundstar.all
+         userStars = allStars.select{|star| star.user_id == user.id}
+         value = userStars.count
+         return value
+      end
+
+      def getSoundCritiques(user)
+         allCritiques = Soundcomment.all
+         userCritiques = allCritiques.select{|comment| comment.user_id == user.id && comment.critique}
+         value = userCritiques.count
+         return value
+      end
+
+      def getSoundComments(user)
+         allComments = Soundcomment.all
+         userComments = allComments.select{|comment| comment.user_id == user.id && !comment.critique}
+         value = userComments.count
+         return value
+      end
+
       def getBlogs(user)
          allUserBlogs = user.blogs.all
          reviewedBlogs = allUserBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s == "" && blog.largeimage1.to_s == "" && blog.largeimage2.to_s == "" && blog.largeimage3.to_s == "" && blog.smallimage1.to_s == "" && blog.smallimage2.to_s == "" && blog.smallimage3.to_s == "" && blog.smallimage4.to_s == "" && blog.smallimage5.to_s == ""}
@@ -152,6 +214,8 @@ module UsersHelper
                   value = "%"
                elsif(type == "Banned")
                   value = "!"
+               elsif(type == "Trial")
+                  value = "?"
                else
                   value = "~"
                end

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  created_on: 2017-12-26 13:27:13
+  user_id: 1
+  sound_id: 1
+
+two:
+  created_on: 2017-12-26 13:27:13
+  user_id: 1
+  sound_id: 1

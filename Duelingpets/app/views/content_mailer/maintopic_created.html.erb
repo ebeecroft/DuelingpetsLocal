@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+     <h1>The maintopic <%= @maintopic.title %> has been added to the forum <%= @maintopic.topiccontainer.forum.name %>.</h1>
+     <p>Hello <%= @maintopic.user.vname %> I am glad to see you are contributing to the forum
+        community of <%= @maintopic.topiccontainer.forum.name %>. Its quite small at the moment, but with each
+        additional member that is added to this forum makes it that much greater.
+        I really enjoy seeing the community grow for each of these forums, it makes me feel quite
+        proud. I am certain the forum owner and the mods are quite happy too.
+     </p>
+     <p>If you have any questions about the forum itself, you can ask the forum owner to lend you
+        a hand. Now just to let you know the forum owner, mods, and forums with the
+        member privilege set to maintopic can create new maintopics for the forum
+        since it tends to be too difficult for the other users. Most of the time
+        the member privilege will be set to narratives. The other reason is to cut
+        down on the spam bots as this used to be a big problem with the older
+        version of the site in the past.
+     </p>
+     <p>Since you have taken the time to contribute to the forum community it seems
+        best that I throw you a bone. As a reward I have decided to give you
+        <%= points %> points. I know it might not be much but I hope you can put
+        these points to good use. Feel free to continue to contribute to the many
+        different forums of this great website.
+     </p>
+     <br>
+     <p>From Bolt Greywing the Admin</p>
+  </body>
+</html>

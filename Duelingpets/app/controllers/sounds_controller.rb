@@ -1,4 +1,4 @@
-class SoundsController < ApplicationController
+class SoundsController < GroupController
    include SoundsHelper
 
    def index

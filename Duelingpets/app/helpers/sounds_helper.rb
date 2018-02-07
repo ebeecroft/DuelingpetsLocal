@@ -1,31 +1,21 @@
 module SoundsHelper
 
    private
-      def getBookGroups(user)
-         groupValue = ""
-         age = (currentTime.year - user.birthday.year)
-         month = (currentTime.month - user.birthday.month) / 12
-         if(month < 0)
-            age -= 1
+      def retrieveSoundFave(sound, type)
+         allFaves = sound.favoritesounds.order("created_on desc")
+         faveFound = allFaves.select{|fave| fave.user_id == current_user.id}
+         favorite = Favoritesound.find_by_id(faveFound)
+         fave = favorite
+         if(type == "Count")
+            fave = faveFound
          end
+         return fave
+      end
 
-         #Determines the group
-         if(age < 7)
-            groupValue = 0
-         elsif(age < 13)
-            groupValue = 1
-         elsif(age < 19)
-            groupValue = 2
-         elsif(age < 25)
-            groupValue = 3
-         elsif(age < 31)
-            groupValue = 4
-         elsif(age < 37)
-            groupValue = 5
-         elsif(age >= 37)
-            groupValue = 6
-         end
-         return groupValue
+      def retrieveSoundStar(sound)
+         allStars = sound.soundstars.order("created_on desc")
+         starFound = allStars.select{|star| star.user_id == current_user.id}
+         return starFound.count
       end
 
       def showCommons(type)
@@ -47,12 +37,12 @@ module SoundsHelper
             if((current_user && (sound || visitor)) || guest)
                @sound = soundFound
                @subsheet = Subsheet.find_by_id(soundFound.subsheet_id)
-               #soundcomments = @sound.soundcomments.order("created_on desc")
-               #@soundcomments = Kaminari.paginate_array(soundcomments).page(params[:page]).per(10)
-               #stars = @sound.soundstars.count
-               #@stars = stars
-               #faves = @sound.favoritesounds.count
-               #@faves = faves
+               soundcomments = @sound.soundcomments.order("created_on desc")
+               @soundcomments = Kaminari.paginate_array(soundcomments).page(params[:page]).per(10)
+               stars = @sound.soundstars.count
+               @stars = stars
+               faves = @sound.favoritesounds.count
+               @faves = faves
                if(type == "destroy")
                   logged_in = current_user
                   if(logged_in && ((logged_in.id == soundFound.user_id) || logged_in.admin))

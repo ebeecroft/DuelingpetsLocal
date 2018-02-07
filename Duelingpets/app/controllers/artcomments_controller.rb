@@ -1,7 +1,7 @@
 class ArtcommentsController < ApplicationController
-  include ArtcommentsHelper
+   include ArtcommentsHelper
 
-  def index
+   def index
       mode "index"
    end
 

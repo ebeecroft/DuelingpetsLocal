@@ -209,6 +209,13 @@ module ForumsHelper
                         if(type == "create")
                            if(@forum.save)
                               flash[:success] = "#{@forum.name} was successfully created."
+                              allWatches = Watch.all
+                              watchers = allWatches.select{|watch| ((watch.watchtype.name == "Forums" || watch.watchtype.name == "Forumblogs") || watch.watchtype.name == "All") && watch.from_user.id != @forum.user_id}
+                              if(watchers.count > 0)
+                                 watchers.each do |watch|
+                                    UserMailer.new_forum(@forum, watch).deliver
+                                 end
+                              end
                               redirect_to user_forum_path(@user, @forum)
                            else
                               render "new"

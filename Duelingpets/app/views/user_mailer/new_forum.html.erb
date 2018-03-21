@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1>The owner <%= @forum.user.vname %> created a new forum called <%= @forum.name %>.</h1>
+      <p>It seems that the owner you are watching has just created some new content.
+         Since your are using the new watch system you will be able to receive alerts
+         about this particular owner before anyone else does. So even if the content is
+         buried you will be able to still know about the content itself.
+      </p>
+      <p>The content of this forum is directly below this text.</p>
+      <p><%= @forum.description %></p>
+      <br>
+      <p>From the Duelingpets Staff</p>
+   </body>
+</html>

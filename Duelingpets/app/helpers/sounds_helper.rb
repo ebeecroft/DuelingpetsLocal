@@ -212,6 +212,13 @@ module SoundsHelper
                            @sound = soundFound
                            @sound.save
                            ContentMailer.sound_approved(@sound, pointsForSound).deliver
+                           allWatches = Watch.all
+                           watchers = allWatches.select{|watch| (((watch.watchtype.name == "Sounds" || watch.watchtype.name == "Blogsounds") || (watch.watchtype.name == "Artsounds" || watch.watchtype.name == "Moviesounds")) || (watch.watchtype.name == "Maincontent" || watch.watchtype.name == "All")) && watch.from_user.id != @sound.user_id}
+                           if(watchers.count > 0)
+                              watchers.each do |watch|
+                                 UserMailer.new_sound(@sound, watch).deliver
+                              end
+                           end
                            value = "#{@sound.user.vname}'s sound #{@sound.title} was approved."
                         else
                            @sound = soundFound

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1>The director <%= @movie.user.vname %> created a new movie called <%= @movie.title %>.</h1>
+      <p>It seems that the director you are watching has just created some new content.
+         Since your are using the new watch system you will be able to receive alerts
+         about this particular director before anyone else does. So even if the content is
+         buried you will be able to still know about the content itself.
+      </p>
+      <p>The content of this movie is directly below this text.</p>
+      <p><%= @movie.description %></p>
+      <% if @movie.ogv.to_s != "" || @movie.mp4.to_s != "" %>
+         <br>
+         <% if @movie.ogv.to_s != "" %>
+            <p><%= video_tag(attachments['movie.ogv'].url) %></p>
+         <% end %>
+         <% if @movie.mp4.to_s != "" %>
+            <p><%= video_tag(attachments['movie.mp4'].url) %></p>
+         <% end %>
+      <% end %>
+      <br>
+      <p>From the Duelingpets Staff</p>
+   </body>
+</html>

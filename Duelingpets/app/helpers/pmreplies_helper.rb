@@ -81,6 +81,12 @@ module PmrepliesHelper
                         @pmreply = newPmreply
                         if(type == "create")
                            if(@pmreply.save)
+                              if(pmFound.user_id == current_user.id)
+                                 @pm.user1_unread = true
+                              else
+                                 @pm.user2_unread = true
+                              end
+                              @pm.save
                               UserMailer.pmreply_sent(@pmreply).deliver
                               flash[:success] = "#{@pmreply.user.vname}'s pmreply was successfully created."
                               redirect_to pms_inbox_path

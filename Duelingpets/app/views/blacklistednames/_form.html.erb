@@ -1,0 +1,23 @@
+<%= form_for(@blacklistedname) do |f| %>
+  <% if @blacklistedname.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@blacklistedname.errors.count, "error") %> prohibited this blacklistedname from being saved:</h2>
+
+      <ul>
+      <% @blacklistedname.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', blacklistednames_path %></p>
+<% end %>

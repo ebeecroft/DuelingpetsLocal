@@ -16,11 +16,18 @@ module PmsHelper
          end
          pmFound = Pm.find_by_id(params[:id])
          if(pmFound)
-            if(current_user && ((pmFound.user_id == current_user.id || pmFound.from_user_id == current_user.id) || logged_in.admin))
+            if(current_user && ((pmFound.user_id == current_user.id || pmFound.from_user_id == current_user.id) || current_user.admin))
                @user = User.find_by_vname(pmFound.from_user.vname)
                @pm = pmFound
                pmReplies = @pm.pmreplies.order("created_on desc")
                @pmreplies = Kaminari.paginate_array(pmReplies).page(params[:page]).per(10)
+               if(pmFound.user_id == current_user.id)
+                  @pm.user2_unread = false
+                  @pm.save
+               elsif(pmFound.from_user_id == current_user.id)
+                  @pm.user1_unread = false
+                  @pm.save
+               end
                if(type == "destroy")
                   logged_in = current_user
                   if(((logged_in.id == pmFound.from_user_id) || (logged_in.id == pmFound.user_id)) || logged_in.admin)
@@ -98,6 +105,7 @@ module PmsHelper
                            newPm = userFound.pms.new(params[:pm])
                            newPm.from_user_id = logged_in.id
                            newPm.created_on = currentTime
+                           newPm.user2_unread = true
                         end
                         @pm = newPm
                         @user = userFound

@@ -1,0 +1,11 @@
+<% provide(:h1, "Blacklistedname List") %>
+<p><%= paginate @blacklistednames %></p>
+<% @blacklistednames.each do |blacklistedname| %>
+   <br>
+   <p>Name: <%= blacklistedname.name %><%= button_to 'Edit', edit_blacklistedname_path(blacklistedname), method: :get %><%= button_to 'Destroy', [blacklistedname], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now blacklistedname.created_on %> ago on (<%= blacklistedname.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p><%= button_to "New Blacklistedname", new_blacklistedname_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

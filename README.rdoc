@@ -4,6 +4,14 @@ A website that allows users to create their own creatures.
 
 == Current Features:
 
+Watch allows users to watch others and receive alerts on new content
+
+Friendrequest allows users to befriend other users
+
+Friends shows who you are friends with
+
+Pagesounds allows the webadmin to change the various music of the site around
+
 Forums allows users to communicate with the community
 
 Radiostation allows users to create their very own music
@@ -31,5 +39,3 @@ Active allows users to see if one of their friends is online at the moment
 Stats allows users to see the state of the economy as well as other stat related info
 
 Sitemap allows users to travel from one section to another with relative ease
-
-

@@ -1,0 +1,37 @@
+<% provide(:h1, @user.vname +  "'s friends") %>
+<p><%= paginate @friends %></p>
+<% @friends.each do |friend| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now friend.created_on %> ago on (<%= friend.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if @user.id == friend.user_id %>
+      <% if friend.from_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(friend.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <div class="container"><p class="navlinks">Friend: <%= getUserPrivilege(friend.from_user) %><%= link_to friend.from_user.vname, user_path(friend.from_user) %></p></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to 'Destroy', [friend.to_user, friend], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% end %>
+      <p>Status: <%= getActivity(friend.from_user) %>
+         <% if getActivity(friend.from_user) == "Offline" || getActivity(friend.from_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(friend.from_user) %>
+         <% end %>
+      </p>
+   <% elsif @user.id == friend.from_user_id %>
+      <% if friend.to_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(friend.to_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <div class="container"><p class="navlinks">Friend: <%= getUserPrivilege(friend.to_user) %><%= link_to friend.to_user.vname, user_path(friend.to_user) %></p></div>
+      <% if current_user && current_user.id == @user.id %>
+         <div class="container"><%= button_to 'Destroy', [friend.from_user, friend], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% end %>
+      <p>Status: <%= getActivity(friend.to_user) %>
+         <% if getActivity(friend.to_user) == "Offline" || getActivity(friend.to_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(friend.to_user) %>
+         <% end %>
+      </p>
+   <% end %>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>

@@ -1,6 +1,59 @@
 module RegistrationsHelper
 
    private
+      def validateRegistration(registration)
+         #Blacklist variables
+         names = Blacklistedname.all
+         domains = Blacklisteddomain.all
+         name, domain = registration.email.split("@")
+         matchType = "None"
+         valid = true
+
+         #Checks to see if there is any matches
+         firstnameMatch = names.select{|blacklistname| blacklistname.name.downcase == registration.first_name.downcase}
+         lastnameMatch = names.select{|blacklistname| blacklistname.name.downcase == registration.last_name.downcase}
+         loginMatch = names.select{|blacklistname| blacklistname.name.downcase == registration.login_id.downcase}
+         vnameMatch = names.select{|blacklistname| blacklistname.name.downcase == registration.vname.downcase}
+         domainMatch = domains.select{|blacklistdomain| blacklistdomain.name.downcase == domain.downcase && blacklistdomain.domain_only}
+
+         #Determines if this is a domain match or an email match
+         if(domainMatch.count != 0)
+            matchType = "Domain"
+         else
+            nameMatch = names.select{|blacklistname| blacklistname.name.downcase == name.downcase}
+            domainMatch = domains.select{|blacklistdomain| blacklistdomain.name.downcase == domain.downcase && !blacklistdomain.domain_only}
+            if(nameMatch.count != 0 && domainMatch.count != 0)
+               matchType = "Email"
+            end
+         end
+
+         #Displays the error messages for invalid registrations
+         if(firstnameMatch.count != 0)
+            flash.now[:firstnameerror] = "The firstname #{registration.first_name} is blacklisted!"
+            valid = false
+         end
+         if(lastnameMatch.count != 0)
+            flash.now[:lastnameerror] = "The lastname #{registration.last_name} is blacklisted!"
+            valid = false
+         end
+         if(loginMatch.count != 0)
+            flash.now[:loginerror] = "The login name #{registration.login_id} is blacklisted!"
+            valid = false
+         end
+         if(vnameMatch.count != 0)
+            flash.now[:vnameerror] = "The virtual name #{registration.vname} is blacklisted!"
+            valid = false
+         end
+         if(matchType == "Domain")
+            flash.now[:error] = "The domain #{domain} is blacklisted!"
+            valid = false
+         elsif(matchType == "Email")
+            flash.now[:error] = "The email #{registration.email} is blacklisted!"
+            valid = false
+         end
+         return valid
+      end
+
       def gateStatus
          gate = Maintenancemode.find_by_id(2)
          value = gate.maintenance_on
@@ -64,13 +117,18 @@ module RegistrationsHelper
                   end
                   @registration = newRegistration
                   if(type == "create")
-                     if(@registration.save)
-                        flash[:success] = "Thank you for registration we will review your account over 
-                        the next three days to see if it is legitimate."
-                        UserMailer.registration_review(@registration).deliver
-                        redirect_to root_path
+                     if(validateRegistration(newRegistration))
+                        if(@registration.save)
+                           flash[:success] = "Thank you for registration we will review your account over 
+                           the next three days to see if it is legitimate."
+                           UserMailer.registration_review(@registration).deliver
+                           redirect_to root_path
+                        else
+                           render "register2"
+                        end
                      else
-                        render "new"
+                        @registration = newRegistration
+                        render "register2"
                      end
                   end
                end

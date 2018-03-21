@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1><%= @friendrequest.from_user.vname %>'s friendrequest is awaiting your review.</h1>
+      <p>Greetings <%= @friendrequest.to_user.vname %> a friendrequest from
+         <%= @friendrequest.from_user.vname %> has been sent to your inbox with the
+         following message provided below.
+      </p>
+      <p>Message: <%= @friendrequest.message %></p>
+      <br>
+      <p>If you wish to establish a connection with this particular user then all you
+         have to do is simply click the approve button. Once you do so both of you
+         will be friends with each other. This friendship is two way, so once it is
+         approved then neither person needs to create an additional friendrequest
+         between the two.
+      </p>
+      <p>If somehow you feel that the time is not right at the moment you can click
+         the deny button which will mean that you don't become friends just yet.
+         However the door is still open in the future for you to become friends
+         with this user. All you will need to do is send a new friendrequest and
+         have it approved if you wish to.
+      </p>
+      <p>Take your time in the process and try not be too hasty to come to a rushed judgment.
+         Above all be kind with your users even if they do not always agree with you. A
+         pound of patience goes a long way.
+      </p>
+      <br>
+      <p>From Bolt Greywing the Admin</p>
+   </body>
+</html>

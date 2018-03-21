@@ -1,0 +1,12 @@
+<% provide(:h1, "Blacklisteddomain List") %>
+<p><%= paginate @blacklisteddomains %></p>
+<% @blacklisteddomains.each do |blacklisteddomain| %>
+   <br>
+   <p>Domain: <%= blacklisteddomain.name %><%= button_to 'Edit', edit_blacklisteddomain_path(blacklisteddomain), method: :get %><%= button_to 'Destroy', [blacklisteddomain], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Domain only? <%= blacklisteddomain.domain_only %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now blacklisteddomain.created_on %> ago on (<%= blacklisteddomain.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p><%= button_to "New Blacklisteddomain", new_blacklisteddomain_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -66,6 +66,22 @@
    <% end %>
 <% end %>
 <% if current_user %>
+   <% if current_user.id != @user.id %>
+      <div class="container">Watch Status: <%= getWatches(@user, "Status") %></div>
+      <% if(getWatches(@user, "Status") == "None") %>
+         <div class="container"><%= button_to 'Watch', new_user_watch_path(@user), method: :get %></div>
+      <% else %>
+         <div class="container"><%= button_to "Unwatch", [@user, getWatches(@user, "Watch")], :confirm => "Are you sure?", method: :delete %></div>
+      <% end %>
+      <br>
+      <div class="container">Friend Status: <%= getFriendrequests(@user) %></div>
+      <% if(getFriendrequests(@user) == "Not yet a friend") %>
+         <div class="container"><%= button_to 'Friend Request', new_user_friendrequest_path(@user), method: :get %></div>
+      <% elsif(getFriendrequests(@user) == "Friend") %>
+         <div class="container"><%= button_to "Unfriend", [@user, getFriends(@user, "Friend")], :confirm => "Are you sure?", method: :delete %></div>
+      <% end %>
+      <br>
+   <% end %>
    <br>
    <% if @user.donationbox.turn_on %>
       <p>Donation Box</p>
@@ -108,6 +124,11 @@
       <p>PM section</p>
       <p class="navlinks"><%= button_to 'New PM', new_user_pm_path(@user), method: :get %></p>
    <% else %>
+      <br>
+      <p>Friendrequest section</p>
+      <p class="navlinks">
+         <div class="container"><%= button_to 'Inbox', friendrequests_inbox_path, method: :get %></div> <div class="container"><%= button_to 'Outbox', friendrequests_outbox_path, method: :get %></div>
+      </p>
       <br>
       <p>PM section</p>
       <p class="navlinks">
@@ -248,8 +269,19 @@
       <p>Sounds Created: <%= getSounds(@user) %></p>
    <% end %>
 <% end %>
-<% if getArtFaves(@user) > 0 || getArtStars(@user) > 0 || getArtCritiques(@user) > 0 || getArtComments(@user) > 0 || getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 || getSoundFaves(@user) > 0 || getSoundStars(@user) > 0 || getSoundCritiques(@user) > 0 || getSoundComments(@user) > 0 || getBlogStars(@user) > 0 || getBlogComments(@user) > 0 %>
+<% if getFriends(@user, "Friends") > 0 || getWatches(@user, "Watching") > 0 || getWatches(@user, "Watchers") > 0 || getArtFaves(@user) > 0 || getArtStars(@user) > 0 || getArtCritiques(@user) > 0 || getArtComments(@user) > 0 || getMovieFaves(@user) > 0 || getMovieStars(@user) > 0 || getMovieCritiques(@user) > 0 || getMovieComments(@user) > 0 || getSoundFaves(@user) > 0 || getSoundStars(@user) > 0 || getSoundCritiques(@user) > 0 || getSoundComments(@user) > 0 || getBlogStars(@user) > 0 || getBlogComments(@user) > 0 %>
    <br>
+   <!--This section is friend related-->
+   <% if getFriends(@user, "Friends") > 0 %>
+      <p class="navlinks">You have: <%= link_to getFriends(@user, "Friends"), user_friends_friendlist_path(@user) %> Friends</p>
+   <% end %>
+   <!--This section is all watch related-->
+   <% if getWatches(@user, "Watching") > 0 %>
+      <p class="navlinks">Watching: <%= link_to getWatches(@user, "Watching"), user_watches_watching_path(@user) %> Users</p>
+   <% end %>
+   <% if getWatches(@user, "Watchers") > 0 %>
+      <p class="navlinks">Watched by: <%= link_to getWatches(@user, "Watchers"), user_watches_watchers_path(@user) %> Users</p>
+   <% end %>
    <!--This section is all art related-->
    <% if getArtFaves(@user) > 0 %>
       <p>User Faved <%= getArtFaves(@user) %> Arts</p>

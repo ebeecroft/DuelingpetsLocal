@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  message: MyText
+  created_on: 2018-02-23 23:42:29
+  status: MyString
+  user_id: 1
+  from_user_id: 1
+
+two:
+  message: MyText
+  created_on: 2018-02-23 23:42:29
+  status: MyString
+  user_id: 1
+  from_user_id: 1

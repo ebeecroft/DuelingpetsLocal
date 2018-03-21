@@ -1,0 +1,14 @@
+<% provide(:h1, "Pagesound List") %>
+<p><%= paginate @pagesounds %></p>
+<% @pagesounds.each do |pagesound| %>
+   <br>
+   <p>Name: <%= pagesound.name %><%= button_to 'Edit', edit_pagesound_path(pagesound), method: :get %><%= button_to 'Destroy', [pagesound], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <br>
+   <p><%= audio_tag(getGalleryMusic(pagesound), :controls => true) %></p>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now pagesound.created_on %> ago on (<%= pagesound.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p><%= button_to "New Pagesound", new_pagesound_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

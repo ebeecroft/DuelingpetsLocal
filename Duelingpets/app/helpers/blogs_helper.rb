@@ -327,6 +327,13 @@ module BlogsHelper
                            @blog = blogFound
                            @blog.save
                            ContentMailer.blog_approved(@blog, pointsForBlog).deliver
+                           allWatches = Watch.all
+                           watchers = allWatches.select{|watch| ((((watch.watchtype.name == "Blogs" || watch.watchtype.name == "Blogarts") || (watch.watchtype.name == "Blogsounds" || watch.watchtype.name == "Blogmovies")) || (watch.watchtype.name == "Forumblogs" || watch.watchtype.name == "All"))) && watch.from_user.id != @blog.user_id}
+                           if(watchers.count > 0)
+                              watchers.each do |watch|
+                                 UserMailer.new_blog(@blog, watch).deliver
+                              end
+                           end
                            value = "#{@blog.user.vname}'s blog #{@blog.title} was approved."
                         else
                            @blog = blogFound

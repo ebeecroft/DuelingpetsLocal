@@ -1,0 +1,19 @@
+<% provide(:h1, "Friend List") %>
+<p><%= paginate @friends %></p>
+<% @friends.each do |friend| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now friend.created_on %> ago on (<%= friend.created_on.strftime("%B-%d-%Y") %>)</p>
+   <div class="container"><p class="navlinks">User: <%= getUserPrivilege(friend.to_user) %><%= link_to friend.to_user.vname, user_path(friend.to_user) %></p></div> <div class="container"><%= button_to 'Destroy', [friend.from_user, friend], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if friend.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(friend.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Friended by: <%= getUserPrivilege(friend.from_user) %><%= link_to friend.from_user.vname, user_path(friend.from_user) %></p>
+   <p>Status: <%= getActivity(friend.from_user) %>
+      <% if getActivity(friend.from_user) == "Offline" || getActivity(friend.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(friend.from_user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

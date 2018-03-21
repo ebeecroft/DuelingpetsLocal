@@ -1,0 +1,27 @@
+<%= form_for(@blacklisteddomain) do |f| %>
+  <% if @blacklisteddomain.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@blacklisteddomain.errors.count, "error") %> prohibited this blacklisteddomain from being saved:</h2>
+
+      <ul>
+      <% @blacklisteddomain.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :domain_only %><br />
+    <%= f.check_box :domain_only %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', blacklisteddomains_path %></p>
+<% end %>

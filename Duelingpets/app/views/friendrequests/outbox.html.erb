@@ -1,0 +1,21 @@
+<% provide(:h1, "Friendrequest Outbox") %>
+<p><%= paginate @friendrequests %></p>
+<% @friendrequests.each do |friendrequest| %>
+   <br>
+   <div class="container">Status: <%= friendrequest.status %></div> <div class="container"><%= button_to 'Destroy', [friendrequest.from_user, friendrequest], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now friendrequest.created_on %> ago on (<%= friendrequest.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if friendrequest.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(friendrequest.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">From: <%= getUserPrivilege(friendrequest.from_user) %><%= link_to friendrequest.from_user.vname, user_path(friendrequest.from_user) %></p>
+   <p>Status: <%= getActivity(friendrequest.from_user) %>
+      <% if getActivity(friendrequest.from_user) == "Offline" || getActivity(friendrequest.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(friendrequest.from_user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= friendrequest.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>

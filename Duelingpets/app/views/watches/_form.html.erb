@@ -1,0 +1,23 @@
+<%= form_for([@user, @watch]) do |f| %>
+  <% if @watch.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@watch.errors.count, "error") %> prohibited this watch from being saved:</h2>
+
+      <ul>
+      <% @watch.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :watchtype_id, "Watch Type" %><br />
+    <%= f.collection_select(:watchtype_id, @type, :id, :name) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>
+<% end %>

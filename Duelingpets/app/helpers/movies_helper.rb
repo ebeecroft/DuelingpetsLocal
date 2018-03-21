@@ -212,6 +212,13 @@ module MoviesHelper
                            @movie = movieFound
                            @movie.save
                            ContentMailer.movie_approved(@movie, pointsForMovie).deliver
+                           allWatches = Watch.all
+                           watchers = allWatches.select{|watch| (((watch.watchtype.name == "Movies" || watch.watchtype.name == "Blogmovies") || (watch.watchtype.name == "Artmovies" || watch.watchtype.name == "Moviesounds")) || (watch.watchtype.name == "Maincontent" || watch.watchtype.name == "All")) && watch.from_user.id != @movie.user_id}
+                           if(watchers.count > 0)
+                              watchers.each do |watch|
+                                 UserMailer.new_movie(@movie, watch).deliver
+                              end
+                           end
                            value = "#{@movie.user.vname}'s movie #{@movie.title} was approved."
                         else
                            @movie = movieFound

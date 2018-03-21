@@ -1,0 +1,27 @@
+<%= form_for(@watchtype) do |f| %>
+  <% if @watchtype.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@watchtype.errors.count, "error") %> prohibited this watchtype from being saved:</h2>
+
+      <ul>
+      <% @watchtype.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :amount %><br />
+    <%= f.number_field :amount %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', watchtypes_path %></p>
+<% end %>

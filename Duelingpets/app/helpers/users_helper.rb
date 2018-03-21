@@ -1,6 +1,64 @@
 module UsersHelper
 
    private
+      def getFriends(user, type)
+         value = ""
+         if(type == "Friends")
+            allFriends = Friend.all
+            userFriends = allFriends.select{|friend| friend.user_id == user.id || friend.from_user_id == user.id}
+            value = userFriends.count
+         else
+            friend = ((current_user.friends.find_by_from_user_id(user.id)) || (user.friends.find_by_from_user_id(current_user.id)))
+            value = friend
+         end
+         return value
+      end
+
+      def getFriendrequests(user)
+         allFriends = Friend.all
+         friend = allFriends.select{|friend| ((friend.from_user_id == user.id) && (friend.user_id == current_user.id)) || ((friend.user_id == user.id) && (friend.from_user_id == current_user.id))}
+         value = ""
+         if(friend.count > 0)
+            value = "Friend"
+         else
+            #Setup request variables
+            allRequests = Friendrequest.order("created_on desc")
+            requestStatus = allRequests.select{|friend| friend.status == "Inprocess" || friend.status == "Approved"}
+            userRequest = requestStatus.select{|friend| ((friend.user_id == user.id) && (friend.from_user_id == current_user.id)) || ((friend.user_id == current_user.id) && (friend.from_user_id == user.id))}
+            if(userRequest.count == 0)
+               value = "Not yet a friend"
+            else
+               value = userRequest.last.status
+            end
+         end
+         return value
+      end
+
+      def getWatches(user, type)
+         allWatches = Watch.all
+         value = ""
+
+         #Determines the type of watch that is being read
+         if(type == "Watchers" || type == "Watching")
+            userWatchers = allWatches.select{|watch| watch.user_id == user.id}
+            if(type == "Watching")
+               userWatchers = allWatches.select{|watch| watch.from_user_id == user.id}
+            end
+            value = userWatchers.count
+         elsif(type == "Status" || type == "Watch")
+            watch = user.watches.find_by_from_user_id(current_user.id)
+            watchValue = "None"
+            if(watch)
+               watchValue = watch
+               if(type == "Status")
+                  watchValue = watch.watchtype.name
+               end
+            end
+            value = watchValue
+         end
+         return value
+      end
+
       def getReferrals(user)
          allReferrals = Referral.all
          userReferrals = allReferrals.select{|referral| referral.referred_by_id == user.id}

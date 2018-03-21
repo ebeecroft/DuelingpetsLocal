@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180121213030) do
+ActiveRecord::Schema.define(:version => 20180302033824) do
 
   create_table "artcomments", :force => true do |t|
     t.text     "message"
@@ -42,6 +42,21 @@ ActiveRecord::Schema.define(:version => 20180121213030) do
     t.datetime "created_on"
     t.integer  "user_id"
     t.integer  "art_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "blacklisteddomains", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.boolean  "domain_only", :default => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "blacklistednames", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -203,6 +218,24 @@ ActiveRecord::Schema.define(:version => 20180121213030) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "friendrequests", :force => true do |t|
+    t.text     "message"
+    t.datetime "created_on"
+    t.string   "status"
+    t.integer  "user_id"
+    t.integer  "from_user_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "friends", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "from_user_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "galleries", :force => true do |t|
     t.string   "name"
     t.text     "description"
@@ -315,6 +348,15 @@ ActiveRecord::Schema.define(:version => 20180121213030) do
     t.datetime "updated_at",    :null => false
   end
 
+  create_table "pagesounds", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.string   "ogg"
+    t.string   "mp3"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "pmreplies", :force => true do |t|
     t.text     "message"
     t.datetime "created_on"
@@ -333,10 +375,13 @@ ActiveRecord::Schema.define(:version => 20180121213030) do
     t.string   "title"
     t.text     "message"
     t.datetime "created_on"
+    t.string   "topicavatar"
+    t.boolean  "user1_unread", :default => false
+    t.boolean  "user2_unread", :default => false
     t.integer  "user_id"
     t.integer  "from_user_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "pouches", :force => true do |t|
@@ -539,6 +584,23 @@ ActiveRecord::Schema.define(:version => 20180121213030) do
     t.boolean  "admin",            :default => false
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
+  end
+
+  create_table "watches", :force => true do |t|
+    t.integer  "watchtype_id"
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "from_user_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "watchtypes", :force => true do |t|
+    t.string   "name"
+    t.integer  "amount"
+    t.datetime "created_on"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end

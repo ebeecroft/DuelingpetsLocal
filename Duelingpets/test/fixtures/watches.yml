@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  watchtype_id: 1
+  created_on: 2018-02-17 13:36:25
+  user_id: 1
+  watched_by_id: 1
+
+two:
+  watchtype_id: 1
+  created_on: 2018-02-17 13:36:25
+  user_id: 1
+  watched_by_id: 1

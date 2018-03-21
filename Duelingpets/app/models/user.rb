@@ -26,6 +26,13 @@ class User < ActiveRecord::Base
    #Suggestions
    has_many :suggestions, :foreign_key => "user_id", :dependent => :destroy
 
+   #Watches
+   has_many :watches, :foreign_key => "user_id", :dependent => :destroy
+
+   #Friends
+   has_many :friendrequests, :foreign_key => "user_id", :dependent => :destroy
+   has_many :friends, :foreign_key => "user_id", :dependent => :destroy
+
    #Referrals
    has_one :referral, :foreign_key => "user_id", :dependent => :destroy
    has_many :referrals, :foreign_key => "referred_by_id", :dependent => :destroy

@@ -212,6 +212,13 @@ module ArtsHelper
                            @art = artFound
                            @art.save
                            ContentMailer.art_approved(@art, pointsForArt).deliver
+                           allWatches = Watch.all
+                           watchers = allWatches.select{|watch| (((watch.watchtype.name == "Arts" || watch.watchtype.name == "Blogarts") || (watch.watchtype.name == "Artsounds" || watch.watchtype.name == "Artmovies")) || (watch.watchtype.name == "Maincontent" || watch.watchtype.name == "All")) && watch.from_user.id != @art.user_id}
+                           if(watchers.count > 0)
+                              watchers.each do |watch|
+                                 UserMailer.new_art(@art, watch).deliver
+                              end
+                           end
                            value = "#{@art.user.vname}'s art #{@art.title} was approved."
                         else
                            @art = artFound

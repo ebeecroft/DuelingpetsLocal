@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1>The artist <%= @art.user.vname %> created a new artwork called <%= @art.title %>.</h1>
+      <p>It seems that the artist you are watching has just created some new content.
+         Since your are using the new watch system you will be able to receive alerts
+         about this particular artist before anyone else does. So even if the content is
+         buried you will be able to still know about the content itself.
+      </p>
+      <p>The content of this artwork is directly below this text.</p>
+      <p><%= @art.description %></p>
+      <% if @art.image.to_s != "" %>
+         <br>
+         <p><%= image_tag(attachments[@art.image.to_s].url) %></p>
+      <% end %>
+      <br>
+      <p>From the Duelingpets Staff</p>
+   </body>
+</html>

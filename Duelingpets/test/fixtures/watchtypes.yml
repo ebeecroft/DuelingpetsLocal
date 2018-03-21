@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  amount: 1
+  created_on: 2018-02-11 05:12:29
+
+two:
+  name: MyString
+  amount: 1
+  created_on: 2018-02-11 05:12:29

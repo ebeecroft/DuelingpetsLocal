@@ -17,16 +17,31 @@
 <p>Total sourced: <%= getSourced("All") %> Total sunk: <%= getSunk("All") %> Total transfered: <%= getTransfers("All") %></p>
 <p>Contest points available: <%= getContest %></p>
 <br>
-<!--Referrals and Colorschemes Related Attributes-->
+<!--Colorscheme Related Attributes-->
+<p>Colorschemes</p>
+<p>Sources</p>
+<p>Today: <%= colorschemesSourced("Today") %> points Week: <%= colorschemesSourced("Week") %> points Month: <%= colorschemesSourced("Month") %> points</p>
+<p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
+<p>Colorscheme total: <%= colorschemes %></p>
+<br>
+<!--Referral Related Attributes-->
 <p>Referrals</p>
+<p>Sources</p>
 <p>Today: <%= referralsSourced("Today") %> points Week: <%= referralsSourced("Week") %> points Month: <%= referralsSourced("Month") %> points</p>
 <p>Year: <%= referralsSourced("Year") %> points 3 Years: <%= referralsSourced("Threeyears") %> points Bacon of Tomato: <%= referralsSourced("BaconOfTomato") %> points</p>
 <p>Discovery referrals: <%= referrals("Discovery") %> User referrals: <%= referrals("User") %></p>
 <br>
-<p>Colorschemes</p>
-<p>Today: <%= colorschemesSourced("Today") %> points Week: <%= colorschemesSourced("Week") %> points Month: <%= colorschemesSourced("Month") %> points</p>
-<p>Year: <%= colorschemesSourced("Year") %> points 3 Years: <%= colorschemesSourced("Threeyears") %> points Bacon of Tomato: <%= colorschemesSourced("BaconOfTomato") %> points</p>
-<p>Colorscheme total: <%= colorschemes %></p>
+<!--Friend Related Attributes-->
+<p>Friends</p>
+<p>Today: <%= friendTime("Today") %> Week: <%= friendTime("Week") %> Month: <%= friendTime("Month") %> Year: <%= friendTime("Year") %> 3Years: <%= friendTime("Threeyears") %> Bacon of Tomato: <%= friendTime("BaconOfTomato") %></p>
+<p>Friend total: <%= friendTime("All") %></p>
+<br>
+<!--Watch Related Attributes-->
+<p>Watches</p>
+<p>Sources</p>
+<p>Today: <%= watchesSourced("Today") %> points Week: <%= watchesSourced("Week") %> points Month: <%= watchesSourced("Month") %> points</p>
+<p>Year: <%= watchesSourced("Year") %> points 3 Years: <%= watchesSourced("Threeyears") %> points Bacon of Tomato: <%= watchesSourced("BaconOfTomato") %> points</p>
+<p>Watch total: <%= watches %></p>
 <br>
 <!--Forum Related Attributes-->
 <p>Forums</p>

@@ -147,33 +147,39 @@ module CusersHelper
       def getHomepageMusic
          music = ""
          if(current_user)
+            homepageSound = Pagesound.find_by_name("Homepage-Music")
+            betaSound = Pagesound.find_by_name("Beta-Music")
+            grandSound = Pagesound.find_by_name("Grandopening-Music")
             if(current_user.userinfo.browser == "ogg-browser")
                betaMode = Maintenancemode.find_by_id(2)
                grandMode = Maintenancemode.find_by_id(3)
-               music = "/Resources/Music/homepage/Theme.ogg"
+               music = homepageSound.ogg_url
                if(betaMode.maintenance_on)
-                  music = "/Resources/Music/homepage/BetaTheme.ogg"
+                  music = betaSound.ogg_url
                elsif(grandMode.maintenance_on)
-                  music = "/Resources/Music/homepage/GrandTheme.ogg"
+                  music = grandSound.ogg_url
                end
             elsif(current_user.userinfo.browser == "mp3-browser")
                betaMode = Maintenancemode.find_by_id(2)
                grandMode = Maintenancemode.find_by_id(3)
-               music = "/Resources/Music/homepage/Theme.mp3"
+               music = homepageSound.mp3_url
                if(betaMode.maintenance_on)
-                  music = "/Resources/Music/homepage/BetaTheme.mp3"
+                  music = betaSound.mp3_url
                elsif(grandMode.maintenance_on)
-                  music = "/Resources/Music/homepage/GrandTheme.mp3"
+                  music = grandSound.mp3_url
                end
             end
          else
             betaMode = Maintenancemode.find_by_id(2)
             grandMode = Maintenancemode.find_by_id(3)
-            music = "/Resources/Music/homepage/Theme.ogg"
+            homepageSound = Pagesound.find_by_name("Homepage-Music")
+            betaSound = Pagesound.find_by_name("Beta-Music")
+            grandSound = Pagesound.find_by_name("Grandopening-Music")
+            music = homepageSound.ogg_url
             if(betaMode.maintenance_on)
-               music = "/Resources/Music/homepage/BetaTheme.ogg"
+               music = betaSound.ogg_url
             elsif(grandMode.maintenance_on)
-               music = "/Resources/Music/homepage/GrandTheme.ogg"
+               music = grandSound.ogg_url
             end
          end
          return music

@@ -27,11 +27,12 @@ module StartHelper
          colors = colorschemesSourced(timeframe)
          replies = repliesSourced(timeframe)
          referrals = referralsSourced(timeframe)
+         watches = watchesSourced(timeframe)
 
          #Sum points
          userFeedback = favoritemovies + moviestars + moviecritiques + favoritearts + artstars + artcritiques + blogstars
          + favoritesounds + soundstars + soundcritiques
-         userContent = colors + blogs + replies + referrals + movies + arts + sounds
+         userContent = colors + blogs + replies + referrals + movies + arts + sounds + watches
          points = userFeedback + userContent
          return points
       end
@@ -1447,9 +1448,209 @@ module StartHelper
          return value
       end
 
+      def watchesValue(timeValue)
+         #Watchtype variables
+         watches = timeValue.select{|watch| watch.watchtype.name == "Watch"}
+         forums = timeValue.select{|watch| watch.watchtype.name == "Forums"}
+         blogs = timeValue.select{|watch| watch.watchtype.name == "Blogs"}
+         arts = timeValue.select{|watch| watch.watchtype.name == "Arts"}
+         sounds = timeValue.select{|watch| watch.watchtype.name == "Sounds"}
+         movies = timeValue.select{|watch| watch.watchtype.name == "Movies"}
+         blogarts = timeValue.select{|watch| watch.watchtype.name == "Blogarts"}
+         blogsounds = timeValue.select{|watch| watch.watchtype.name == "Blogsounds"}
+         blogmovies = timeValue.select{|watch| watch.watchtype.name == "Blogmovies"}
+         forumblogs = timeValue.select{|watch| watch.watchtype.name == "Forumblogs"}
+         artsounds = timeValue.select{|watch| watch.watchtype.name == "Artsounds"}
+         artmovies = timeValue.select{|watch| watch.watchtype.name == "Artmovies"}
+         moviesounds = timeValue.select{|watch| watch.watchtype.name == "Moviesounds"}
+         maincontents = timeValue.select{|watch| watch.watchtype.name == "Maincontent"}
+         alls = timeValue.select{|watch| watch.watchtype.name == "All"}
+         
+         #Watchtype points
+         watchPoints = 0
+         if(watches.count > 0)
+            watchPoints = watches.last.watchtype.amount
+         end
+
+         forumPoints = 0
+         if(forums.count > 0)
+            forumPoints = forums.last.watchtype.amount
+         end
+
+         blogPoints = 0
+         if(blogs.count > 0)
+            blogPoints = blogs.last.watchtype.amount
+         end
+
+         artPoints = 0
+         if(arts.count > 0)
+            artPoints = arts.last.watchtype.amount
+         end
+
+         soundPoints = 0
+         if(sounds.count > 0)
+            soundPoints = sounds.last.watchtype.amount
+         end
+
+         moviePoints = 0
+         if(movies.count > 0)
+            moviePoints = movies.last.watchtype.amount
+         end
+
+         blogartPoints = 0
+         if(blogarts.count > 0)
+            blogartPoints = blogarts.last.watchtype.amount
+         end
+
+         blogsoundPoints = 0
+         if(blogsounds.count > 0)
+            blogsoundPoints = blogsounds.last.watchtype.amount
+         end
+
+         blogmoviePoints = 0
+         if(blogmovies.count > 0)
+            blogmoviePoints = blogmovies.last.watchtype.amount
+         end
+
+         forumblogPoints = 0
+         if(forumblogs.count > 0)
+            forumblogPoints = forumblogs.last.watchtype.amount
+         end
+
+         artsoundPoints = 0
+         if(artsounds.count > 0)
+            artsoundPoints = artsounds.last.watchtype.amount
+         end
+
+         artmoviePoints = 0
+         if(artmovies.count > 0)
+            artmoviePoints = artmovies.last.watchtype.amount
+         end
+
+         moviesoundPoints = 0
+         if(moviesounds.count > 0)
+            moviesoundPoints = moviesounds.last.watchtype.amount
+         end
+
+         maincontentPoints = 0
+         if(maincontents.count > 0)
+            maincontentPoints = maincontents.last.watchtype.amount
+         end
+
+         allPoints = 0
+         if(alls.count > 0)
+            allPoints = alls.last.watchtype.amount
+         end
+
+         #Calculates price of each watch
+         watchValue = watches.count * watchPoints
+         forumValue = forums.count * forumPoints
+         blogValue = blogs.count * blogPoints
+         artValue = arts.count * artPoints
+         soundValue = sounds.count * soundPoints
+         movieValue = movies.count * moviePoints
+         blogartValue = blogarts.count * blogartPoints
+         blogsoundValue = blogsounds.count * blogsoundPoints
+         blogmovieValue = blogmovies.count * blogmoviePoints
+         forumblogValue = forumblogs.count * forumblogPoints
+         artsoundValue = artsounds.count * artsoundPoints
+         artmovieValue = artmovies.count * artmoviePoints
+         moviesoundValue = moviesounds.count * moviesoundPoints
+         maincontentValue = maincontents.count * maincontentPoints
+         allValue = alls.count * allPoints
+
+         source = watchValue + forumValue + blogValue + artValue + soundValue + movieValue + blogartValue + blogsoundValue
+         + blogmovieValue + forumblogValue + artsoundValue + artmovieValue + moviesoundValue + maincontentValue
+         + allValue
+         return source
+      end
+
+      def watchesSourced(timeframe)
+         allWatches = Watch.all
+         firstWatch = Watch.first
+         nonBot = allWatches.select{|watch| watch.from_user.pouch.privilege != "Bot"}
+
+         #Time values
+         day = nonBot.select{|watch| (currentTime - watch.created_on) <= 1.day}
+         week = nonBot.select{|watch| (currentTime - watch.created_on) <= 1.week}
+         month = nonBot.select{|watch| (currentTime - watch.created_on) <= 1.month}
+         year = nonBot.select{|watch| (currentTime - watch.created_on) <= 1.year}
+         threeyear = nonBot.select{|watch| (currentTime - watch.created_on) <= 3.years}
+         bacot = nonBot.select{|watch| (currentTime - watch.created_on) > (firstWatch.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = watchesValue(day)
+         weekCount = watchesValue(week) - dayCount
+         monthCount = watchesValue(month) - weekCount - dayCount
+         yearCount = watchesValue(year) - monthCount - weekCount - dayCount
+         dreiJahreCount = watchesValue(threeyear) - yearCount - monthCount - weekCount - dayCount
+         bacotCount = watchesValue(bacot) - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = watchesValue(nonBot)
+         end
+         return value
+      end
+
+      def watches
+         allWatches = Watch.all
+         nonBot = allWatches.select{|watch| watch.from_user.pouch.privilege != "Bot"}
+         value = nonBot.count
+      end
+
+      def friendTime(timeframe)
+         allFriends = Friend.all
+         firstFriend = Friend.first
+         nonBot = allFriends.select{|friend| friend.to_user.pouch.privilege != "Bot" && friend.from_user.pouch.privilege != "Bot"}
+
+         #Time values
+         day = nonBot.select{|friend| (currentTime - friend.created_on) <= 1.day}
+         week = nonBot.select{|friend| (currentTime - friend.created_on) <= 1.week}
+         month = nonBot.select{|friend| (currentTime - friend.created_on) <= 1.month}
+         year = nonBot.select{|friend| (currentTime - friend.created_on) <= 1.year}
+         threeyear = nonBot.select{|friend| (currentTime - friend.created_on) <= 3.years}
+         bacot = nonBot.select{|friend| (currentTime - friend.created_on) > (firstFriend.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
       def replies
          allReplies = Reply.all
-         value = allReplies.count
+         nonBot = allReplies.select{|reply| reply.user.pouch.privilege != "Bot"}
+         value = nonBot.count
          return value
       end
 
@@ -1491,6 +1692,13 @@ module StartHelper
             points = replySources
          end
          return points
+      end
+
+      def replies
+         allReplies = Reply.all
+         nonBot = allReplies.select{|reply| reply.user.pouch.privilege != "Bot"}
+         value = nonBot.count
+         return value
       end
 
       def blogstarsSourced(timeframe)

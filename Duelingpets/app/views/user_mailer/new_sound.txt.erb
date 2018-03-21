@@ -1,0 +1,27 @@
+The announcer <%= @sound.user.vname %> created a new sound called <%= @sound.title %>.
+===============================================
+
+It seems that the announcer you are watching has just created some new content.
+Since your are using the new watch system you will be able to receive alerts
+about this particular announcer before anyone else does. So even if the content is
+buried you will be able to still know about the content itself.
+
+The content of this sound is directly below this text.
+
+<%= @sound.description %>
+
+<% if @sound.ogg.to_s != "" || @sound.mp3.to_s != "" %>
+
+
+   <% if @sound.ogg.to_s != "" %>
+
+      <%= audio_tag(attachments[@sound.ogg.to_s].url, :controls => true) %>
+   <% end %>
+   <% if @sound.mp3.to_s != "" %>
+
+      <%= audio_tag(attachments[@sound.mp3.to_s].url, :controls => true) %>
+   <% end %>
+<% end %>
+
+
+From the Duelingpets Staff

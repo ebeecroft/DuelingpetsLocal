@@ -4,8 +4,10 @@
    <br>
    <p class="navlinks"><%= link_to pm.title, user_pm_path(pm.from_user, pm) %> (<%= postCount(pm) %>)</p>
    <p>Created on: <%= pm.created_on.strftime("%B-%d-%Y") %> (<%= distance_of_time_in_words_to_now pm.created_on %> ago)</p>
-   <p>
    <% if current_user.id == pm.user_id %>
+      <% if user2_unread == true %>
+         <p><%= image_tag(pm.topicavatar_url(:thumb)) %></p>
+      <% end %>
       <% if pm.from_user.userinfo.miniavatar.to_s != "" %>
          <br>
          <p><%= image_tag(pm.from_user.userinfo.miniavatar_url(:thumb)) %></p>
@@ -17,6 +19,9 @@
          <% end %>
       </p>
    <% elsif ((current_user.id == pm.from_user_id) && (postCount(pm) > 0)) %>
+      <% if user1_unread == true %>
+         <p><%= image_tag(pm.topicavatar_url(:thumb)) %></p>
+      <% end %>
       <% if pm.to_user.userinfo.miniavatar.to_s != "" %>
          <br>
          <p><%= image_tag(pm.to_user.userinfo.miniavatar_url(:thumb)) %></p>

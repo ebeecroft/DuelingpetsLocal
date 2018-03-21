@@ -1,0 +1,12 @@
+<% provide(:h1, "Watchtype List") %>
+<p><%= paginate @watchtypes %></p>
+<% @watchtypes.each do |watchtype| %>
+   <br>
+   <p>Name: <%= watchtype.name %><%= button_to 'Edit', edit_watchtype_path(watchtype), method: :get %><%= button_to 'Destroy', [watchtype], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Points: <%= watchtype.amount %></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now watchtype.created_on %> ago on (<%= watchtype.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p><%= button_to "New Watchtype", new_watchtype_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -1,0 +1,12 @@
+<% provide(:h1, "Webbanner List") %>
+<p><%= paginate @webbanners %></p>
+<% @webbanners.each do |webbbanner| %>
+   <br>
+   <p>Name: <%= webbbanner.name %><%= button_to 'Edit', edit_webbanner_path(webbanner), method: :get %></p>
+   <br>
+   <p><%= image_tag(webbanner.banner_url(:thumb)) %></p>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now webbanner.created_on %> ago on (<%= webbanner.created_on.strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

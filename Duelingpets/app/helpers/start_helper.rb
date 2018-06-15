@@ -1,6 +1,39 @@
 module StartHelper
 
    private
+      def colorsbetaAlert
+         allColorschemes = Colorscheme.order("created_on desc")
+         betacolors = allColorschemes.select{|colorscheme| (colorscheme.user_id == current_user.id) && !colorscheme.activate}
+         value = betacolors.count
+         return value
+      end
+
+      def foruminvitesAlert
+         allInvites = Foruminvite.order("created_on desc")
+         inprocessInvites = allInvites.select{|foruminvite| (foruminvite.user_id == current_user.id) && (foruminvite.status == "Inprocess")}
+         value = inprocessInvites.count
+         return value
+      end
+
+      def friendrequestsAlert
+         allRequests = Friendrequest.order("created_on desc")
+         inprocessRequests = allRequests.select{|friendrequest| (friendrequest.user_id == current_user.id) && (friendrequest.status == "Inprocess")}
+         value = inprocessRequests.count
+         return value
+      end
+
+      def unreadpmsAlert
+         allPms = Pm.order("created_on desc")
+         unreadpms = allPms.select{|pm| ((pm.to_user.id == current_user.id) && pm.user2_unread) || ((pm.from_user.id == current_user.id) && pm.user1_unread)}
+         value = unreadpms.count
+         return value
+      end
+
+      def displayBanner
+         websiteBanner = Webbanner.find_by_id(1)
+         return websiteBanner
+      end
+
       def getSunk(timeframe)
          points = blogsSunk(timeframe)
          return points
@@ -43,7 +76,7 @@ module StartHelper
 
       def transferredPoints(timeframe)
          allDonors = Donor.all
-         nonBot = allDonors.select{|donor| donor.user.pouch.privilege != "Bot"}
+         nonBot = allDonors.select{|donor| ((donor.user.pouch.privilege != "Bot") && (donor.user.pouch.privilege != "Trial")) && (donor.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|donor| (currentTime - donor.created_on) <= 1.day}
@@ -82,14 +115,14 @@ module StartHelper
 
       def referrals(type)
          allReferrals = Referral.all
-         nonBot = allReferrals.select{|referral| referral.to_user.pouch.privilege != "Bot"}
+         nonBot = allReferrals.select{|referral| ((referral.to_user.pouch.privilege != "Bot") && (referral.to_user.pouch.privilege != "Trial")) && (referral.to_user.pouch.privilege != "Admin")}
 
          value = 0
          if(type == "Discovery")
-            discovery = nonBot.select{|referral| referral.referred_by.vname == "none"}
+            discovery = nonBot.select{|referral| referral.from_user.vname == "none"}
             value = discovery.count
          else
-            userReferral = nonBot.select{|referral| referral.referred_by.vname != "none"}
+            userReferral = nonBot.select{|referral| referral.from_user.vname != "none"}
             value = userReferral.count
          end
          return value
@@ -97,7 +130,7 @@ module StartHelper
 
       def referralsSourced(timeframe)
          allReferrals = Referral.all
-         nonBot = allReferrals.select{|referral| referral.referred_by.pouch.privilege != "Bot"}
+         nonBot = allReferrals.select{|referral| ((referral.from_user.pouch.privilege != "Bot") && (referral.from_user.pouch.privilege != "Trial")) && (referral.from_user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|referral| (currentTime - referral.created_on) <= 1.day}
@@ -136,14 +169,14 @@ module StartHelper
 
       def colorschemes
          allColors = Colorscheme.all
-         nonBot = allColors.select{|colorscheme| colorscheme.user.pouch.privilege != "Bot"}
+         nonBot = allColors.select{|colorscheme| ((colorscheme.user.pouch.privilege != "Bot") && (colorscheme.user.pouch.privilege != "Trial")) && (colorscheme.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def colorschemesSourced(timeframe)
          allColors = Colorscheme.all
-         nonBot = allColors.select{|colorscheme| colorscheme.user.pouch.privilege != "Bot"}
+         nonBot = allColors.select{|colorscheme| ((colorscheme.user.pouch.privilege != "Bot") && (colorscheme.user.pouch.privilege != "Trial")) && (colorscheme.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|colorscheme| (currentTime - colorscheme.created_on) <= 1.day}
@@ -183,7 +216,7 @@ module StartHelper
       def forumTime(timeframe)
          allForums = Forum.all
          firstForum = Forum.first
-         nonBot = allForums.select{|forum| forum.user.pouch.privilege != "Bot"}
+         nonBot = allForums.select{|forum| ((forum.user.pouch.privilege != "Bot") && (forum.user.pouch.privilege != "Trial")) && (forum.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|forum| (currentTime - forum.created_on) <= 1.day}
@@ -218,9 +251,47 @@ module StartHelper
          return value
       end
 
+      def forumInviteMembers(timeframe)
+         allMembers = Foruminvitemember.all
+         firstMember = Foruminvitemember.first
+         nonBot = allMembers.select{|member| ((member.user.pouch.privilege != "Bot") && (member.user.pouch.privilege != "Trial")) && (member.user.pouch.privilege != "Admin")}
+
+         #Time values
+         day = nonBot.select{|member| (currentTime - member.created_on) <= 1.day}
+         week = nonBot.select{|member| (currentTime - member.created_on) <= 1.week}
+         month = nonBot.select{|member| (currentTime - member.created_on) <= 1.month}
+         year = nonBot.select{|member| (currentTime - member.created_on) <= 1.year}
+         threeyear = nonBot.select{|member| (currentTime - member.created_on) <= 3.years}
+         bacot = nonBot.select{|member| (currentTime - member.created_on) > (firstMember.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
       def containersSourced(timeframe)
          allContainers = Topiccontainer.all
-         nonBot = allContainers.select{|topiccontainer| topiccontainer.user.pouch.privilege != "Bot"}
+         nonBot = allContainers.select{|topiccontainer| ((topiccontainer.user.pouch.privilege != "Bot") && (topiccontainer.user.pouch.privilege != "Trial")) && (topiccontainer.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -261,14 +332,14 @@ module StartHelper
 
       def containers
          allContainers = Topiccontainer.all
-         nonBot = allContainers.select{|topiccontainer| topiccontainer.user.pouch.privilege != "Bot"}
+         nonBot = allContainers.select{|topiccontainer| ((topiccontainer.user.pouch.privilege != "Bot") && (topiccontainer.user.pouch.privilege != "Trial")) && (topiccontainer.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def maintopicsSourced(timeframe)
          allTopics = Maintopic.all
-         nonBot = allTopics.select{|maintopic| maintopic.user.pouch.privilege != "Bot"}
+         nonBot = allTopics.select{|maintopic| ((maintopic.user.pouch.privilege != "Bot") && (maintopic.user.pouch.privilege != "Trial")) && (maintopic.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -309,14 +380,14 @@ module StartHelper
 
       def maintopics
          allMaintopics = Maintopic.all
-         nonBot = allMaintopics.select{|maintopic| maintopic.user.pouch.privilege != "Bot"}
+         nonBot = allMaintopics.select{|maintopic| ((maintopic.user.pouch.privilege != "Bot") && (maintopic.user.pouch.privilege != "Trial")) && (maintopic.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def subtopicsSourced(timeframe)
          allTopics = Subtopic.all
-         nonBot = allTopics.select{|subtopic| subtopic.user.pouch.privilege != "Bot"}
+         nonBot = allTopics.select{|subtopic| ((subtopic.user.pouch.privilege != "Bot") && (subtopic.user.pouch.privilege != "Trial")) && (subtopic.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -357,14 +428,14 @@ module StartHelper
 
       def subtopics
          allSubtopics = Subtopic.all
-         nonBot = allSubtopics.select{|subtopic| subtopic.user.pouch.privilege != "Bot"}
+         nonBot = allSubtopics.select{|subtopic| ((subtopic.user.pouch.privilege != "Bot") && (subtopic.user.pouch.privilege != "Trial")) && (subtopic.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def narrativesSourced(timeframe)
          allNarratives = Narrative.all
-         nonBot = allNarratives.select{|narrative| narrative.user.pouch.privilege != "Bot"}
+         nonBot = allNarratives.select{|narrative| ((narrative.user.pouch.privilege != "Bot") && (narrative.user.pouch.privilege != "Trial")) && (narrative.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -405,7 +476,7 @@ module StartHelper
 
       def narratives
          allNarratives = Narrative.all
-         nonBot = allNarratives.select{|narrative| narrative.user.pouch.privilege != "Bot"}
+         nonBot = allNarratives.select{|narrative| ((narrative.user.pouch.privilege != "Bot") && (narrative.user.pouch.privilege != "Trial")) && (narrative.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -413,7 +484,7 @@ module StartHelper
       def radioTime(timeframe)
          allRadios = Radiostation.all
          firstRadio = Radiostation.first
-         nonBot = allRadios.select{|radiostation| radiostation.user.pouch.privilege != "Bot"}
+         nonBot = allRadios.select{|radiostation| ((radiostation.user.pouch.privilege != "Bot") && (radiostation.user.pouch.privilege != "Trial")) && (radiostation.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|radiostation| (currentTime - radiostation.created_on) <= 1.day}
@@ -451,7 +522,7 @@ module StartHelper
       def mainsheetTime(timeframe)
          allMainsheets = Mainsheet.all
          firstSheet = Mainsheet.first
-         nonBot = allMainsheets.select{|mainsheet| mainsheet.user.pouch.privilege != "Bot"}
+         nonBot = allMainsheets.select{|mainsheet| ((mainsheet.user.pouch.privilege != "Bot") && (mainsheet.user.pouch.privilege != "Trial")) && (mainsheet.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|mainsheet| (currentTime - mainsheet.created_on) <= 1.day}
@@ -489,7 +560,7 @@ module StartHelper
       def subsheetTime(timeframe)
          allSubsheets = Subsheet.all
          firstSheet = Subsheet.first
-         nonBot = allSubsheets.select{|subsheet| subsheet.user.pouch.privilege != "Bot"}
+         nonBot = allSubsheets.select{|subsheet| ((subsheet.user.pouch.privilege != "Bot") && (subsheet.user.pouch.privilege != "Trial")) && (subsheet.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|subsheet| (currentTime - subsheet.created_on) <= 1.day}
@@ -527,7 +598,7 @@ module StartHelper
       def sounds
          allSounds = Sound.all
          reviewedSounds = allSounds.select{|sound| sound.reviewed}
-         nonBot = reviewedSounds.select{|sound| sound.user.pouch.privilege != "Bot"}
+         nonBot = reviewedSounds.select{|sound| ((sound.user.pouch.privilege != "Bot") && (sound.user.pouch.privilege != "Trial")) && (sound.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -535,7 +606,7 @@ module StartHelper
       def soundsSourced(timeframe)
          allSounds = Sound.all
          reviewedSounds = allSounds.select{|sound| sound.reviewed}
-         nonBot = reviewedSounds.select{|sound| sound.user.pouch.privilege != "Bot"}
+         nonBot = reviewedSounds.select{|sound| ((sound.user.pouch.privilege != "Bot") && (sound.user.pouch.privilege != "Trial")) && (sound.user.pouch.privilege != "Admin")}
          points = 0
          if(reviewedSounds)
             #Time values
@@ -577,7 +648,7 @@ module StartHelper
       def galleryTime(timeframe)
          allGalleries = Gallery.all
          firstGallery = Gallery.first
-         nonBot = allGalleries.select{|gallery| gallery.user.pouch.privilege != "Bot"}
+         nonBot = allGalleries.select{|gallery| ((gallery.user.pouch.privilege != "Bot") && (gallery.user.pouch.privilege != "Trial")) && (gallery.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|gallery| (currentTime - gallery.created_on) <= 1.day}
@@ -615,7 +686,7 @@ module StartHelper
       def mainfolderTime(timeframe)
          allMainfolders = Mainfolder.all
          firstFolder = Mainfolder.first
-         nonBot = allMainfolders.select{|mainfolder| mainfolder.user.pouch.privilege != "Bot"}
+         nonBot = allMainfolders.select{|mainfolder| ((mainfolder.user.pouch.privilege != "Bot") && (mainfolder.user.pouch.privilege != "Trial")) && (mainfolder.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|mainfolder| (currentTime - mainfolder.created_on) <= 1.day}
@@ -653,7 +724,7 @@ module StartHelper
       def subfolderTime(timeframe)
          allSubfolders = Subfolder.all
          firstFolder = Subfolder.first
-         nonBot = allSubfolders.select{|subfolder| subfolder.user.pouch.privilege != "Bot"}
+         nonBot = allSubfolders.select{|subfolder| ((subfolder.user.pouch.privilege != "Bot") && (subfolder.user.pouch.privilege != "Trial")) && (subfolder.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|subfolder| (currentTime - subfolder.created_on) <= 1.day}
@@ -691,7 +762,7 @@ module StartHelper
       def arts
          allArts = Art.all
          reviewedArts = allArts.select{|art| art.reviewed}
-         nonBot = reviewedArts.select{|art| art.user.pouch.privilege != "Bot"}
+         nonBot = reviewedArts.select{|art| ((art.user.pouch.privilege != "Bot") && (art.user.pouch.privilege != "Trial")) && (art.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -699,7 +770,7 @@ module StartHelper
       def artsSourced(timeframe)
          allArts = Art.all
          reviewedArts = allArts.select{|art| art.reviewed}
-         nonBot = reviewedArts.select{|art| art.user.pouch.privilege != "Bot"}
+         nonBot = reviewedArts.select{|art| ((art.user.pouch.privilege != "Bot") && (art.user.pouch.privilege != "Trial")) && (art.user.pouch.privilege != "Admin")}
          points = 0
          if(reviewedArts)
             #Time values
@@ -740,7 +811,7 @@ module StartHelper
 
       def favoriteartsSourced(timeframe)
          allFavoritearts = Favoriteart.all
-         nonBot = allFavoritearts.select{|favoriteart| favoriteart.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritearts.select{|favoriteart| ((favoriteart.user.pouch.privilege != "Bot") && (favoriteart.user.pouch.privilege != "Trial")) && (favoriteart.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -781,14 +852,14 @@ module StartHelper
 
       def favoritearts
          allFavoritearts = Favoriteart.all
-         nonBot = allFavoritearts.select{|favoriteart| favoriteart.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritearts.select{|favoriteart| ((favoriteart.user.pouch.privilege != "Bot") && (favoriteart.user.pouch.privilege != "Trial")) && (favoriteart.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def artstarsSourced(timeframe)
          allArtstars = Artstar.all
-         nonBot = allArtstars.select{|artstar| artstar.user.pouch.privilege != "Bot"}
+         nonBot = allArtstars.select{|artstar| ((artstar.user.pouch.privilege != "Bot") && (artstar.user.pouch.privilege != "Trial")) && (artstar.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -829,14 +900,14 @@ module StartHelper
 
       def artstars
          allArtstars = Artstar.all
-         nonBot = allArtstars.select{|artstar| artstar.user.pouch.privilege != "Bot"}
+         nonBot = allArtstars.select{|artstar| ((artstar.user.pouch.privilege != "Bot") && (artstar.user.pouch.privilege != "Trial")) && (artstar.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def artcritiquesSourced(timeframe)
          allArtcritiques = Artcomment.all
-         nonBot = allArtcritiques.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && artcomment.critique}
+         nonBot = allArtcritiques.select{|artcomment| (((artcomment.user.pouch.privilege != "Bot") && (artcomment.user.pouch.privilege != "Trial")) && (artcomment.user.pouch.privilege != "Admin")) && artcomment.critique}
          points = 0
          if(nonBot)
             #Time values
@@ -877,7 +948,7 @@ module StartHelper
 
       def artcritiques
          allArtcritiques = Artcomment.all
-         nonBot = allArtcritiques.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && artcomment.critique}
+         nonBot = allArtcritiques.select{|artcomment| (((artcomment.user.pouch.privilege != "Bot") && (artcomment.user.pouch.privilege != "Trial")) && (artcomment.user.pouch.privilege != "Admin")) && artcomment.critique}
          value = nonBot.count
          return value
       end
@@ -885,7 +956,7 @@ module StartHelper
       def artcommentTime(timeframe)
          allArtcomments = Artcomment.all
          firstComment = Artcomment.first
-         nonBot = allArtcomments.select{|artcomment| artcomment.user.pouch.privilege != "Bot" && !artcomment.critique}
+         nonBot = allArtcomments.select{|artcomment| (((artcomment.user.pouch.privilege != "Bot") && (artcomment.user.pouch.privilege != "Trial")) && (artcomment.user.pouch.privilege != "Admin")) && !artcomment.critique}
 
          #Time values
          day = nonBot.select{|artcomment| (currentTime - artcomment.created_on) <= 1.day}
@@ -923,7 +994,7 @@ module StartHelper
       def channelTime(timeframe)
          allChannels = Channel.all
          firstChannel = Channel.first
-         nonBot = allChannels.select{|channel| channel.user.pouch.privilege != "Bot"}
+         nonBot = allChannels.select{|channel| ((channel.user.pouch.privilege != "Bot") && (channel.user.pouch.privilege != "Trial")) && (channel.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|channel| (currentTime - channel.created_on) <= 1.day}
@@ -961,7 +1032,7 @@ module StartHelper
       def mainplaylistTime(timeframe)
          allMainplaylists = Mainplaylist.all
          firstPlaylist = Mainplaylist.first
-         nonBot = allMainplaylists.select{|mainplaylist| mainplaylist.user.pouch.privilege != "Bot"}
+         nonBot = allMainplaylists.select{|mainplaylist| ((mainplaylist.user.pouch.privilege != "Bot") && (mainplaylist.user.pouch.privilege != "Trial")) && (mainplaylist.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|mainplaylist| (currentTime - mainplaylist.created_on) <= 1.day}
@@ -999,7 +1070,7 @@ module StartHelper
       def subplaylistTime(timeframe)
          allSubplaylists = Subplaylist.all
          firstPlaylist = Subplaylist.first
-         nonBot = allSubplaylists.select{|subplaylist| subplaylist.user.pouch.privilege != "Bot"}
+         nonBot = allSubplaylists.select{|subplaylist| ((subplaylist.user.pouch.privilege != "Bot") && (subplaylist.user.pouch.privilege != "Trial")) && (subplaylist.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|subplaylist| (currentTime - subplaylist.created_on) <= 1.day}
@@ -1037,7 +1108,7 @@ module StartHelper
       def movies
          allMovies = Movie.all
          reviewedMovies = allMovies.select{|movie| movie.reviewed}
-         nonBot = reviewedMovies.select{|movie| movie.user.pouch.privilege != "Bot"}
+         nonBot = reviewedMovies.select{|movie| ((movie.user.pouch.privilege != "Bot") && (movie.user.pouch.privilege != "Trial")) && (movie.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -1045,7 +1116,7 @@ module StartHelper
       def moviesSourced(timeframe)
          allMovies = Movie.all
          reviewedMovies = allMovies.select{|movie| movie.reviewed}
-         nonBot = reviewedMovies.select{|movie| movie.user.pouch.privilege != "Bot"}
+         nonBot = reviewedMovies.select{|movie| ((movie.user.pouch.privilege != "Bot") && (movie.user.pouch.privilege != "Trial")) && (movie.user.pouch.privilege != "Admin")}
          points = 0
          if(reviewedMovies)
             #Time values
@@ -1086,7 +1157,7 @@ module StartHelper
 
       def favoritemoviesSourced(timeframe)
          allFavoritemovies = Favoritemovie.all
-         nonBot = allFavoritemovies.select{|favoritemovie| favoritemovie.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritemovies.select{|favoritemovie| ((favoritemovie.user.pouch.privilege != "Bot") && (favoritemovie.user.pouch.privilege != "Trial")) && (favoritemovie.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -1127,14 +1198,14 @@ module StartHelper
 
       def favoritemovies
          allFavoritemovies = Favoritemovie.all
-         nonBot = allFavoritemovies.select{|favoritemovie| favoritemovie.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritemovies.select{|favoritemovie| ((favoritemovie.user.pouch.privilege != "Bot") && (favoritemovie.user.pouch.privilege != "Trial")) && (favoritemovie.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def moviestarsSourced(timeframe)
          allMoviestars = Moviestar.all
-         nonBot = allMoviestars.select{|moviestar| moviestar.user.pouch.privilege != "Bot"}
+         nonBot = allMoviestars.select{|moviestar| ((moviestar.user.pouch.privilege != "Bot") && (moviestar.user.pouch.privilege != "Trial")) && (moviestar.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -1175,14 +1246,14 @@ module StartHelper
 
       def moviestars
          allMoviestars = Moviestar.all
-         nonBot = allMoviestars.select{|moviestar| moviestar.user.pouch.privilege != "Bot"}
+         nonBot = allMoviestars.select{|moviestar| ((moviestar.user.pouch.privilege != "Bot") && (moviestar.user.pouch.privilege != "Trial")) && (moviestar.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def moviecritiquesSourced(timeframe)
          allMoviecritiques = Moviecomment.all
-         nonBot = allMoviecritiques.select{|moviecomment| moviecomment.user.pouch.privilege != "Bot" && moviecomment.critique}
+         nonBot = allMoviecritiques.select{|moviecomment| (((moviecomment.user.pouch.privilege != "Bot") && (moviecomment.user.pouch.privilege != "Trial")) && (moviecomment.user.pouch.privilege != "Admin")) && moviecomment.critique}
          points = 0
          if(nonBot)
             #Time values
@@ -1223,7 +1294,7 @@ module StartHelper
 
       def moviecritiques
          allMoviecritiques = Moviecomment.all
-         nonBot = allMoviecritiques.select{|moviecomment| moviecomment.user.pouch.privilege != "Bot" && moviecomment.critique}
+         nonBot = allMoviecritiques.select{|moviecomment| (((moviecomment.user.pouch.privilege != "Bot") && (moviecomment.user.pouch.privilege != "Trial")) && (moviecomment.user.pouch.privilege != "Admin")) && moviecomment.critique}
          value = nonBot.count
          return value
       end
@@ -1231,7 +1302,7 @@ module StartHelper
       def moviecommentTime(timeframe)
          allMoviecomments = Moviecomment.all
          firstComment = Moviecomment.first
-         nonBot = allMoviecomments.select{|moviecomment| moviecomment.user.pouch.privilege != "Bot" && !moviecomment.critique}
+         nonBot = allMoviecomments.select{|moviecomment| (((moviecomment.user.pouch.privilege != "Bot") && (moviecomment.user.pouch.privilege != "Trial")) && (moviecomment.user.pouch.privilege != "Admin")) && !moviecomment.critique}
 
          #Time values
          day = nonBot.select{|moviecomment| (currentTime - moviecomment.created_on) <= 1.day}
@@ -1268,7 +1339,7 @@ module StartHelper
 
       def favoritesoundsSourced(timeframe)
          allFavoritesounds = Favoritesound.all
-         nonBot = allFavoritesounds.select{|favoritesound| favoritesound.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritesounds.select{|favoritesound| ((favoritesound.user.pouch.privilege != "Bot") && (favoritesound.user.pouch.privilege != "Trial")) && (favoritesound.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -1309,14 +1380,14 @@ module StartHelper
 
       def favoritesounds
          allFavoritesounds = Favoritesound.all
-         nonBot = allFavoritesounds.select{|favoritesound| favoritesound.user.pouch.privilege != "Bot"}
+         nonBot = allFavoritesounds.select{|favoritesound| ((favoritesound.user.pouch.privilege != "Bot") && (favoritesound.user.pouch.privilege != "Trial")) && (favoritesound.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def soundstarsSourced(timeframe)
          allSoundstars = Soundstar.all
-         nonBot = allSoundstars.select{|soundstar| soundstar.user.pouch.privilege != "Bot"}
+         nonBot = allSoundstars.select{|soundstar| ((soundstar.user.pouch.privilege != "Bot") && (soundstar.user.pouch.privilege != "Trial")) && (soundstar.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -1357,14 +1428,14 @@ module StartHelper
 
       def soundstars
          allSoundstars = Soundstar.all
-         nonBot = allSoundstars.select{|soundstar| soundstar.user.pouch.privilege != "Bot"}
+         nonBot = allSoundstars.select{|soundstar| ((soundstar.user.pouch.privilege != "Bot") && (soundstar.user.pouch.privilege != "Trial")) && (soundstar.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def soundcritiquesSourced(timeframe)
          allSoundcritiques = Soundcomment.all
-         nonBot = allSoundcritiques.select{|soundcomment| soundcomment.user.pouch.privilege != "Bot" && soundcomment.critique}
+         nonBot = allSoundcritiques.select{|soundcomment| (((soundcomment.user.pouch.privilege != "Bot") && (soundcomment.user.pouch.privilege != "Trial")) && (soundcomment.user.pouch.privilege != "Admin")) && soundcomment.critique}
          points = 0
          if(nonBot)
             #Time values
@@ -1405,7 +1476,7 @@ module StartHelper
 
       def soundcritiques
          allSoundcritiques = Soundcomment.all
-         nonBot = allSoundcritiques.select{|soundcomment| soundcomment.user.pouch.privilege != "Bot" && soundcomment.critique}
+         nonBot = allSoundcritiques.select{|soundcomment| (((soundcomment.user.pouch.privilege != "Bot") && (soundcomment.user.pouch.privilege != "Trial")) && (soundcomment.user.pouch.privilege != "Admin")) && soundcomment.critique}
          value = nonBot.count
          return value
       end
@@ -1413,7 +1484,7 @@ module StartHelper
       def soundcommentTime(timeframe)
          allSoundcomments = Soundcomment.all
          firstComment = Soundcomment.first
-         nonBot = allSoundcomments.select{|soundcomment| soundcomment.user.pouch.privilege != "Bot" && !soundcomment.critique}
+         nonBot = allSoundcomments.select{|soundcomment| (((soundcomment.user.pouch.privilege != "Bot") && (soundcomment.user.pouch.privilege != "Trial")) && (soundcomment.user.pouch.privilege != "Admin")) && !soundcomment.critique}
 
          #Time values
          day = nonBot.select{|soundcomment| (currentTime - soundcomment.created_on) <= 1.day}
@@ -1568,7 +1639,7 @@ module StartHelper
       def watchesSourced(timeframe)
          allWatches = Watch.all
          firstWatch = Watch.first
-         nonBot = allWatches.select{|watch| watch.from_user.pouch.privilege != "Bot"}
+         nonBot = allWatches.select{|watch| ((watch.from_user.pouch.privilege != "Bot") && (watch.from_user.pouch.privilege != "Trial")) && (watch.from_user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|watch| (currentTime - watch.created_on) <= 1.day}
@@ -1605,14 +1676,14 @@ module StartHelper
 
       def watches
          allWatches = Watch.all
-         nonBot = allWatches.select{|watch| watch.from_user.pouch.privilege != "Bot"}
+         nonBot = allWatches.select{|watch| ((watch.from_user.pouch.privilege != "Bot") && (watch.from_user.pouch.privilege != "Trial")) && (watch.from_user.pouch.privilege != "Admin")}
          value = nonBot.count
       end
 
       def friendTime(timeframe)
          allFriends = Friend.all
          firstFriend = Friend.first
-         nonBot = allFriends.select{|friend| friend.to_user.pouch.privilege != "Bot" && friend.from_user.pouch.privilege != "Bot"}
+         nonBot = allFriends.select{|friend| (((friend.to_user.pouch.privilege != "Bot") && (friend.to_user.pouch.privilege != "Trial")) && (friend.to_user.pouch.privilege != "Admin")) && (((friend.from_user.pouch.privilege != "Bot") && (friend.from_user.pouch.privilege != "Trial")) && (friend.from_user.pouch.privilege != "Admin"))}
 
          #Time values
          day = nonBot.select{|friend| (currentTime - friend.created_on) <= 1.day}
@@ -1649,7 +1720,7 @@ module StartHelper
 
       def replies
          allReplies = Reply.all
-         nonBot = allReplies.select{|reply| reply.user.pouch.privilege != "Bot"}
+         nonBot = allReplies.select{|reply| ((reply.user.pouch.privilege != "Bot") && (reply.user.pouch.privilege != "Trial")) && (reply.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -1657,7 +1728,7 @@ module StartHelper
       def repliesSourced(timeframe)
          allReplies = Reply.all
          uniqueReplies = allReplies.select{|reply| reply.user.id != reply.blog.user.id}
-         nonBot = uniqueReplies.select{|reply| reply.user.pouch.privilege != "Bot"}
+         nonBot = uniqueReplies.select{|reply| ((reply.user.pouch.privilege != "Bot") && (reply.user.pouch.privilege != "Trial")) && (reply.user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|reply| (currentTime - reply.created_on) <= 1.day}
@@ -1696,14 +1767,14 @@ module StartHelper
 
       def replies
          allReplies = Reply.all
-         nonBot = allReplies.select{|reply| reply.user.pouch.privilege != "Bot"}
+         nonBot = allReplies.select{|reply| ((reply.user.pouch.privilege != "Bot") && (reply.user.pouch.privilege != "Trial")) && (reply.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
 
       def blogstarsSourced(timeframe)
          allBlogstars = Blogstar.all
-         nonBot = allBlogstars.select{|blogstar| blogstar.user.pouch.privilege != "Bot"}
+         nonBot = allBlogstars.select{|blogstar| ((blogstar.user.pouch.privilege != "Bot") && (blogstar.user.pouch.privilege != "Trial")) && (blogstar.user.pouch.privilege != "Admin")}
          points = 0
          if(nonBot)
             #Time values
@@ -1744,15 +1815,49 @@ module StartHelper
 
       def blogstars
          allBlogstars = Blogstar.all
-         nonBot = allBlogstars.select{|blogstar| blogstar.user.pouch.privilege != "Bot"}
+         nonBot = allBlogstars.select{|blogstar| ((blogstar.user.pouch.privilege != "Bot") && (blogstar.user.pouch.privilege != "Trial")) && (blogstar.user.pouch.privilege != "Admin")}
          value = nonBot.count
+         return value
+      end
+
+      def blogvisitors(timeframe)
+         allVisitors = Blogvisit.all
+         nonBot = allVisitors.select{|blogvisit| ((blogvisit.from_user.pouch.privilege != "Bot") && (blogvisit.from_user.pouch.privilege != "Trial")) && (blogvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|blogvisit| (currentTime - blogvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|blogvisit| (currentTime - blogvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|blogvisit| (currentTime - blogvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|blogvisit| (currentTime - blogvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|blogvisit| (currentTime - blogvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
          return value
       end
 
       def blogsSourced(timeframe)
          allBlogs = Blog.all
          regularBlogs = allBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s == "" && blog.largeimage1.to_s == "" && blog.largeimage2.to_s == "" && blog.largeimage3.to_s == "" && blog.smallimage1.to_s == "" && blog.smallimage2.to_s == "" && blog.smallimage3.to_s == "" && blog.smallimage4.to_s == "" && blog.smallimage5.to_s == ""}
-         nonBot = regularBlogs.select{|blog| blog.user.pouch.privilege != "Bot"}
+         nonBot = regularBlogs.select{|blog| ((blog.user.pouch.privilege != "Bot") && (blog.user.pouch.privilege != "Trial")) && (blog.user.pouch.privilege != "Admin")}
          points = 0
          if(regularBlogs)
             #Time values
@@ -1827,7 +1932,7 @@ module StartHelper
       def blogsSunk(timeframe)
          allBlogs = Blog.all
          adBlogs = allBlogs.select{|blog| blog.reviewed && blog.adbanner.to_s != "" || blog.largeimage1.to_s != "" || blog.largeimage2.to_s != "" || blog.largeimage3.to_s != "" || blog.smallimage1.to_s != "" || blog.smallimage2.to_s != "" || blog.smallimage3.to_s != "" || blog.smallimage4.to_s != "" || blog.smallimage5.to_s != ""}
-         nonBot = adBlogs.select{|blog| blog.user.pouch.privilege != "Bot"}
+         nonBot = adBlogs.select{|blog| ((blog.user.pouch.privilege != "Bot") && (blog.user.pouch.privilege != "Trial")) && (blog.user.pouch.privilege != "Admin")}
          points = 0
          if(adBlogs)
             #Time values
@@ -1951,7 +2056,7 @@ module StartHelper
       def blogs
          allBlogs = Blog.all
          reviewedBlogs = allBlogs.select{|blog| blog.reviewed}
-         nonBot = reviewedBlogs.select{|blog| blog.user.pouch.privilege != "Bot"}
+         nonBot = reviewedBlogs.select{|blog| ((blog.user.pouch.privilege != "Bot") && (blog.user.pouch.privilege != "Trial")) && (blog.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -1967,7 +2072,7 @@ module StartHelper
       def getEconomy
          allPouches = Pouch.all
          pouchesNotZero = allPouches.select{|pouch| pouch.activated && pouch.amount > 0}
-         nonBot = pouchesNotZero.select{|pouch| pouch.user.pouch.privilege != "Bot"}
+         nonBot = pouchesNotZero.select{|pouch| ((pouch.privilege != "Bot") && (pouch.privilege != "Trial")) && (pouch.privilege != "Admin")}
          points = nonBot.sum{|pouch| pouch.amount}
          return points
       end
@@ -1984,9 +2089,9 @@ module StartHelper
          allPouches = Pouch.all
 
          #Status value
-         onlineUsers = allPouches.select{|pouch| (pouch.activated && pouch.privilege != "Bot") && (!pouch.signed_out_at && pouch.last_visited && (currentTime - pouch.last_visited) < 30.minutes)}
-         inactiveUsers = allPouches.select{|pouch| (pouch.activated && pouch.privilege != "Bot") && (!pouch.signed_out_at && pouch.last_visited && (currentTime - pouch.last_visited) >= 30.minutes)}
-         offlineUsers = allPouches.select{|pouch| (pouch.activated && pouch.privilege != "Bot") && pouch.signed_in_at && pouch.signed_out_at}
+         onlineUsers = allPouches.select{|pouch| (pouch.activated && (((pouch.privilege != "Bot") && (pouch.privilege != "Trial")) && (pouch.privilege != "Admin"))) && (!pouch.signed_out_at && pouch.last_visited && (currentTime - pouch.last_visited) < 30.minutes)}
+         inactiveUsers = allPouches.select{|pouch| (pouch.activated && (((pouch.privilege != "Bot") && (pouch.privilege != "Trial")) && (pouch.privilege != "Admin"))) && (!pouch.signed_out_at && pouch.last_visited && (currentTime - pouch.last_visited) >= 30.minutes)}
+         offlineUsers = allPouches.select{|pouch| (pouch.activated && (((pouch.privilege != "Bot") && (pouch.privilege != "Trial")) && (pouch.privilege != "Admin"))) && pouch.signed_in_at && pouch.signed_out_at}
          bots = allPouches.select{|pouch| !pouch.activated}
 
          #Count values
@@ -2009,7 +2114,7 @@ module StartHelper
       def getGroups(name)
          allUsers = User.all
          currentDate = Date.today
-         nonBot = allUsers.select{|user| user.pouch.privilege != "Bot"}
+         nonBot = allUsers.select{|user| ((user.pouch.privilege != "Bot") && (user.pouch.privilege != "Trial")) && (user.pouch.privilege != "Admin")}
 
          #Group values
          babbity = nonBot.select{|user| (currentDate.to_time - user.birthday.to_time) < 7.years}
@@ -2048,7 +2153,7 @@ module StartHelper
       def getSignups(timeframe)
          allUsers = User.all
          firstUser = User.first
-         nonBot = allUsers.select{|user| user.pouch.privilege != "Bot"}
+         nonBot = allUsers.select{|user| ((user.pouch.privilege != "Bot") && (user.pouch.privilege != "Trial")) && (user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|user| (currentTime - user.joined_on) <= 1.day}
@@ -2083,10 +2188,44 @@ module StartHelper
          return signups
       end
 
+      def uservisitors(timeframe)
+         allVisitors = Uservisit.all
+         nonBot = allVisitors.select{|uservisit| ((uservisit.from_user.pouch.privilege != "Bot") && (uservisit.from_user.pouch.privilege != "Trial")) && (uservisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|uservisit| (currentTime - uservisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|uservisit| (currentTime - uservisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|uservisit| (currentTime - uservisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|uservisit| (currentTime - uservisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|uservisit| (currentTime - uservisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
+      end
+
       def shoutTime(timeframe)
          allShouts = Shout.all
          firstShout = Shout.first
-         nonBot = allShouts.select{|shout| shout.from_user.pouch.privilege != "Bot"}
+         nonBot = allShouts.select{|shout| ((shout.from_user.pouch.privilege != "Bot") && (shout.from_user.pouch.privilege != "Trial")) && (shout.from_user.pouch.privilege != "Admin")}
 
          #Time values
          day = nonBot.select{|shout| (currentTime - shout.created_on) <= 1.day}

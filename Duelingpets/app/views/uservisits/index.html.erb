@@ -1,0 +1,17 @@
+<% provide(:h1, @user.vname + "'s visitors") %>
+<p><%= paginate @uservisits %></p>
+<% @uservisits.each do |uservisit| %>
+   <br>
+   <% if uservisit.from_user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(uservisit.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(uservisit.from_user) %><%= link_to uservisit.from_user.vname, user_path(uservisit.from_user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now uservisit.created_on %> ago on (<%= uservisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(uservisit.from_user) %>
+      <% if getActivity(uservisit.from_user) == "Offline" || getActivity(uservisit.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(uservisit.from_user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

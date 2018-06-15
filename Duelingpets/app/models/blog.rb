@@ -11,6 +11,7 @@ class Blog < ActiveRecord::Base
    #Blogs related
    has_many :replies, :foreign_key => "blog_id", :dependent => :destroy
    has_many :blogstars, :foreign_key => "blog_id", :dependent => :destroy
+   has_many :blogvisits, :foreign_key => "blog_id", :dependent => :destroy
    belongs_to :user
 
    #Uploader section

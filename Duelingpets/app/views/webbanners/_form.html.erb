@@ -1,0 +1,35 @@
+<%= form_for(@webbanner) do |f| %>
+  <% if @webbanner.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@webbanner.errors.count, "error") %> prohibited this webbanner from being saved:</h2>
+
+      <ul>
+      <% @webbanner.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  Banner files
+  <div class="field">
+     <%= image_tag @webbanner.banner_url(:thumb).to_s if @webbanner.banner? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :banner %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_banner_url, "or Webbbaner URL" %><br />
+    <%= f.text_field :remote_banner_url %>
+    <%= f.hidden_field :banner_cache %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', webbanners_path %></p>
+<% end %>

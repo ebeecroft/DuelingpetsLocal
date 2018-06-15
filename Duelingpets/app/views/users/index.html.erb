@@ -1,15 +1,16 @@
 <% provide(:h1, "User List") %>
-<p><%= paginate @users %></p>
+<div class="navlinks"><%= paginate @users %></div>
 <% @users.each do |user| %>
     <br>
-    <p class="navlinks">Vname: <%= link_to user.vname, user %><%= button_to 'Edit', edit_user_path(user), method: :get %><%= button_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+    <div class="container"><p class="navlinks">Vname: <%= link_to user.vname, user %></div> <div class="container"><%= button_to 'Edit', edit_user_path(user), method: :get %></div> <div class="container"><%= button_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></div></p>
     <p>Name: <%= user.first_name %> <%= user.last_name %> joined: <%= distance_of_time_in_words_to_now user.joined_on %> ago</p>
     <p>Date joined: <%= user.joined_on.strftime("%B-%d-%Y") %></p>
     <p>Birthday: <%= user.birthday.strftime("%B-%d-%Y") %></p>
     <p>Email: <%= user.email %></p>
     <p>Country: <%= user.country %></p>
     <p>Timezone: <%= user.country_timezone %></p>
-    <p>Group: <%= getGroup(user) %></p>
+    <p>Writing Group: <%= getGroup(user) %></p>
+    <p>Reading Group: <%= user.bookgroup.name %></p>
     <p>Pouch: <%= user.pouch.amount %> points</p>
     <p>Status: <%= getActivity(user) %>
        <% if getActivity(user) == "Offline" || getActivity(user) == "Inactive" %>

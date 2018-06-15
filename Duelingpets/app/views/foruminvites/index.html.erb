@@ -1,0 +1,23 @@
+<% provide(:h1, "Foruminvite List") %>
+<p><%= paginate @foruminvites %></p>
+<% @foruminvites.each do |foruminvite| %>
+   <br>
+   <div class="container">Status: <%= foruminvite.status %></div> <div class="container"><%= button_to 'Destroy', [foruminvite.forum, foruminvite], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now foruminvite.created_on %> ago on (<%= foruminvite.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p class="navlinks">User: <%= getUserPrivilege(foruminvite.to_user) %><%= link_to foruminvite.to_user.vname, user_path(foruminvite.to_user) %></p>
+   <% if foruminvite.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(foruminvite.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Foruminvite by: <%= getUserPrivilege(foruminvite.from_user) %><%= link_to foruminvite.from_user.vname, user_path(foruminvite.from_user) %></p>
+   <p class="navlinks">Originated from forum: <%= link_to foruminvite.forum.name, user_forum_path(foruminvite.forum.user, foruminvite.forum) %></p>
+   <p>Status: <%= getActivity(foruminvite.from_user) %>
+      <% if getActivity(foruminvite.from_user) == "Offline" || getActivity(foruminvite.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(foruminvite.from_user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= foruminvite.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

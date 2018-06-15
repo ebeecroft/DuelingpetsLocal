@@ -1,28 +1,21 @@
 <% provide(:h1, "Shout List") %>
-<p><%= paginate @shouts %></p>
-<table>
-  <tr>
-    <th>To User</th>
-    <th>Message</th>
-    <th>Created on</th>
-    <th>From User</th>
-    <th>Status</th>
-    <th></th>
-  </tr>
-
+<div class="navlinks"><%= paginate @shouts %></div>
 <% @shouts.each do |shout| %>
-  <tr>
-    <td class="navlinks"><%= link_to shout.to_user.vname, user_path(shout.to_user) %></td>
-    <td><%= shout.message %></td>
-    <td><%= distance_of_time_in_words_to_now shout.created_on %> ago on (<%= shout.created_on.strftime("%B-%d-%Y") %>)</td>
-    <td class="navlinks"><%= link_to shout.from_user.vname, user_path(shout.from_user) %></td>
-    <td><%= getActivity(shout.from_user) %>
-        <% if getActivity(shout.from_user) == "Offline" || getActivity(shout.from_user) == "Inactive" %>
-           for <%= distance_of_time_in_words_to_now getTime(shout.from_user) %>
-        <% end %></td>
-    <td class="navlinks"><%= button_to 'Destroy', [shout.to_user, shout], method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
+   <br>
+   <% if shout.to_user.userinfo.miniavatar.to_s != "" %>
+      <p><%= image_tag(shout.to_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks"><div class="container">Reciever: <%= link_to shout.to_user.vname, user_path(shout.to_user) %></div> <div class="container"><%= button_to 'Destroy', [shout.to_user, shout], method: :delete, data: { confirm: 'Are you sure?' } %></div></p>
+   <p>Created on: <%= distance_of_time_in_words_to_now shout.created_on %> ago on (<%= shout.created_on.strftime("%B-%d-%Y") %>)</p>
+   <br>
+   <p><%= shout.message %></p>
+   <br>
+   <p class="navlinks">Sender: <%= link_to shout.from_user.vname, user_path(shout.from_user) %></p>
+   <p>Status: <%= getActivity(shout.from_user) %>
+      <% if getActivity(shout.from_user) == "Offline" || getActivity(shout.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(shout.from_user) %>
+      <% end %>
+   </p>
 <% end %>
-</table>
 <br>
 <p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -47,6 +47,9 @@
          <% end %>
       </p>
       <p>Forum group: <%= narrative.forumgroup.name %></p>
+      <% if(current_user && ((current_user.id == @subtopic.maintopic.topiccontainer.forum.user_id) && (narrative.user_id != @subtopic.maintopic.topiccontainer.forum.user_id))) %>
+         <p><%= button_to 'Appoint Successor', pastforumowners_review2_path(:forum_id=>@subtopic.maintopic.topiccontainer.forum.id, :user_id=>narrative.user.id), method: :post %></p>
+      <% end %>
       <br>
       <p><%= textFormater("Multi", narrative.story, "All").html_safe %></p>
    <% end %>

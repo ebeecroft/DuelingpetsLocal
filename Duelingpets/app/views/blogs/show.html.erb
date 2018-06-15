@@ -12,9 +12,9 @@
 <br>
 <p><%= image_tag(@blog.user.userinfo.miniavatar_url(:thumb)) %></p>
 <% if @blog.adbanner.to_s == "" %>
-   <p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= @blog.user.vname %>
+   <div class="container"><p class="navlinks">Author: <%= getUserPrivilege(@blog.user) %><%= link_to @blog.user.vname, user_path(@blog.user) %></div>
       <% if current_user && (current_user.id == @blog.user_id || current_user.admin) %>
-         <%= button_to 'Edit Blog', edit_user_blog_path(@blog.user, @blog), method: :get %><%= button_to 'Destroy Blog', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %>
+         <div class="container"><%= button_to 'Edit Blog', edit_user_blog_path(@blog.user, @blog), method: :get %></div> <div class="container"><%= button_to 'Destroy Blog', [@blog.user, @blog], method: :delete, data: { confirm: 'Are you sure?' } %></div
       <% end %>
    </p>
 <% else %>
@@ -25,6 +25,10 @@
       for <%= distance_of_time_in_words_to_now getTime(@blog.user) %>
    <% end %>
 </p>
+<br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getBlogVisitors("past20mins", @blog), blog_blogvisits_path(@blog) %> last 40 mins: <%= link_to getBlogVisitors("past40mins", @blog), blog_blogvisits_path(@blog) %> last hour: <%= link_to getBlogVisitors("pasthour", @blog), blog_blogvisits_path(@blog) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getBlogVisitors("past2hours", @blog), blog_blogvisits_path(@blog) %> last 3 hours: <%= link_to getBlogVisitors("past3hours", @blog), blog_blogvisits_path(@blog) %></p>
 <% if @blog.admascot.to_s != "" %>
    <br>
    <p class="centerad"><%= image_tag(@blog.admascot_url(:thumb)) %></p>

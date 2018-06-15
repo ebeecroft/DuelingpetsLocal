@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180302033824) do
+ActiveRecord::Schema.define(:version => 20180528222013) do
 
   create_table "artcomments", :force => true do |t|
     t.text     "message"
@@ -82,6 +82,14 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
   end
 
   create_table "blogstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "blog_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "blogvisits", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
     t.integer  "blog_id"
@@ -196,6 +204,25 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "foruminvitemembers", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "forum_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "foruminvites", :force => true do |t|
+    t.text     "message"
+    t.datetime "created_on"
+    t.string   "status"
+    t.integer  "user_id"
+    t.integer  "from_user_id"
+    t.integer  "forum_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "forums", :force => true do |t|
     t.string   "name"
     t.text     "description"
@@ -209,6 +236,16 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.boolean  "music_on",           :default => false
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
+  end
+
+  create_table "forumtimers", :force => true do |t|
+    t.datetime "forumowner_last_visited"
+    t.datetime "moderator_last_visited"
+    t.datetime "member_last_visited"
+    t.datetime "guest_last_visited"
+    t.integer  "forum_id"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "forumtypes", :force => true do |t|
@@ -357,6 +394,25 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "pagetimers", :force => true do |t|
+    t.string   "name"
+    t.datetime "expiretime"
+    t.integer  "duration"
+    t.string   "timeformat"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "pastforumowners", :force => true do |t|
+    t.string   "status"
+    t.datetime "created_on"
+    t.integer  "forum_id"
+    t.integer  "user_id"
+    t.integer  "pastowner_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "pmreplies", :force => true do |t|
     t.text     "message"
     t.datetime "created_on"
@@ -412,10 +468,10 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
 
   create_table "referrals", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "referred_by_id"
+    t.integer  "from_user_id"
     t.datetime "created_on"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "registrations", :force => true do |t|
@@ -577,6 +633,7 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.string   "country_timezone"
     t.boolean  "military_time",    :default => false
     t.date     "birthday"
+    t.integer  "bookgroup_id"
     t.string   "login_id"
     t.string   "vname"
     t.datetime "joined_on"
@@ -584,6 +641,14 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.boolean  "admin",            :default => false
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
+  end
+
+  create_table "uservisits", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "from_user_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "watches", :force => true do |t|
@@ -599,6 +664,14 @@ ActiveRecord::Schema.define(:version => 20180302033824) do
     t.string   "name"
     t.integer  "amount"
     t.datetime "created_on"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "webbanners", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.string   "banner"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  forumowner_last_visited: 2018-04-28 01:20:10
+  moderator_last_visited: 2018-04-28 01:20:10
+  member_last_visited: 2018-04-28 01:20:10
+  guest_last_visited: 2018-04-28 01:20:10
+  forum_id: 1
+
+two:
+  forumowner_last_visited: 2018-04-28 01:20:10
+  moderator_last_visited: 2018-04-28 01:20:10
+  member_last_visited: 2018-04-28 01:20:10
+  guest_last_visited: 2018-04-28 01:20:10
+  forum_id: 1

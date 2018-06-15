@@ -7,6 +7,10 @@ class Forum < ActiveRecord::Base
    belongs_to :forumtype
    belongs_to :memberprivilege
    has_many :topiccontainers, :foreign_key => "forum_id", :dependent => :destroy
+   has_many :foruminvites, :foreign_key => "forum_id", :dependent => :destroy
+   has_many :foruminvitemembers, :foreign_key => "forum_id", :dependent => :destroy
+   has_many :pastforumowners, :foreign_key => "forum_id", :dependent => :destroy
+   has_one :forumtimer, :foreign_key => "forum_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :banner, BannerUploader

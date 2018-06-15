@@ -28,6 +28,10 @@
     <%= f.date_select :birthday, start_year: Date.today.year - 170, end_year: Date.today.year %>
   </div>
   <div class="field">
+    <%= f.label :bookgroup_id, "Select Reading Group" %><br />
+    <%= f.collection_select(:bookgroup_id, @group, :id, :name) %>
+  </div>
+  <div class="field">
     <%= f.label :country, "Country(logged_in only view)" %><br />
     <%= f.text_field :country %>
   </div>

@@ -48,6 +48,11 @@
 <p>Today: <%= forumTime("Today") %> Week: <%= forumTime("Week") %> Month: <%= forumTime("Month") %> Year: <%= forumTime("Year") %> 3Years: <%= forumTime("Threeyears") %> Bacon of Tomato: <%= forumTime("BaconOfTomato") %></p>
 <p>Forum total: <%= forumTime("All") %></p>
 <br>
+<p>Invite Only Forums</p>
+<p>Members</p>
+<p>Today: <%= forumInviteMembers("Today") %> Week: <%= forumInviteMembers("Week") %> Month: <%= forumInviteMembers("Month") %> Year: <%= forumInviteMembers("Year") %> 3Years: <%= forumInviteMembers("Threeyears") %> Bacon of Tomato: <%= forumInviteMembers("BaconOfTomato") %></p>
+<p>Members total: <%= forumInviteMembers("All") %></p>
+<br>
 <p>Topiccontainers</p>
 <p>Sources</p>
 <p>Today: <%= containersSourced("Today") %> points Week: <%= containersSourced("Week") %> points Month: <%= containersSourced("Month") %> points</p>
@@ -208,6 +213,10 @@
 <p>Blogs points sourced: <%= blogsSourced("All") %> Ads points sunk: <%= blogsSunk("All") %></p>
 <p>Blog total: <%= blogs %></p>
 <br>
+<p>Blog Visitors</p>
+<p>Last 20 mins: <%= blogvisitors("past20mins") %> Last 40 mins: <%= blogvisitors("past40mins") %> Last hour: <%= blogvisitors("pasthour") %></p>
+<p>Last 2 hours: <%= blogvisitors("past2hours") %> Last 3 hours: <%= blogvisitors("past3hours") %></p>
+<br>
 <p>Blog Stars</p>
 <p>Sources</p>
 <p>Today: <%= blogstarsSourced("Today") %> points Week: <%= blogstarsSourced("Week") %> points Month: <%= blogstarsSourced("Month") %> points</p>
@@ -231,5 +240,9 @@
 <p>Signups</p>
 <p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3 Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
 <p>Total users: <%= getSignups("All") %> Total bots: <%= getUserStatus("Bots") %></p>
+<br>
+<p>User Visitors</p>
+<p>Last 20 mins: <%= uservisitors("past20mins") %> Last 40 mins: <%= uservisitors("past40mins") %> Last hour: <%= uservisitors("pasthour") %></p>
+<p>Last 2 hours: <%= uservisitors("past2hours") %> Last 3 hours: <%= uservisitors("past3hours") %></p>
 <br>
 <p class="navlinks"><%= link_to "Back", root_path %></p>

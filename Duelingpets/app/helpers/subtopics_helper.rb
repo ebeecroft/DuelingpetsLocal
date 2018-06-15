@@ -37,27 +37,41 @@ module SubtopicsHelper
          if(subtopicFound)
             maintopicFound = Maintopic.find_by_id(params[:maintopic_id])
             if(maintopicFound && subtopicFound.maintopic_id == maintopicFound.id)
+               #Finds the narratives based on the user's forumgroup
                subNars = subtopicFound.narratives.order("created_on desc")
                narratives = subNars.select{|narrative| narrative.forumgroup.name == "Rabbit" || (current_user && forumGroupAccess(narrative.forumgroup, current_user))}
-               if((subtopicFound.maintopic.topiccontainer.forum.forumtype == "Public" && (narratives.count > 0 || (current_user && current_user.id == subtopicFound.maintopic.topiccontainer.forum.user_id))) || current_user && ((subtopicFound.maintopic.topiccontainer.forum.forumtype.name == "Invite" && current_user.id == subtopicFound.maintopic.topiccontainer.forum.user_id) || (subtopicFound.maintopic.topiccontainer.forum.forumtype.name == "Private" && (narratives.count > 0 || (current_user.id == subtopicFound.maintopic.topiccontainer.forum.user_id)))))
-                  @subtopic = subtopicFound
-                  @narratives = Kaminari.paginate_array(narratives).page(params[:page]).per(10)
-                  if(type == "destroy")
-                     logged_in = current_user
-                     if(logged_in && ((logged_in.id == subtopicFound.user_id) || logged_in.admin))
-                        flash[:success] = "#{@subtopic.title} was successfully removed."
-                        @subtopic.destroy
-                        if(logged_in.admin)
-                           redirect_to subtopics_path
+               #Determines if we are a guest or not
+               if(current_user)
+                  allForumMembers = Foruminvitemember.order("created_on desc")
+                  memberMatch = allForumMembers.select{|member| member.user_id == current_user.id && member.forum_id == subtopicFound.maintopic.topiccontainer.forum_id}
+                  #Determines if we are looking at an invite forum or a noninvite forum
+                  if((subtopicFound.maintopic.topiccontainer.forum.forumtype != "Invite" && forumGroupAccess(subtopicFound.forumgroup, current_user)) || ((subtopicFound.maintopic.topiccontainer.forum.forumtype == "Invite" && forumGroupAccess(subtopicFound.forumgroup, current_user)) && ((subtopicFound.maintopic.topiccontainer.forum.user_id == current_user.id) || memberMatch.count > 0)))
+                     @subtopic = subtopicFound
+                     @narratives = Kaminari.paginate_array(narratives).page(params[:page]).per(10)
+                     if(type == "destroy")
+                        logged_in = current_user
+                        if(logged_in && (((logged_in.id == subtopicFound.user_id) || (subtopicFound.maintopic.topiccontainer.forum.user_id ==  logged_in.id)) || logged_in.admin))
+                           flash[:success] = "#{@subtopic.title} was successfully removed."
+                           @subtopic.destroy
+                           if(logged_in.admin)
+                              redirect_to subtopics_path
+                           else
+                              redirect_to topiccontainer_maintopic_path(maintopicFound.topiccontainer, maintopicFound)
+                           end
                         else
-                           redirect_to topiccontainer_maintopic_path(maintopicFound.topiccontainer, maintopicFound)
+                           redirect_to root_path
                         end
-                     else
-                        redirect_to root_path
                      end
+                  else
+                     redirect_to root_path
                   end
                else
-                  redirect_to root_path
+                  if((subtopicFound.maintopic.topiccontainer.forum.forumtype == "Public" && subtopicFound.forumgroup.name == "Rabbit") && narratives.count > 0)
+                     @subtopic = subtopicFound
+                     @narratives = Kaminari.paginate_array(narratives).page(params[:page]).per(10)
+                  else
+                     redirect_to root_path
+                  end
                end
             else
                redirect_to root_path

@@ -1,0 +1,19 @@
+<% provide(:h1, "Uservisit List") %>
+<p><%= paginate @uservisits %></p>
+<% @uservisits.each do |uservisit| %>
+   <br>
+   <div class="container"><p class="navlinks">User: <%= getUserPrivilege(uservisit.to_user) %><%= link_to uservisit.to_user.vname, user_path(uservisit.to_user) %></p></div> <div class="container"><%= button_to 'Destroy', [uservisit.from_user, uservisit], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if uservisit.from_user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(uservisit.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visited by: <%= getUserPrivilege(uservisit.from_user) %><%= link_to uservisit.from_user.vname, user_path(uservisit.from_user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now uservisit.created_on %> ago on (<%= uservisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(uservisit.from_user) %>
+      <% if getActivity(uservisit.from_user) == "Offline" || getActivity(uservisit.from_user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(uservisit.from_user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

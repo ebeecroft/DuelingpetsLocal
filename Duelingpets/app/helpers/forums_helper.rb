@@ -1,6 +1,129 @@
 module ForumsHelper
 
    private
+      def inactiveOwner(forum)
+         inactive = false
+         if(current_user)
+            #Determines if the owner is inactive
+            if((forum.forumtype.name != "Invite") && (currentTime - getOwnerVisitTime(forum)) > 3.months)
+               if((!forum.forumtimer.member_last_visited.nil?) && ((currentTime - getMemberVisitTime(forum)) < 5.days))
+                  if(memberExist(forum))
+                     inactive = true
+                  end
+               else
+                  if(!memberExist(forum))
+                     inactive = true
+                  end
+               end
+            elsif((forum.forumtype.name == "Invite") && (currentTime - getOwnerVisitTime(forum)) > 1.month)
+               member = forum.foruminvitemembers.select{|member| member.user_id == current_user.id}
+               if(member.count > 0)
+                  inactive = true
+               end
+            end
+         end
+         return inactive
+      end
+
+      def removeInactiveForums
+         #Finds all inactive invite forums
+         allForums = Forum.all
+         inactiveForums = allForums.select{|forum| (forum.forumtype.name == "Invite") && ((currentTime - forum.forumtimer.forumowner_last_visited) > 4.months)}
+
+         #Performs of the deletion of inactive forums
+         if(inactiveForums.count > 0)
+            inactiveForums.each do |forum|
+               @forum = forum
+               @forum.destroy
+            end
+            flash[:success] = "Inactive invite forums were deleted."
+         end
+      end
+
+      def getOwnerVisitTime(forum)
+         timerFound = Forumtimer.find_by_forum_id(forum.id)
+         visitTime = timerFound.forumowner_last_visited
+
+         #Determines if the user is actually the forum owner
+         if(current_user && (current_user.id == forum.user_id))
+            timerFound.forumowner_last_visited = currentTime
+            @forumtimer = timerFound
+            @forumtimer.save
+            visitTime = @forumtimer.forumowner_last_visited
+         end
+         return visitTime
+      end
+
+      def getModeratorVisitTime(forum)
+         #Will be fixed up when I add moderators to forums
+         timerFound = Forumtimer.find_by_forum_id(forum.id)
+         visitTime = timerFound.moderator_last_visited
+         return visitTime
+      end
+
+      def memberExist(forum)
+         #Checks to see if we are not the forumowner
+         if(current_user && (forum.user_id != current_user.id))
+            allContainers = Topiccontainer.order("created_on desc")
+            memberFound = allContainers.select{|topiccontainer| topiccontainer.forum_id == forum.id && topiccontainer.user_id == current_user.id}
+            member = false
+
+            #Check to see if the user is actually a member of this forum
+            if(memberFound.count == 0)
+               allMaintopics = Maintopic.order("created_on desc")
+               memberFound = allMaintopics.select{|maintopic| maintopic.topiccontainer.forum_id == forum.id && maintopic.user_id == current_user.id}
+               if(memberFound.count == 0)
+                  allSubtopics = Subtopic.order("created_on desc")
+                  memberFound = allSubtopics.select{|subtopic| subtopic.maintopic.topiccontainer.forum_id == forum.id && subtopic.user_id == current_user.id}
+                  if(memberFound.count == 0)
+                     allNarratives = Narrative.order("created_on desc")
+                     memberFound = allNarratives.select{|narrative| narrative.subtopic.maintopic.topiccontainer.forum_id == forum.id && narrative.user_id == current_user.id}
+                     if(memberFound.count > 0)
+                        member = true
+                     end
+                  else
+                     member = true
+                  end
+               else
+                  member = true
+               end
+            else
+               member = true
+            end
+         end
+         return member
+      end
+
+      def getMemberVisitTime(forum)
+         timerFound = Forumtimer.find_by_forum_id(forum.id)
+         visitTime = timerFound.member_last_visited
+
+         #Update visit time if this use is a forum member
+         if(memberExist(forum))
+            timerFound.member_last_visited = currentTime
+            @forumtimer = timerFound
+            @forumtimer.save
+            visitTime = @forumtimer.member_last_visited
+         end
+         return visitTime
+      end
+
+      def getGuestVisitTime(forum)
+         timerFound = Forumtimer.find_by_forum_id(forum.id)
+         visitTime = timerFound.guest_last_visited
+
+         #Update visit time if this use is not a forum member
+         if(current_user)
+            if(!memberExist(forum))
+               timerFound.guest_last_visited = currentTime
+               @forumtimer = timerFound
+               @forumtimer.save
+               visitTime = @forumtimer.guest_last_visited
+            end
+         end
+         return visitTime
+      end
+
       def getForumMakeup(forum, type)
          forumcontainers = forum.topiccontainers
          mainValue = 0
@@ -86,27 +209,41 @@ module ForumsHelper
          if(forumFound)
             userFound = User.find_by_vname(params[:user_id])
             if(userFound && forumFound.user_id == userFound.id)
+               #Finds the containers if any exist
                forumTopicContainers = forumFound.topiccontainers.order("id asc")
-               containers = forumTopicContainers.select{|container| container.maintopics.count > 0 || (current_user && ((current_user.id == container.user_id) || (current_user.id == container.forum.user_id)) || current_user.admin)}
-               if((forumFound.forumtype.name == "Public" && (containers.count > 0 || (current_user && current_user.id == forumFound.user_id))) || current_user && ((forumFound.forumtype.name == "Invite" && current_user.id == forumFound.user_id) || (forumFound.forumtype.name == "Private" && (containers.count > 0 || (current_user.id == forumFound.user_id)))))
-                  @forum = forumFound
-                  @topiccontainers = Kaminari.paginate_array(containers).page(params[:page]).per(10)
-                  if(type == "destroy")
-                     logged_in = current_user
-                     if(logged_in && ((logged_in.id == forumFound.user_id) || logged_in.admin))
-                        flash[:success] = "#{@forum.name} was successfully removed."
-                        @forum.destroy
-                        if(logged_in.admin)
-                           redirect_to forums_list_path
+               #Determines if we are a guest or not
+               if(current_user)
+                  allForumMembers = Foruminvitemember.order("created_on desc")
+                  memberMatch = allForumMembers.select{|member| member.user_id == current_user.id && member.forum_id == forumFound.id}
+                  #Determines if we are looking at an invite forum or a noninvite forum
+                  if((forumFound.forumtype.name != "Invite" && (forumTopicContainers.count > 0 || forumFound.user_id == current_user.id)) || (forumFound.forumtype.name == "Invite" && (memberMatch.count > 0 && forumTopicContainers.count > 0) || forumFound.user_id == current_user.id))
+                     @forum = forumFound
+                     @topiccontainers = Kaminari.paginate_array(forumTopicContainers).page(params[:page]).per(10)
+                     if(type == "destroy")
+                        logged_in = current_user
+                        if(logged_in && ((logged_in.id == forumFound.user_id) || logged_in.admin))
+                           flash[:success] = "#{@forum.name} was successfully removed."
+                           @forum.destroy
+                           if(logged_in.admin)
+                              redirect_to forums_list_path
+                           else
+                              redirect_to user_forums_path(forumFound.user)
+                           end
                         else
-                           redirect_to user_forums_path(forumFound.user)
+                           redirect_to root_path
                         end
-                     else
-                        redirect_to root_path
                      end
+                  else
+                     redirect_to root_path
                   end
                else
-                  redirect_to root_path
+                  containers = forumTopicContainers.select{|container| container.maintopics.count > 0}
+                  if(forumFound.forumtype.name == "Public" && containers.count > 0)
+                     @forum = forumFound
+                     @topiccontainers = Kaminari.paginate_array(containers).page(params[:page]).per(10)
+                  else
+                     redirect_to root_path
+                  end
                end
             else
                redirect_to root_path
@@ -168,6 +305,9 @@ module ForumsHelper
             redirect_to root_path
          else
             if(type == "index")
+               #Performs the deletion of forums
+               removeInactiveForums
+
                if(current_user && current_user.admin)
                   indexCommons
                else
@@ -209,6 +349,14 @@ module ForumsHelper
                         if(type == "create")
                            if(@forum.save)
                               flash[:success] = "#{@forum.name} was successfully created."
+                              #Creates the forum timer
+                              newTimer = Forumtimer.new(params[:forumtimer])
+                              newTimer.forum_id = @forum.id
+                              newTimer.forumowner_last_visited = currentTime
+                              @forumtimer = newTimer
+                              @forumtimer.save
+
+                              #Inform the watchers of new changes
                               allWatches = Watch.all
                               watchers = allWatches.select{|watch| ((watch.watchtype.name == "Forums" || watch.watchtype.name == "Forumblogs") || watch.watchtype.name == "All") && watch.from_user.id != @forum.user_id}
                               if(watchers.count > 0)
@@ -245,6 +393,9 @@ module ForumsHelper
                   end
                end
             elsif(type == "show" || type == "destroy")
+               #Performs the deletion of forums
+               removeInactiveForums
+
                if(current_user && current_user.admin)
                   showCommons(type)
                else

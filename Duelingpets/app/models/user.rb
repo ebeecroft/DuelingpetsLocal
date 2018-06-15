@@ -1,6 +1,10 @@
 class User < ActiveRecord::Base
    attr_accessible :first_name, :last_name, :email, :birthday, :vname, :login_id, 
-   :country, :country_timezone, :military_time, :password, :password_confirmation
+   :country, :country_timezone, :military_time, :password, :password_confirmation,
+   :bookgroup_id
+
+   #Bookgroup
+   belongs_to :bookgroup
 
    #Pms
    has_many :pmreplies, :foreign_key => "user_id", :dependent => :destroy
@@ -34,8 +38,8 @@ class User < ActiveRecord::Base
    has_many :friends, :foreign_key => "user_id", :dependent => :destroy
 
    #Referrals
-   has_one :referral, :foreign_key => "user_id", :dependent => :destroy
-   has_many :referrals, :foreign_key => "referred_by_id", :dependent => :destroy
+   has_many :referrals, :foreign_key => "user_id", :dependent => :destroy
+   has_many :referrals, :foreign_key => "from_user_id", :dependent => :destroy
 
    #Donationboxes
    has_one :donationbox, :foreign_key => "user_id", :dependent => :destroy
@@ -74,6 +78,13 @@ class User < ActiveRecord::Base
    has_many :maintopics, :foreign_key => "user_id", :dependent => :destroy
    has_many :subtopics, :foreign_key => "user_id", :dependent => :destroy
    has_many :narratives, :foreign_key => "user_id", :dependent => :destroy
+   has_many :foruminvites, :foreign_key => "user_id", :dependent => :destroy
+   has_many :foruminvitemembers, :foreign_key => "user_id", :dependent => :destroy
+   has_many :pastforumowners, :foreign_key => "user_id", :dependent => :destroy
+
+   #Visitors
+   has_many :uservisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :blogvisits, :foreign_key => "user_id", :dependent => :destroy
 
    #Regex code for managing the user section
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9]+\z/i

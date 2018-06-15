@@ -1,0 +1,22 @@
+<% provide(:h1, "Forumtimer List") %>
+<p><%= paginate @forumtimers %></p>
+<% @forumtimers.each do |forumtimer| %>
+   <br>
+   <p class="navlinks">Forum: <%= link_to forumtimer.forum.name, user_forum_path(forumtimer.forum.user, forumtimer.forum) %></p>
+   <p>Forum owner visited: <%= distance_of_time_in_words_to_now forumtimer.forumowner_last_visited %> ago on (<%= forumtimer.forumowner_last_visited.strftime("%B-%d-%Y") %></p>
+   <p>Moderator visited: <%= distance_of_time_in_words_to_now forumtimer.moderator_last_visited %> ago on (<%= forumtimer.moderator_last_visited.strftime("%B-%d-%Y") %></p>
+   <p>Member visited: <%= distance_of_time_in_words_to_now forumtimer.member_last_visited %> ago on (<%= forumtimer.member_last_visited.strftime("%B-%d-%Y") %></p>
+   <p>Guest visited: <%= distance_of_time_in_words_to_now forumtimer.guest_last_visited %> ago on (<%= forumtimer.guest_last_visited.strftime("%B-%d-%Y") %></p>
+   <% if forumtimer.forum.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(forumtimer.forum.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Owner: <%= getUserPrivilege(forumtimer.forum.user) %><%= link_to forumtimer.forum.user.vname, user_path(forumtimer.forum.user) %></p>
+   <p>Status: <%= getActivity(forumtimer.forum.user) %>
+      <% if getActivity(forumtimer.forum.user) == "Offline" || getActivity(forumtimer.forum.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(forumtimer.forum.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

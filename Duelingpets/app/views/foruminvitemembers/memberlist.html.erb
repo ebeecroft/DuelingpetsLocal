@@ -1,0 +1,22 @@
+<% provide(:h1, @forum.name +  "'s invitemembers") %>
+<p><%= paginate @foruminvitemembers %></p>
+<% @foruminvitemembers.each do |foruminvitemember| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now foruminvitemember.created_on %> ago on (<%= foruminvitemember.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if foruminvitemember.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(foruminvitemember.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <div class="container"><p class="navlinks">Member: <%= getUserPrivilege(foruminvitemember.user) %><%= link_to foruminvitemember.user.vname, user_path(foruminvitemember.user) %></p></div>
+   <% if current_user && current_user.id == @forum.user_id %>
+      <div class="container"><%= button_to 'Destroy', [foruminvitemember.forum, foruminvitemember], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+   <p class="navlinks">Invited by forum: <%= link_to foruminvitemember.forum.name, user_forum_path(foruminvitemember.forum.user, foruminvitemember.forum) %></p>
+   <p>Status: <%= getActivity(foruminvitemember.user) %>
+      <% if getActivity(foruminvitemember.user) == "Offline" || getActivity(foruminvitemember.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(foruminvitemember.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_forum_path(@forum.user, @forum) %></p>

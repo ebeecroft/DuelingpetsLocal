@@ -1,0 +1,21 @@
+<% provide(:h1, "Pastforumowner List") %>
+<p><%= paginate @pastforumowners %></p>
+<% @pastforumowners.each do |pastforumowner| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now pastforumowner.created_on %> ago on (<%= pastforumowner.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p class="navlinks">User: <%= getUserPrivilege(pastforumowner.to_user) %><%= link_to pastforumowner.to_user.vname, user_path(pastforumowner.to_user) %></p>
+   <% if pastforumowner.pastowner.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(pastforumowner.pastowner.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Original owner: <%= getUserPrivilege(pastforumowner.pastowner) %><%= link_to pastforumowner.pastowner.vname, user_path(pastforumowner.pastowner) %></p>
+   <p class="navlinks">Forum: <%= link_to pastforumowner.forum.name, user_forum_path(pastforumowner.forum.user, pastforumowner.forum) %></p>
+   <div class="container">Type: <%= pastforumowner.status %></div> <div class="container"><%= button_to 'Destroy', [pastforumowner.forum, pastforumowner], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Status: <%= getActivity(pastforumowner.pastowner) %>
+      <% if getActivity(pastforumowner.pastowner) == "Offline" || getActivity(pastforumowner.pastowner) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(pastforumowner.pastowner) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

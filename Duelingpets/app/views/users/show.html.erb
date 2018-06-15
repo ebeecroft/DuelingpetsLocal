@@ -46,7 +46,8 @@
       <p>Audio Browser: <%= @user.userinfo.browser %></p>
       <p>Video Browser: <%= @user.userinfo.vbrowser %></p>
    <% end %>
-   <p>Group: <%= getGroup(@user) %></p>
+   <p>Writing Group: <%= getGroup(@user) %></p>
+   <p>Reading Group: <%= @user.bookgroup.name %></p>
    <p>Vname: <%= @user.vname %> joined on: <%= @user.joined_on.strftime("%B-%d-%Y") %></p>
    <p>Status: <%= getActivity(@user) %>
    <% if getActivity(@user) == "Inactive" || getActivity(@user) == "Offline" %>
@@ -58,8 +59,9 @@
 <% end %>
 <p>Country: <%= @user.country %></p>
 <p>Timezone: <%= @user.country_timezone %></p>
-<% if !@user.referral.nil? %>
-   <p class="navlinks">Referred by: <%= link_to @user.referral.referred_by.vname, user_path(@user.referral.referred_by) %></p>
+<%# if !@user.referrals.nil? %>
+<% if !getReferredBy(@user).nil? %>
+   <p class="navlinks">Referred by: <%= link_to getReferredBy(@user).from_user.vname, user_path(getReferredBy(@user).from_user) %></p>
 <% else %>
    <% if current_user && (current_user.id == @user.id) %>
       <p><%= button_to 'Set Referral', new_referral_path, method: :get %></p>
@@ -119,11 +121,20 @@
       <p>Donor list</p>
       <p><%= button_to 'Donors', donationbox_donors_path(@user.donationbox), method: :get %></p>
    <% end %>
+   <br>
+   <p>Visitors:</p>
+   <p class="navlinks">last 20 mins: <%= link_to getVisitors("past20mins", @user), user_uservisits_path(@user) %> last 40 mins: <%= link_to getVisitors("past40mins", @user), user_uservisits_path(@user) %> last hour: <%= link_to getVisitors("pasthour", @user), user_uservisits_path(@user) %></p>
+   <p class="navlinks">last 2 hours: <%= link_to getVisitors("past2hours", @user), user_uservisits_path(@user) %> last 3 hours: <%= link_to getVisitors("past3hours", @user), user_uservisits_path(@user) %></p>
    <% if @user.id != current_user.id %>
       <br>
       <p>PM section</p>
       <p class="navlinks"><%= button_to 'New PM', new_user_pm_path(@user), method: :get %></p>
    <% else %>
+      <br>
+      <p>Foruminvite section</p>
+      <p class="navlinks">
+         <div class="container"><%= button_to 'Inbox', foruminvites_inbox_path, method: :get %></div> <div class="container"><%= button_to 'Outbox', foruminvites_outbox_path, method: :get %></div>
+      </p>
       <br>
       <p>Friendrequest section</p>
       <p class="navlinks">

@@ -1,0 +1,31 @@
+<%= form_for(@pagetimer) do |f| %>
+  <% if @pagetimer.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"> <%= pluralize(@pagetimer.errors.count, "error") %> prohibited this pagetimer from being saved:</h2>
+
+      <ul>
+      <% @pagetimer.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :duration %><br />
+    <%= f.number_field :duration %>
+  </div>
+  <div class="field">
+    <%= f.label :timeformat %><br />
+    <%= f.text_field :timeformat %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', pagetimers_path %></p>
+<% end %>

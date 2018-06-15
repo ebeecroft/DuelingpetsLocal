@@ -1,0 +1,19 @@
+<% provide(:h1, "Blogvisit List") %>
+<p><%= paginate @blogvisits %></p>
+<% @blogvisits.each do |blogvisit| %>
+   <br>
+   <div class="container"><p class="navlinks">Blog: <%= link_to blogvisit.blog.title, user_blog_path(blogvisit.blog.user, blogvisit.blog) %></p></div> <div class="container"><%= button_to 'Destroy', [blogvisit.blog, blogvisit], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if blogvisit.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(blogvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visited by: <%= getUserPrivilege(blogvisit.user) %><%= link_to blogvisit.user.vname, user_path(blogvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now blogvisit.created_on %> ago on (<%= blogvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(blogvisit.user) %>
+      <% if getActivity(blogvisit.user) == "Offline" || getActivity(blogvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(blogvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -1,6 +1,46 @@
 module UsersHelper
 
    private
+      def getReferredBy(user)
+         referralFound = Referral.find_by_user_id(user.id)
+         value = referralFound
+         return value
+      end
+
+#@user.referral.from_user.vname
+#@user.referral.from_user.vname, user_path(@user.referral.from_user)
+
+      def getVisitors(timeframe, user)
+         #Time values
+         allVisits = user.uservisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
       def getFriends(user, type)
          value = ""
          if(type == "Friends")
@@ -61,7 +101,7 @@ module UsersHelper
 
       def getReferrals(user)
          allReferrals = Referral.all
-         userReferrals = allReferrals.select{|referral| referral.referred_by_id == user.id}
+         userReferrals = allReferrals.select{|referral| referral.from_user_id == user.id}
          value = userReferrals.count
          return value
       end
@@ -383,6 +423,9 @@ module UsersHelper
          if(userFound)
             logged_in = current_user
             if(logged_in && ((logged_in.id == userFound.id) || logged_in.admin))
+               allGroups = Bookgroup.order("created_on desc")
+               allowedGroups = allGroups.select{|bookgroup| bookgroup.id <= getBookGroups(logged_in)}
+               @group = allowedGroups
                @user = userFound
                if(type == "update")
                   if(@user.update_attributes(params[:user]))
@@ -400,17 +443,63 @@ module UsersHelper
          end
       end
 
-      def showCommons(type)
-         #Show page can be accessed by guest, logged in and admins
-         logged_in2 = current_user
-         if(logged_in2)
-            userPouch = Pouch.find_by_user_id(logged_in2.id)
-            userPouch.last_visited = currentTime
-            @pouch = userPouch
-            @pouch.save
+      def cleanupOldVisits
+         allVisits = Uservisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @uservisit = visit
+               @uservisit.destroy
+            end
          end
+      end
+
+      def saveVisit(userFound, visitor)
+         allVisits = userFound.uservisits.order("created_on desc")
+         userVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.minutes) && (visit.from_user_id == visitor.id)}
+         if(userVisited.count == 0)
+            #Add visitor to list
+            newVisit = userFound.uservisits.new(params[:uservisit])
+            newVisit.from_user_id = visitor.id
+            newVisit.created_on = currentTime
+            @uservisit = newVisit
+            @uservisit.save
+         end
+      end
+
+      def visitTimer(type, userFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != userFound.id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("User")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = timer.duration.minutes.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = timer
+                     @pagetimer.save
+                     saveVisit(userFound, visitor)
+                  else
+                     saveVisit(userFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
+      def showCommons(type)
          userFound = User.find_by_vname(params[:id])
          if(userFound)
+            visitTimer(type, userFound)
+            cleanupOldVisits
             @user = userFound
             if(type == "destroy")
                logged_in = current_user

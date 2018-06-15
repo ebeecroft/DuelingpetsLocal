@@ -1,0 +1,39 @@
+<% provide(:h1, "Foruminvite Inbox") %>
+<p><%= paginate @foruminvites %></p>
+<% @foruminvites.each do |foruminvite| %>
+   <br>
+   <div class="container">Status: <%= foruminvite.status %></div>
+   <% if((foruminvite.status == "Inprocess") && (foruminvite.from_user_id != current_user.id)) %>
+      <div class="container"><%= button_to 'Approve', foruminvites_review1_path(:foruminvite_id=>foruminvite.id), method: :post %></div> <div class="container"><%= button_to 'Deny', foruminvites_review2_path(:foruminvite_id=>foruminvite.id), method: :post %></div>
+   <% end %>
+   <p>Created on: <%= distance_of_time_in_words_to_now foruminvite.created_on %> ago on (<%= foruminvite.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if current_user.id == foruminvite.user_id %>
+      <% if foruminvite.from_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(foruminvite.from_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">From: <%= getUserPrivilege(foruminvite.from_user) %><%= link_to foruminvite.from_user.vname, user_path(foruminvite.from_user) %></p>
+      <p class="navlinks">Originated from forum: <%= link_to foruminvite.forum.name, user_forum_path(foruminvite.forum.user, foruminvite.forum) %></p>
+      <p>Status: <%= getActivity(foruminvite.from_user) %>
+         <% if getActivity(foruminvite.from_user) == "Offline" || getActivity(foruminvite.from_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(foruminvite.from_user) %>
+         <% end %>
+      </p>
+   <% elsif((current_user.id == foruminvite.from_user_id) && (foruminvite.status != "Inprocess")) %>
+      <% if foruminvite.to_user.userinfo.miniavatar.to_s != "" %>
+         <br>
+         <p><%= image_tag(foruminvite.to_user.userinfo.miniavatar_url(:thumb)) %></p>
+      <% end %>
+      <p class="navlinks">To: <%= getUserPrivilege(foruminvite.to_user) %><%= link_to foruminvite.to_user.vname, user_path(foruminvite.to_user) %></p>
+      <p class="navlinks">Originated from forum: <%= link_to foruminvite.forum.name, user_forum_path(foruminvite.forum.user, foruminvite.forum) %></p>
+      <p>Status: <%= getActivity(foruminvite.to_user) %>
+         <% if getActivity(foruminvite.to_user) == "Offline" || getActivity(foruminvite.to_user) == "Inactive" %>
+            for <%= distance_of_time_in_words_to_now getTime(foruminvite.to_user) %>
+         <% end %>
+      </p>
+   <% end %>
+   <br>
+   <p><%= foruminvite.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_path(@user) %></p>

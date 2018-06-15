@@ -1,5 +1,8 @@
 class Bookgroup < ActiveRecord::Base
 
+   #Users
+   has_many :users, :foreign_key => "bookgroup_id", :dependent => :destroy
+
    #Channels
    has_many :subplaylists, :foreign_key => "bookgroup_id", :dependent => :destroy
    has_many :movies, :foreign_key => "bookgroup_id", :dependent => :destroy

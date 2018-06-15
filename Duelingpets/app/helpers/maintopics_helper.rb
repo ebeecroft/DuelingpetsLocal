@@ -18,27 +18,42 @@ module MaintopicsHelper
          if(topicFound)
             containerFound = Topiccontainer.find_by_id(params[:topiccontainer_id])
             if(containerFound && topicFound.topiccontainer_id == containerFound.id)
+               #Finds the subtopics based on the user's forumgroup
                maintopicSubtopics = topicFound.subtopics.order("created_on desc")
-               subtopics = maintopicSubtopics.select{|subtopic| (subtopic.narratives.count > 0 && subtopic.forumgroup.name == "Rabbit") || (current_user && (forumGroupAccess(subtopic.forumgroup, current_user) && ((((subtopic.maintopic.topiccontainer.forum.memberprivilege.name == "Subtopic") || (subtopic.maintopic.topiccontainer.forum.memberprivilege.name == "Maintopic")) || ((current_user.id == subtopic.maintopic.topiccontainer.forum.user_id) || current_user.admin)))))}
-               if((topicFound.topiccontainer.forum.forumtype == "Public" && (subtopics.count > 0 || (current_user && current_user.id == topicFound.topiccontainer.forum.user_id))) || current_user && ((topicFound.topiccontainer.forum.forumtype.name == "Invite" && current_user.id == topicFound.topiccontainer.forum.user_id) || (topicFound.topiccontainer.forum.forumtype.name == "Private" && (subtopics.count > 0 || (current_user.id == topicFound.topiccontainer.forum.user_id)))))
-                  @maintopic = topicFound
-                  @subtopics = Kaminari.paginate_array(subtopics).page(params[:page]).per(10)
-                  if(type == "destroy")
-                     logged_in = current_user
-                     if(logged_in && ((logged_in.id == topicFound.user_id) || logged_in.admin))
-                        flash[:success] = "#{@maintopic.title} was successfully removed."
-                        @maintopic.destroy
-                        if(logged_in.admin)
-                           redirect_to maintopics_path
+               subtopics = maintopicSubtopics.select{|subtopic| subtopic.forumgroup.name == "Rabbit" || (current_user && forumGroupAccess(subtopic.forumgroup, current_user))}
+               #Determines if we are a guest or not
+               if(current_user)
+                  allForumMembers = Foruminvitemember.order("created_on desc")
+                  memberMatch = allForumMembers.select{|member| member.user_id == current_user.id && member.forum_id == topicFound.topiccontainer.forum_id}
+                  #Determines if we are looking at an invite forum or a noninvite forum
+                  if((topicFound.topiccontainer.forum.forumtype != "Invite" && ((subtopics.count > 0 || topicFound.topiccontainer.forum.memberprivilege.name != "Narrative") || topicFound.topiccontainer.forum.user_id == current_user.id)) || (topicFound.topiccontainer.forum.forumtype == "Invite" && (memberMatch.count > 0 && (subtopics.count > 0 || topicFound.topiccontainer.forum.memberprivilege.name != "Narrative")) || topicFound.topiccontainer.forum.user_id == current_user.id))
+                     @maintopic = topicFound
+                     @subtopics = Kaminari.paginate_array(subtopics).page(params[:page]).per(10)
+                     if(type == "destroy")
+                        logged_in = current_user
+                        if(logged_in && ((logged_in.id == topicFound.user_id) || logged_in.admin))
+                           flash[:success] = "#{@maintopic.title} was successfully removed."
+                           @maintopic.destroy
+                           if(logged_in.admin)
+                              redirect_to maintopics_path
+                           else
+                              redirect_to forum_topiccontainer_path(containerFound.forum, containerFound)
+                           end
                         else
-                           redirect_to forum_topiccontainer_path(containerFound.forum, containerFound)
+                           redirect_to root_path
                         end
-                     else
-                        redirect_to root_path
                      end
+                  else
+                     redirect_to root_path
                   end
                else
-                  redirect_to root_path
+                  subNars = subtopics.select{|subtopic| subtopic.narratives.count > 0}
+                  if(topicFound.topiccontainer.forum.forumtype == "Public" && subNars.count > 0)
+                     @maintopic = topicFound
+                     @subtopics = Kaminari.paginate_array(subNars).page(params[:page]).per(10)
+                  else
+                     redirect_to root_path
+                  end
                end
             else
                redirect_to root_path

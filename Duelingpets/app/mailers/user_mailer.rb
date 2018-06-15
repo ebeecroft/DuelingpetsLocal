@@ -207,4 +207,29 @@ class UserMailer < ActionMailer::Base
       end
       mail(to: @watch.from_user.email, from: "notification@duelingpets.net", subject: "#{@movie.user.vname} created a new movie. [Duelingpets]")
    end
+
+   def forum_successor(pastforumowner)
+      @pastforumowner = pastforumowner
+      mail(to: @pastforumowner.to_user.email, from: "notification@duelingpets.net", subject: "#{@pastforumowner.to_user.vname} you are now the new forum owner of #{@pastforumowner.forum.name} forum. [Duelingpets]")
+   end
+
+   def forum_takecontrol(pastforumowner)
+      @pastforumowner = pastforumowner
+      mail(to: @pastforumowner.pastowner.email, from: "notification@duelingpets.net", subject: "#{@pastforumowner.to_user.vname} your forum #{@pastforumowner.forum.name} was taken over by #{@pastforumowner.pastowner.vname}. [Duelingpets]")
+   end
+
+   def foruminvite_review(foruminvite)
+      @foruminvite = foruminvite
+      mail(to: @foruminvite.to_user.email, from: "notification@duelingpets.net", subject: "#{@foruminvite.from_user.vname}'s foruminvite is awaiting your review. [Duelingpets]")
+   end
+
+   def foruminvite_approved(foruminvitemember)
+      @foruminvitemember = foruminvitemember
+      mail(to: @foruminvitemember.forum.user.email, from: "notification@duelingpets.net", subject: "#{@foruminvitemember.user.vname} has became a new member of your #{@foruminvitemember.forum.name} forum. [Duelingpets]")
+   end
+
+   def foruminvite_denied(foruminvite)
+      @foruminvite = foruminvite
+      mail(to: @foruminvite.from_user.email, from: "notification@duelingpets.net", subject: "Your foruminvite to #{@foruminvite.to_user.vname} was denied. [Duelingpets]")
+   end
 end

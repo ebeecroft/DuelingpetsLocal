@@ -18,32 +18,51 @@ module TopiccontainersHelper
          if(containerFound)
             forumFound = Forum.find_by_name(params[:forum_id])
             if(forumFound && containerFound.forum_id == forumFound.id)
+               #Finds the maintopics if any exist
                containerMaintopics = containerFound.maintopics.order("created_on desc")
-               maintopics = containerMaintopics.select{|maintopic| maintopic.subtopics.count > 0 || (current_user && (((maintopic.topiccontainer.forum.memberprivilege.name == "Subtopic") || (maintopic.topiccontainer.forum.memberprivilege.name == "Maintopic")) || ((current_user.id == maintopic.topiccontainer.forum.user_id) || current_user.admin)))}
-               if((containerFound.forum.forumtype == "Public" && (maintopics.count > 0 || (current_user && current_user.id == containerFound.forum.user_id))) || current_user && ((containerFound.forum.forumtype.name == "Invite" && current_user.id == containerFound.forum.user_id) || (containerFound.forum.forumtype.name == "Private" && (maintopics.count > 0 || (current_user.id == containerFound.forum.user_id)))))
-                  @topiccontainer = containerFound
-                  #Only if there is one topic container per forum
-                  forumFound = Forum.find_by_id(@topiccontainer.forum_id)
-                  @maintopics = Kaminari.paginate_array(maintopics).page(params[:page]).per(10)
-                  if(forumFound.topiccontainers.count > 1)
-                     @maintopics = Kaminari.paginate_array(maintopics).page(params[:page]).per(5)
-                  end
-                  if(type == "destroy")
-                     logged_in = current_user
-                     if(logged_in && ((logged_in.id == containerFound.user_id) || logged_in.admin))
-                        flash[:success] = "#{@topiccontainer.title} was successfully removed."
-                        @topiccontainer.destroy
-                        if(logged_in.admin)
-                           redirect_to topiccontainers_path
-                        else
-                           redirect_to user_forums_path(forumFound.user)
-                        end
-                     else
-                        redirect_to root_path
+               #Determines if we are a guest or not
+               if(current_user)
+                  allForumMembers = Foruminvitemember.order("created_on desc")
+                  memberMatch = allForumMembers.select{|member| member.user_id == current_user.id && member.forum_id == containerFound.forum_id}
+                  #Determines if we are looking at an invite forum or a noninvite forum
+                  if((containerFound.forum.forumtype.name != "Invite" && ((containerMaintopics.count > 0 || containerFound.forum.memberprivilege.name == "Maintopic") || containerFound.forum.user_id == current_user.id)) || (containerFound.forum.forumtype.name == "Invite" && (memberMatch.count > 0 && (containerMaintopics.count > 0 || containerFound.forum.memberprivilege.name == "Maintopic")) || containerFound.forum.user_id == current_user.id))
+                     @topiccontainer = containerFound
+                     #Only if there is one topic container per forum
+                     forumFound = Forum.find_by_id(@topiccontainer.forum_id)
+                     @maintopics = Kaminari.paginate_array(containerMaintopics).page(params[:page]).per(10)
+                     if(forumFound.topiccontainers.count > 1)
+                        @maintopics = Kaminari.paginate_array(containerMaintopics).page(params[:page]).per(5)
                      end
+                     if(type == "destroy")
+                        logged_in = current_user
+                        if(logged_in && ((logged_in.id == containerFound.user_id) || logged_in.admin))
+                           flash[:success] = "#{@topiccontainer.title} was successfully removed."
+                           @topiccontainer.destroy
+                           if(logged_in.admin)
+                              redirect_to topiccontainers_path
+                           else
+                              redirect_to user_forums_path(forumFound.user)
+                           end
+                        else
+                           redirect_to root_path
+                        end
+                     end
+                  else
+                     redirect_to root_path
                   end
                else
-                  redirect_to root_path
+                  maintopics = containerMaintopics.select{|maintopic| maintopic.subtopics.count > 0}
+                  if(containerFound.forum.forumtype.name == "Public" && maintopics.count > 0)
+                     @topiccontainer = containerFound
+                     #Only if there is one topic container per forum
+                     forumFound = Forum.find_by_id(@topiccontainer.forum_id)
+                     @maintopics = Kaminari.paginate_array(maintopics).page(params[:page]).per(10)
+                     if(forumFound.topiccontainers.count > 1)
+                        @maintopics = Kaminari.paginate_array(maintopics).page(params[:page]).per(5)
+                     end
+                  else
+                     redirect_to root_path
+                  end
                end
             else
                redirect_to root_path

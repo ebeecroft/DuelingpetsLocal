@@ -33,7 +33,7 @@ module ReferralsHelper
                         if(userFound)
                            newReferral = Referral.new(params[:referral])
                            newReferral.created_on = currentTime
-                           newReferral.referred_by_id = userFound.id
+                           newReferral.from_user_id = userFound.id
                            newReferral.user_id = logged_in.id
                         else
                            errorFlag = 1
@@ -42,9 +42,9 @@ module ReferralsHelper
                      @user = User.find_by_vname(logged_in.vname)
                      @referral = newReferral
                      if(type == "create")
-                        if(errorFlag != 1 && logged_in.id != newReferral.referred_by_id)
+                        if(errorFlag != 1 && logged_in.id != newReferral.from_user_id)
                            @referral.save
-                           pouchFound = Pouch.find_by_user_id(@referral.referred_by_id)
+                           pouchFound = Pouch.find_by_user_id(@referral.from_user_id)
                            pointsForReferral = 600
                            pouchFound.amount += pointsForReferral
                            @pouch = pouchFound
@@ -70,7 +70,7 @@ module ReferralsHelper
                      if(type == "update")
                         userFound = User.find_by_vname(params[:session][:vname].downcase)
                         if(userFound && userFound.id != referralFound.user_id)
-                           referralFound.referred_by_id = userFound.id
+                           referralFound.from_user_id = userFound.id
                            @referral = referralFound
                            if(@referral.update_attributes(params[:referral]))
                               flash[:success] = "#{@referral.to_user.vname} referral was successfully updated"

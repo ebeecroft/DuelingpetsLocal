@@ -51,9 +51,38 @@
       for <%= distance_of_time_in_words_to_now getTime(@forum.user) %>
    <% end %>
 </p>
+<p>Forum type: <%= @forum.forumtype.name %></p>
+<% if @forum.forumtype.name == "Invite" %>
+   <p class="navlinks">Members: <%= link_to @forum.foruminvitemembers.count, forum_foruminvitemembers_memberlist_path(@forum) %></p>
+<% end %>
+<p><%= button_to 'Past Owners', forum_pastforumowners_forumownerlist_path(@forum), method: :get %></p>
+<br>
+<% if !getOwnerVisitTime(@forum).nil? %>
+   <p>Owner visited: <%= distance_of_time_in_words_to_now getOwnerVisitTime(@forum) %> ago on (<%= getOwnerVisitTime(@forum).strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<% if !getModeratorVisitTime(@forum).nil? %>
+   <p>Moderator visited: <%= distance_of_time_in_words_to_now getModeratorVisitTime(@forum) %> ago on (<%= getModeratorVisitTime(@forum).strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<% if !getMemberVisitTime(@forum).nil? %>
+   <p>Member visited: <%= distance_of_time_in_words_to_now getMemberVisitTime(@forum) %> ago on (<%= getMemberVisitTime(@forum).strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<% if !getGuestVisitTime(@forum).nil? %>
+   <p>Guest visited: <%= distance_of_time_in_words_to_now getGuestVisitTime(@forum) %> ago on (<%= getGuestVisitTime(@forum).strftime("%B-%d-%Y") %>)</p>
+<% end %>
+<% if(current_user && current_user.id != @forum.user_id) %>
+   <% if(inactiveOwner(@forum)) %>
+      <br>
+      <p><%= button_to 'Take Control', pastforumowners_review1_path(:forum_id=>@forum.id), method: :post %></p>
+   <% end %>
+<% end %>
 <br>
 <p><%= textFormater("Multi", @forum.description, "All").html_safe %></p>
 <br>
+<!--May only be used if your forum type is invite only forum-->
+<% if(current_user && current_user.id == @forum.user_id) %>
+   <p><%= button_to 'New Foruminvite', new_forum_foruminvite_path(@forum), method: :get %></p>
+   <br>
+<% end %>
 <% if @forum.topiccontainers.count > 10 %>
    <p><%= paginate @topiccontainers %></p>
    <br>

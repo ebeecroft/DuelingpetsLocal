@@ -1,0 +1,13 @@
+<% provide(:h1, "Pagetimer List") %>
+<p><%= paginate @pagesounds %></p>
+<% @pagetimers.each do |pagetimer| %>
+   <br>
+   <p>Name: <%= pagetimer.name %><%= button_to 'Edit', edit_pagetimer_path(pagetimer), method: :get %><%= button_to 'Destroy', [pagetimer], method: :delete, data: { confirm: 'Are you sure?' } %></p>
+   <p>Expire time: <%= pagetimer.expiretime.strftime("%B-%d-%Y") %></p>
+   <p>Duration: <%= pagetimer.duration %></p>
+   <p>Time format: <%= pagetimer.timeformat %></p>
+<% end %>
+<br>
+<p><%= button_to "New Pagetimer", new_pagetimer_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  expiretime: 2018-05-13 16:50:32
+  duration: 1
+  timeformat: MyString
+
+two:
+  name: MyString
+  expiretime: 2018-05-13 16:50:32
+  duration: 1
+  timeformat: MyString

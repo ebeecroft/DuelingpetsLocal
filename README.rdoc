@@ -4,6 +4,24 @@ A website that allows users to create their own creatures.
 
 == Current Features:
 
+Alerts informs the user of friendrequests, foruminvites, colorschemes and pms that have been just received
+
+Webbanners allows the admin to change the website banner
+
+Foruminvites allows users to invite their friends to an invite type forum
+
+Foruminvitemembers allows users access to post on an invite only forums
+
+Pastforumowners allows the forumowner and the users members to either take over the forum or be appointed as the successor of a particular forum
+
+Forumtimers keeps track of the activity of when a particular user visited the forum itself
+
+Pagetimers sets up timers for each individual page of the website
+
+Uservisits keeps track of when a current user visited another user's profile
+
+Blogvisits keeps track of when a current user visited a particular blog
+
 Watch allows users to watch others and receive alerts on new content
 
 Friendrequest allows users to befriend other users

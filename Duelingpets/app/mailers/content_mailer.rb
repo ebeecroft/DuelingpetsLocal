@@ -161,5 +161,42 @@ class ContentMailer < ActionMailer::Base
          end
       end
    end
-end
 
+   #Subscriber section
+   def container_subscriber(containersubscriber, points)
+      @containersubscriber = containersubscriber
+      @points = points
+      mail(to: @containersubscriber.topiccontainer.user.email, from: "notification@duelingpets.net", subject: "Your topiccontainer #{@containersubscriber.topiccontainer.title} received a new subscriber. [Duelingpets]")
+   end
+
+   def maintopic_subscriber(maintopicsubscriber, points)
+      @maintopicsubscriber = maintopicsubscriber
+      @points = points
+      mail(to: @maintopicsubscriber.maintopic.user.email, from: "notification@duelingpets.net", subject: "Your maintopic #{@maintopicsubscriber.maintopic.title} received a new subscriber. [Duelingpets]")
+   end
+
+   def subtopic_subscriber(subtopicsubscriber, points)
+      @subtopicsubscriber = subtopicsubscriber
+      @points = points
+      mail(to: @subtopicsubscriber.subtopic.user.email, from: "notification@duelingpets.net", subject: "Your subtopic #{@subtopicsubscriber.subtopic.title} received a new subscriber. [Duelingpets]")
+   end
+
+   def forumowner_containersubscriber(containersubscriber, points)
+      @containersubscriber = containersubscriber
+      @points = points
+      mail(to: @containersubscriber.topiccontainer.forum.user.email, from: "notification@duelingpets.net", subject: "Your forum #{@containersubscriber.topiccontainer.forum.name} received a new topiccontainer subscriber. [Duelingpets]")
+   end
+
+   def forumowner_maintopicsubscriber(maintopicsubscriber, points)
+      @maintopicsubscriber = maintopicsubscriber
+      @points = points
+      mail(to: @maintopicsubscriber.maintopic.topiccontainer.forum.user.email, from: "notification@duelingpets.net", subject: "Your forum #{@maintopicsubscriber.maintopic.topiccontainer.forum.name} received a new maintopic subscriber. [Duelingpets]")
+   end
+
+   def forumowner_subtopicsubscriber(subtopicsubscriber, points)
+      @subtopicsubscriber = subtopicsubscriber
+      @points = points
+      mail(to: @subtopicsubscriber.subtopic.maintopic.topiccontainer.forum.user.email, from: "notification@duelingpets.net", subject: "Your forum #{@subtopicsubscriber.subtopic.maintopic.topiccontainer.forum.name} received a new subtopic subscriber. [Duelingpets]")
+   end
+   #End of Subscriber Section
+end

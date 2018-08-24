@@ -1,8 +1,15 @@
 <% provide(:h1, "New Registration") %>
+<p class="homepagestyle"><%= image_tag(@artpage.art_url(:thumb)) %></p>
+<p class="homepagestyle"><%= @artpage.message %></p>
+<br>
+<div class="homepagestyle">
 <%= form_for(:session, url: registrations_verify_path) do |f| %>
    <p><%= f.label :color, "What is your favorite color?" %></p>
    <p><%= f.text_field :color %></p>
    <p><%= f.submit "Submit" %></p>
 <% end %>
+</div>
 <br>
+<div class="homepagestyle">
 <p class="navlinks"><%= link_to "Back", root_path %></p>
+</div>

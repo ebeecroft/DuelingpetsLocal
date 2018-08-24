@@ -1,6 +1,22 @@
 module ForumsHelper
 
    private
+      def getSubscribers(forum, subtype)
+         subs = 0
+         if(subtype == "Container")
+            allSubs = Containersubscriber.all
+            subs = allSubs.select{|sub| sub.topiccontainer.forum_id == forum.id}
+         elsif(subtype == "Maintopic")
+            allSubs = Maintopicsubscriber.all
+            subs = allSubs.select{|sub| sub.maintopic.topiccontainer.forum_id == forum.id}
+         else
+            allSubs = Subtopicsubscriber.all
+            subs = allSubs.select{|sub| sub.subtopic.maintopic.topiccontainer.forum_id == forum.id}
+         end
+         value = subs.count
+         return value
+      end
+
       def inactiveOwner(forum)
          inactive = false
          if(current_user)

@@ -5,6 +5,7 @@ class Gallery < ActiveRecord::Base
    #Gallery related
    has_many :mainfolders, :foreign_key => "gallery_id", :dependent => :destroy
    belongs_to :user
+   has_many :galleryvisits, :foreign_key => "gallery_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :ogg, OggUploader

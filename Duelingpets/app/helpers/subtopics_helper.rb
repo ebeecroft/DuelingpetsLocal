@@ -1,28 +1,15 @@
 module SubtopicsHelper
 
    private
-      def forumGroupAccess(forumgroup, logged_in)
-         value = false
-         if(forumgroup.name == "RabbitOnly" && getBookGroups(logged_in) == 1)
-            value = true
-         elsif(forumgroup.name == "BluelandOnly" && getBookGroups(logged_in) == 2)
-            value = true
-         elsif(forumgroup.name == "DragonOnly" && getBookGroups(logged_in) == 3)
-            value = true
-         elsif(forumgroup.name == "Rabbit" && getBookGroups(logged_in) >= 1)
-            value = true
-         elsif(forumgroup.name == "Blueland" && getBookGroups(logged_in) >= 2)
-            value = true
-         elsif(forumgroup.name == "Dragon" && getBookGroups(logged_in) >= 3)
-            value = true
-         elsif(forumgroup.name == "Silverwing" && getBookGroups(logged_in) >= 4)
-            value = true
-         elsif(forumgroup.name == "Harahpin" && getBookGroups(logged_in) >= 5)
-            value = true
-         elsif(forumgroup.name == "LOTR" && getBookGroups(logged_in) == 6)
-            value = true
-         end
-         return value
+      def getSubtopicSubs(subtopic)
+         allSubs = subtopic.subtopicsubscribers.order("created_on desc")
+         return allSubs.count
+      end
+
+      def retrieveSubtopicSub(subtopic)
+         allSubs = subtopic.subtopicsubscribers.order("created_on desc")
+         subFound = allSubs.select{|sub| sub.user_id == current_user.id}
+         return subFound.count
       end
 
       def showCommons(type)
@@ -147,12 +134,31 @@ module SubtopicsHelper
                         @subtopic = newTopic
                         if(type == "create")
                            if(@subtopic.save)
-                              pointsForSubtopic = 120
+                              pointsForSubtopic = 80
+                              ContentMailer.subtopic_created(@subtopic, pointsForSubtopic).deliver
                               pouch = Pouch.find_by_user_id(@subtopic.user_id)
                               pouch.amount += pointsForSubtopic
                               @pouch = pouch
                               @pouch.save
-                              ContentMailer.subtopic_created(@subtopic, pointsForSubtopic).deliver
+
+                              #Find all the container subs
+                              allContainerSubs = Containersubscriber.all
+                              csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @subtopic.maintopic.topiccontainer.id}
+                              if(csubs.count > 0)
+                                 csubs.each do |sub|
+                                    UserMailer.user_postedsubtopic(@subtopic, sub).deliver
+                                 end
+                              end
+
+                              #Find all the maintopic subs
+                              allMaintopicSubs = Maintopicsubscriber.all
+                              mainsubs = allMaintopicSubs.select{|sub| sub.maintopic.id == @subtopic.maintopic.id}
+                              if(mainsubs.count > 0)
+                                 mainsubs.each do |sub|
+                                    UserMailer.user_postedsubtopic(@subtopic, sub).deliver
+                                 end
+                              end
+
                               flash[:success] = "#{@subtopic.title} was successfully created."
                               redirect_to maintopic_subtopic_path(@subtopic.maintopic, @subtopic)
                            else

@@ -4,6 +4,20 @@ A website that allows users to create their own creatures.
 
 == Current Features:
 
+Artpages displays a picture of an imaginary creature to get the site a bit more flavor
+
+Containersubscribers allows the user to subscribe to a topiccontainer
+
+Maintopicsubscribers allows the user to subscribe to a maintopic
+
+Subtopicsubscribers allows the user to subscriber to a subtopic
+
+Channelvisits keeps track of when a current user visited another user's channel
+
+Movievisits keeps track of when a current user visited another user's movie
+
+Galleryvisits keeps track of when a current user visited another user's gallery
+
 Alerts informs the user of friendrequests, foruminvites, colorschemes and pms that have been just received
 
 Webbanners allows the admin to change the website banner

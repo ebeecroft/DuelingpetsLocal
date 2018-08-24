@@ -1,5 +1,6 @@
 class SubtopicsController < GroupController
    include SubtopicsHelper
+   include ForumgroupretrievalHelper
 
    def index
       mode "index"

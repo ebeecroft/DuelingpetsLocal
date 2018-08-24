@@ -1,31 +1,87 @@
 module ChannelsHelper
 
    private
-      def getBookGroups(user)
-         groupValue = ""
-         age = (currentTime.year - user.birthday.year)
-         month = (currentTime.month - user.birthday.month) / 12
-         if(month < 0)
-            age -= 1
-         end
+      def getChannelVisitors(timeframe, channel)
+         #Time values
+         allVisits = channel.channelvisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
 
-         #Determines the group
-         if(age < 7)
-            groupValue = 0
-         elsif(age < 13)
-            groupValue = 1
-         elsif(age < 19)
-            groupValue = 2
-         elsif(age < 25)
-            groupValue = 3
-         elsif(age < 31)
-            groupValue = 4
-         elsif(age < 37)
-            groupValue = 5
-         elsif(age >= 37)
-            groupValue = 6
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
          end
-         return groupValue
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Channelvisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @channelvisit = visit
+               @channelvisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(channelFound, visitor)
+         allVisits = channelFound.channelvisits.order("created_on desc")
+         channelVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(channelVisited.count == 0)
+            #Add visitor to list
+            newVisit = channelFound.channelvisits.new(params[:channelvisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @channelvisit = newVisit
+            @channelvisit.save
+         end
+      end
+
+      def visitTimer(type, channelFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != channelFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Channel")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(channelFound, visitor)
+                  else
+                     saveVisit(channelFound, visitor)
+                  end
+               end
+            end
+         end
       end
 
       def getSubplaylists(mainplaylist)
@@ -67,6 +123,8 @@ module ChannelsHelper
                channelMainlists = channelFound.mainplaylists.order("created_on desc")
                playlists = channelMainlists.select{|mainplaylist| mainplaylist.subplaylists.count > 0 || (current_user && (current_user.id == mainplaylist.user_id) || current_user.admin)}
                if(playlists.count > 0 || current_user && ((current_user.id == channelFound.user_id) || current_user.admin))
+                  visitTimer(type, channelFound)
+                  cleanupOldVisits
                   @channel = channelFound
                   @mainplaylists = Kaminari.paginate_array(playlists).page(params[:page]).per(9)
                   if(type == "destroy")

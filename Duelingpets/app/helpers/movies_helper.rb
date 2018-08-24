@@ -1,6 +1,89 @@
 module MoviesHelper
 
    private
+      def getMovieVisitors(timeframe, movie)
+         #Time values
+         allVisits = movie.movievisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Movievisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @movievisit = visit
+               @movievisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(movieFound, visitor)
+         allVisits = movieFound.movievisits.order("created_on desc")
+         movieVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(movieVisited.count == 0)
+            #Add visitor to list
+            newVisit = movieFound.movievisits.new(params[:movievisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @movievisit = newVisit
+            @movievisit.save
+         end
+      end
+
+      def visitTimer(type, movieFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != channelFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Movie")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(movieFound, visitor)
+                  else
+                     saveVisit(movieFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
       def retrieveFave(movie, type)
          allFaves = movie.favoritemovies.order("created_on desc")
          faveFound = allFaves.select{|fave| fave.user_id == current_user.id}

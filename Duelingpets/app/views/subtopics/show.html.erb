@@ -18,6 +18,16 @@
    </p>
    <p class="navlinks">Maintopic: <%= link_to @subtopic.maintopic.title, topiccontainer_maintopic_path(@subtopic.maintopic.topiccontainer, @subtopic.maintopic) %></p>
    <p>Forum group: <%= @subtopic.forumgroup.name %></p>
+   <% if current_user %>
+      <% if retrieveSubtopicSub(@subtopic) == 0 %>
+         <p>Not Yet Subscribed</p>
+      <% else %>
+         <p>Subscribed</p>
+      <% end %>
+   <% end %>
+   <% if getSubtopicSubs(@subtopic) > 0 %>
+      <p class="navlinks">Total Subscribers: <%= link_to getSubtopicSubs(@subtopic), subtopic_subtopicsubscribers_path(@subtopic) %></p>
+   <% end %>
    <br>
    <p><%= textFormater("Multi", @subtopic.description, "All").html_safe %></p>
 <% end %>

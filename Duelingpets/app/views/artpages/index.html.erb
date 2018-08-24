@@ -1,0 +1,16 @@
+<% provide(:h1, "Artpage List") %>
+<div class="navlinks"><%= paginate @artpages %></div>
+<% @artpages.each do |artpage| %>
+   <br>
+   <div class="container">Name: <%= artpage.name %></div> <div class="container"><%= button_to 'Edit', edit_artpage_path(artpage), method: :get %></div> <div class="container"><%= button_to 'Destroy', artpage, method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now artpage.created_on %> ago on (<%= artpage.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if artpage.art.to_s != "" %>
+      <br>
+      <p><%= image_tag(artpage.art_url(:thumb)) %></p>
+   <% end %>
+   <p><%= artpage.message %></p>
+<% end %>
+<br>
+<p><%= button_to "New Artpage", new_artpage_path, method: :get %></p>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

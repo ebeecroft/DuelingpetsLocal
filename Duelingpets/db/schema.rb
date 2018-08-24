@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180528222013) do
+ActiveRecord::Schema.define(:version => 20180811055707) do
 
   create_table "artcomments", :force => true do |t|
     t.text     "message"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.integer  "user_id"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
+  end
+
+  create_table "artpages", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_on"
+    t.text     "message"
+    t.string   "art"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "arts", :force => true do |t|
@@ -113,6 +122,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.datetime "updated_at",  :null => false
   end
 
+  create_table "channelvisits", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "channel_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "colorschemes", :force => true do |t|
     t.string   "name"
     t.text     "description"
@@ -146,6 +163,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.integer  "user_id"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
+  end
+
+  create_table "containersubscribers", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "topiccontainer_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "donationboxes", :force => true do |t|
@@ -285,6 +310,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.datetime "updated_at",                     :null => false
   end
 
+  create_table "galleryvisits", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "gallery_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "mainfolders", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -334,6 +367,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.datetime "updated_at",        :null => false
   end
 
+  create_table "maintopicsubscribers", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "maintopic_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "memberprivileges", :force => true do |t|
     t.string   "name"
     t.datetime "created_on"
@@ -366,6 +407,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
   end
 
   create_table "moviestars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "movie_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "movievisits", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
     t.integer  "movie_id"
@@ -588,6 +637,14 @@ ActiveRecord::Schema.define(:version => 20180528222013) do
     t.integer  "forumgroup_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "subtopicsubscribers", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "subtopic_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "suggestions", :force => true do |t|

@@ -1,5 +1,6 @@
 class MoviesController < GroupController
    include MoviesHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

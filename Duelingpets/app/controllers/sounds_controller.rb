@@ -1,5 +1,6 @@
 class SoundsController < GroupController
    include SoundsHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

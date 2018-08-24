@@ -28,6 +28,11 @@
    <p>Subtopics: <%= getForumMakeup(forum, "Subtopic") %></p>
    <p>Narratives: <%= getForumMakeup(forum, "Narrative") %></p>
    <br>
+   <p>Subscribers</p>
+   <p>Containers: <%= getSubscribers(forum, "Container") %></p>
+   <p>Maintopics: <%= getSubscribers(forum, "Maintopic") %></p>
+   <p>Subtopics: <%= getSubscribers(forum, "Subtopic") %></p>
+   <br>
    <p><%= textFormater("Multi", forum.description, "All").html_safe %></p>
 <% end %>
 <% if optional %>

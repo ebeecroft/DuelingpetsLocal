@@ -1,5 +1,9 @@
 <% provide(:h1, "Activate Account") %>
 <br>
+<p class="homepagestyle"><%= image_tag(@artpage.art_url(:thumb)) %></p>
+<p class="homepagestyle"><%= @artpage.message %></p>
+<br>
+<div class="homepagestyle">
 <%= form_for(:session, url: activatepost_path) do |f| %>
    <p><%= f.label :login_id, "Login Name" %></p>
    <p><%= f.password_field :login_id %></p>
@@ -7,7 +11,10 @@
    <p><%= f.password_field :token %></p>
    <p><%= f.submit "Activate" %></p>
 <% end %>
+</div>
+<div class="homepagestyle">
 <br>
 <p class="navlinks">Expired Token? <%= link_to "Reset Timer!", resettime_path %></p>
 <br>
 <p class="navlinks"><%= link_to "Back", login_path %></p>
+</div>

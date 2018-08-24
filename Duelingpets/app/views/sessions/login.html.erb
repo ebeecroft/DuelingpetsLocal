@@ -1,5 +1,9 @@
 <% provide(:h1, "Login") %>
 <br>
+<p class="homepagestyle"><%= image_tag(@artpage.art_url(:thumb)) %></p>
+<p class="homepagestyle"><%= @artpage.message %></p>
+<br>
+<div class="homepagestyle">
 <%= form_for(:session, url: loginpost_path) do |f| %>
    <p><%= f.label :login_id, "Login Name" %></p>
    <p><%= f.password_field :login_id %></p>
@@ -7,9 +11,12 @@
    <p><%= f.password_field :password %></p>
    <p><%= f.submit "Login" %></p>
 <% end %>
+</div>
 <br>
+<div class="homepagestyle">
 <p class="navlinks">New User? <%= link_to "Register now!", register_path %></p>
 <p class="navlinks">New Account? <%= link_to "Activate now!", activate_path %></p>
 <p class="navlinks">Forgot Password? <%= link_to "Forgot Password", recover_path %></p>
 <br>
 <p class="navlinks"><%= link_to 'Back', root_path %></p>
+</div>

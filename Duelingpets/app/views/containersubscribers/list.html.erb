@@ -1,0 +1,19 @@
+<% provide(:h1, "Containersubscriber List") %>
+<div class="navlinks"><%= paginate @containersubscribers %></div>
+<% @containersubscribers.each do |containersubscriber| %>
+   <br>
+   <div class="container"><p class="navlinks">Topiccontainer: <%= link_to containersubscriber.topiccontainer.title, forum_topiccontainer_path(containersubscriber.topiccontainer.forum, containersubscriber.topiccontainer) %></p></div> <div class="container"><%= button_to 'Destroy', [containersubscriber.topiccontainer, containersubscriber], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now containersubscriber.created_on %> ago on (<%= containersubscriber.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if containersubscriber.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(containersubscriber.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Subscribed by: <%= getUserPrivilege(containersubscriber.user) %><%= link_to containersubscriber.user.vname, user_path(containersubscriber.user) %></p>
+   <p>Status: <%= getActivity(containersubscriber.user) %>
+      <% if getActivity(containersubscriber.user) == "Offline" || getActivity(containersubscriber.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(containersubscriber.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

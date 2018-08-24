@@ -1,5 +1,6 @@
 class ArtsController < GroupController
    include ArtsHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

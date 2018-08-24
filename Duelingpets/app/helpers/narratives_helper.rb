@@ -1,30 +1,6 @@
 module NarrativesHelper
 
    private
-      def forumGroupAccess(forumgroup, logged_in)
-         value = false
-         if(forumgroup.name == "RabbitOnly" && getBookGroups(logged_in) == 1)
-            value = true
-         elsif(forumgroup.name == "BluelandOnly" && getBookGroups(logged_in) == 2)
-            value = true
-         elsif(forumgroup.name == "DragonOnly" && getBookGroups(logged_in) == 3)
-            value = true
-         elsif(forumgroup.name == "Rabbit" && getBookGroups(logged_in) >= 1)
-            value = true
-         elsif(forumgroup.name == "Blueland" && getBookGroups(logged_in) >= 2)
-            value = true
-         elsif(forumgroup.name == "Dragon" && getBookGroups(logged_in) >= 3)
-            value = true
-         elsif(forumgroup.name == "Silverwing" && getBookGroups(logged_in) >= 4)
-            value = true
-         elsif(forumgroup.name == "Harahpin" && getBookGroups(logged_in) >= 5)
-            value = true
-         elsif(forumgroup.name == "LOTR" && getBookGroups(logged_in) == 6)
-            value = true
-         end
-         return value
-      end
-
       def stylizedText(textString, categoryType)
          styleString = textString
 
@@ -191,12 +167,40 @@ module NarrativesHelper
                         @narrative = newNarrative
                         if(type == "create")
                            if(@narrative.save)
-                              pointsForNarrative = 40
+                              pointsForNarrative = 20
+                              ContentMailer.narrative_created(@narrative, pointsForNarrative).deliver
                               pouch = Pouch.find_by_user_id(@narrative.user_id)
                               pouch.amount += pointsForNarrative
                               @pouch = pouch
                               @pouch.save
-                              ContentMailer.narrative_created(@narrative, pointsForNarrative).deliver
+
+                              #Find all the container subs
+                              allContainerSubs = Containersubscriber.all
+                              csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @narrative.subtopic.maintopic.topiccontainer.id}
+                              if(csubs.count > 0)
+                                 csubs.each do |sub|
+                                    UserMailer.user_postednarrative(@narrative, sub).deliver
+                                 end
+                              end
+
+                              #Find all the maintopic subs
+                              allMaintopicSubs = Maintopicsubscriber.all
+                              mainsubs = allMaintopicSubs.select{|sub| sub.maintopic.id == @narrative.subtopic.maintopic.id}
+                              if(mainsubs.count > 0)
+                                 mainsubs.each do |sub|
+                                    UserMailer.user_postednarrative(@narrative, sub).deliver
+                                 end
+                              end
+
+                              #Find all the subtopic subs
+                              allSubtopicSubs = Subtopicsubscriber.all
+                              subtopicsubs = allSubtopicSubs.select{|sub| sub.subtopic.id == @narrative.subtopic.id}
+                              if(subtopicsubs.count > 0)
+                                 subtopicsubs.each do |sub|
+                                    UserMailer.user_postednarrative(@narrative, sub).deliver
+                                 end
+                              end
+
                               flash[:success] = "#{@narrative.subtopic.title} was successfully created."
                               redirect_to maintopic_subtopic_path(@narrative.subtopic.maintopic, @narrative.subtopic)
                            else

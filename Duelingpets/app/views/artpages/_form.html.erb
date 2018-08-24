@@ -1,0 +1,39 @@
+<%= form_for(@artpage) do |f| %>
+  <% if @artpage.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@artpage.errors.count, "error") %> prohibited this artpage from being saved:</h2>
+
+      <ul>
+      <% @artpage.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  Art files
+  <div class="field">
+     <%= image_tag @artpage.art_url(:thumb).to_s if @artpage.art? %>
+  </div>
+  <div class="field">
+     <%= f.file_field :art %>
+  </div>
+  <div class="field">
+    <%= f.label :remote_art_url, "or Art URL" %><br />
+    <%= f.text_field :remote_art_url %>
+    <%= f.hidden_field :art_cache %>
+  </div>
+  <div class="field">
+    <%= f.label :message %><br />
+    <%= f.text_area :message %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', artpages_path %></p>
+<% end %>

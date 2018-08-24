@@ -1,5 +1,6 @@
 class SubplaylistsController < GroupController
    include SubplaylistsHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

@@ -16,6 +16,10 @@
    <% end %>
 </p>
 <br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getChannelVisitors("past20mins", @channel), channel_channelvisits_path(@channel) %> last 40 mins: <%= link_to getChannelVisitors("past40mins", @channel), channel_channelvisits_path(@channel) %> last hour: <%= link_to getChannelVisitors("pasthour", @channel), channel_channelvisits_path(@channel) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getChannelVisitors("past2hours", @channel), channel_channelvisits_path(@channel) %> last 3 hours: <%= link_to getChannelVisitors("past3hours", @channel), channel_channelvisits_path(@channel) %></p>
+<br>
 <p><%= @channel.description %></p>
 <br>
 <% if @mainplaylists.count > 9 %>

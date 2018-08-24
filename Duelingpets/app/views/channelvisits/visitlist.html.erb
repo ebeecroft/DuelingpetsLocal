@@ -1,0 +1,19 @@
+<% provide(:h1, "Channelvisit List") %>
+<p><%= paginate @channelvisits %></p>
+<% @channelvisits.each do |channelvisit| %>
+   <br>
+   <div class="container"><p class="navlinks">Channel: <%= link_to channelvisit.channel.name, user_channel_path(channelvisit.channel.user, channelvisit.channel) %></p></div> <div class="container"><%= button_to 'Destroy', [channelvisit.channel, channelvisit], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if channelvisit.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(channelvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visited by: <%= getUserPrivilege(channelvisit.user) %><%= link_to channelvisit.user.vname, user_path(channelvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now channelvisit.created_on %> ago on (<%= channelvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(channelvisit.user) %>
+      <% if getActivity(channelvisit.user) == "Offline" || getActivity(channelvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(channelvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

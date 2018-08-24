@@ -89,7 +89,14 @@
 <% end %>
 <% if @topiccontainers.count > 0 %>
    <% @topiccontainers.each_with_index do |topiccontainer, index| %>
-      <p class="forumcolor"><%= link_to topiccontainer.title, forum_topiccontainer_path(topiccontainer.forum, topiccontainer) %></p>
+      <div class="container">
+         <p class="forumcolor"><%= link_to topiccontainer.title, forum_topiccontainer_path(topiccontainer.forum, topiccontainer) %></p>
+      </div>
+      <% if retrieveContainerSub(topiccontainer) == 0 %>
+         <div class="container"><%= button_to 'Subscribe', containersubscribers_subscribe_path(:topiccontainer_id=>topiccontainer.id), method: :post %></div>
+      <% else %>
+         <div class="container"><%= button_to 'Unsubscribe', containersubscribers_subscribe_path(:topiccontainer_id=>topiccontainer.id), method: :post %></div>
+      <% end %>
       <% if(current_user && ((current_user.id == topiccontainer.user_id) || current_user.admin)) %>
          <div class="container"><%= button_to 'Edit', edit_forum_topiccontainer_path(topiccontainer.forum, topiccontainer), method: :get %></div> <div class="container"><%= button_to 'Destroy', [topiccontainer.forum, topiccontainer], method: :delete, data: { confirm: 'Are you sure?' } %></div>
       <% end %>

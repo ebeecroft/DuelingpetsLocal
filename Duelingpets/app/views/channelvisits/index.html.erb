@@ -1,0 +1,17 @@
+<% provide(:h1, @channel.name + "'s visitors") %>
+<p><%= paginate @channelvisits %></p>
+<% @channelvisits.each do |channelvisit| %>
+   <br>
+   <% if channelvisit.user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(channelvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(channelvisit.user) %><%= link_to channelvisit.user.vname, user_path(channelvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now channelvisit.created_on %> ago on (<%= channelvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(channelvisit.user) %>
+      <% if getActivity(channelvisit.user) == "Offline" || getActivity(channelvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(channelvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

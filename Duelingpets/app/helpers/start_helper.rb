@@ -62,11 +62,20 @@ module StartHelper
          referrals = referralsSourced(timeframe)
          watches = watchesSourced(timeframe)
 
+         #Community points
+         maintopics = maintopicsSourced(timeframe)
+         subtopics = subtopicsSourced(timeframe)
+         narratives = narrativesSourced(timeframe)
+         containersubs = containersubsSourced(timeframe)
+         maintopicsubs = maintopicsubsSourced(timeframe)
+         subtopicsubs = subtopicsubsSourced(timeframe)
+
          #Sum points
          userFeedback = favoritemovies + moviestars + moviecritiques + favoritearts + artstars + artcritiques + blogstars
          + favoritesounds + soundstars + soundcritiques
          userContent = colors + blogs + replies + referrals + movies + arts + sounds + watches
-         points = userFeedback + userContent
+         community = maintopics + subtopics + narratives + containersubs + maintopicsubs + subtopicsubs
+         points = userFeedback + userContent + community
          return points
       end
 
@@ -289,51 +298,41 @@ module StartHelper
          return value
       end
 
-      def containersSourced(timeframe)
+      def containerTime(timeframe)
          allContainers = Topiccontainer.all
+         firstContainer = Topiccontainer.first
          nonBot = allContainers.select{|topiccontainer| ((topiccontainer.user.pouch.privilege != "Bot") && (topiccontainer.user.pouch.privilege != "Trial")) && (topiccontainer.user.pouch.privilege != "Admin")}
-         points = 0
-         if(nonBot)
-            #Time values
-            day = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.day}
-            week = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.week}
-            month = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.month}
-            year = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.year}
-            threeyear = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 3.years}
-            firstContainer = Topiccontainer.first
-            bacot = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) > (firstContainer.created_on.year - 1.year)}
 
-            #Point values
-            daySources = day.count * 380
-            weekSources = week.count * 380 - daySources
-            monthSources = month.count * 380 - weekSources - daySources
-            yearSources = year.count * 380 - monthSources - weekSources - daySources
-            dreiJahreSources = threeyear.count * 380 - yearSources - monthSources - weekSources - daySources
-            bacotSources = bacot.count * 380 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
-            containerSources = nonBot.count * 380
+         #Time values
+         day = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.day}
+         week = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.week}
+         month = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.month}
+         year = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 1.year}
+         threeyear = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) <= 3.years}
+         bacot = nonBot.select{|topiccontainer| (currentTime - topiccontainer.created_on) > (firstContainer.created_on.year - 1.year)}
 
-            points = daySources
-            if(timeframe == "Week")
-               points = weekSources
-            elsif(timeframe == "Month")
-               points = monthSources
-            elsif(timeframe == "Year")
-               points = yearSources
-            elsif(timeframe == "Threeyears")
-               points = dreiJahreSources
-            elsif(timeframe == "BaconOfTomato")
-               points = bacotSources
-            elsif(timeframe == "All")
-               points = containerSources
-            end
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
          end
-         return points
-      end
-
-      def containers
-         allContainers = Topiccontainer.all
-         nonBot = allContainers.select{|topiccontainer| ((topiccontainer.user.pouch.privilege != "Bot") && (topiccontainer.user.pouch.privilege != "Trial")) && (topiccontainer.user.pouch.privilege != "Admin")}
-         value = nonBot.count
          return value
       end
 
@@ -352,13 +351,13 @@ module StartHelper
             bacot = nonBot.select{|maintopic| (currentTime - maintopic.created_on) > (firstTopic.created_on.year - 1.year)}
 
             #Point values
-            daySources = day.count * 220
-            weekSources = week.count * 220 - daySources
-            monthSources = month.count * 220 - weekSources - daySources
-            yearSources = year.count * 220 - monthSources - weekSources - daySources
-            dreiJahreSources = threeyear.count * 220 - yearSources - monthSources - weekSources - daySources
-            bacotSources = bacot.count * 220 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
-            maintopicSources = nonBot.count * 220
+            daySources = day.count * 240
+            weekSources = week.count * 240 - daySources
+            monthSources = month.count * 240 - weekSources - daySources
+            yearSources = year.count * 240 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 240 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 240 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            maintopicSources = nonBot.count * 240
 
             points = daySources
             if(timeframe == "Week")
@@ -400,13 +399,13 @@ module StartHelper
             bacot = nonBot.select{|subtopic| (currentTime - subtopic.created_on) > (firstTopic.created_on.year - 1.year)}
 
             #Point values
-            daySources = day.count * 120
-            weekSources = week.count * 120 - daySources
-            monthSources = month.count * 120 - weekSources - daySources
-            yearSources = year.count * 120 - monthSources - weekSources - daySources
-            dreiJahreSources = threeyear.count * 120 - yearSources - monthSources - weekSources - daySources
-            bacotSources = bacot.count * 120 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
-            subtopicSources = nonBot.count * 120
+            daySources = day.count * 80
+            weekSources = week.count * 80 - daySources
+            monthSources = month.count * 80 - weekSources - daySources
+            yearSources = year.count * 80 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 80 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 80 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            subtopicSources = nonBot.count * 80
 
             points = daySources
             if(timeframe == "Week")
@@ -448,13 +447,13 @@ module StartHelper
             bacot = nonBot.select{|narrative| (currentTime - narrative.created_on) > (firstNarrative.created_on.year - 1.year)}
 
             #Point values
-            daySources = day.count * 40
-            weekSources = week.count * 40 - daySources
-            monthSources = month.count * 40 - weekSources - daySources
-            yearSources = year.count * 40 - monthSources - weekSources - daySources
-            dreiJahreSources = threeyear.count * 40 - yearSources - monthSources - weekSources - daySources
-            bacotSources = bacot.count * 40 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
-            narrativeSources = nonBot.count * 40
+            daySources = day.count * 20
+            weekSources = week.count * 20 - daySources
+            monthSources = month.count * 20 - weekSources - daySources
+            yearSources = year.count * 20 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 20 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 20 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            narrativeSources = nonBot.count * 20
 
             points = daySources
             if(timeframe == "Week")
@@ -477,6 +476,150 @@ module StartHelper
       def narratives
          allNarratives = Narrative.all
          nonBot = allNarratives.select{|narrative| ((narrative.user.pouch.privilege != "Bot") && (narrative.user.pouch.privilege != "Trial")) && (narrative.user.pouch.privilege != "Admin")}
+         value = nonBot.count
+         return value
+      end
+
+      def containersubsSourced(timeframe)
+         allContainersubs = Containersubscriber.all
+         nonBot = allContainersubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.day}
+            week = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.week}
+            month = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.month}
+            year = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.year}
+            threeyear = nonBot.select{|sub| (currentTime - sub.created_on) <= 3.years}
+            firstContainersub = Containersubscriber.first
+            bacot = nonBot.select{|sub| (currentTime - sub.created_on) > (firstContainersub.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 60
+            weekSources = week.count * 60 - daySources
+            monthSources = month.count * 60 - weekSources - daySources
+            yearSources = year.count * 60 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 60 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 60 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            subSources = nonBot.count * 60
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = subSources
+            end
+         end
+         return points
+      end
+
+      def containersubs
+         allContainersubs = Containersubscriber.all
+         nonBot = allContainersubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
+         value = nonBot.count
+         return value
+      end
+
+      def maintopicsubsSourced(timeframe)
+         allMaintopicsubs = Maintopicsubscriber.all
+         nonBot = allMaintopicsubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.day}
+            week = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.week}
+            month = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.month}
+            year = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.year}
+            threeyear = nonBot.select{|sub| (currentTime - sub.created_on) <= 3.years}
+            firstMaintopicsub = Maintopicsubscriber.first
+            bacot = nonBot.select{|sub| (currentTime - sub.created_on) > (firstMaintopicsub.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 20
+            weekSources = week.count * 20 - daySources
+            monthSources = month.count * 20 - weekSources - daySources
+            yearSources = year.count * 20 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 20 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 20 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            subSources = nonBot.count * 20
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = subSources
+            end
+         end
+         return points
+      end
+
+      def maintopicsubs
+         allMaintopicsubs = Maintopicsubscriber.all
+         nonBot = allMaintopicsubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
+         value = nonBot.count
+         return value
+      end
+
+      def subtopicsubsSourced(timeframe)
+         allSubtopicsubs = Subtopicsubscriber.all
+         nonBot = allSubtopicsubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
+         points = 0
+         if(nonBot)
+            #Time values
+            day = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.day}
+            week = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.week}
+            month = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.month}
+            year = nonBot.select{|sub| (currentTime - sub.created_on) <= 1.year}
+            threeyear = nonBot.select{|sub| (currentTime - sub.created_on) <= 3.years}
+            firstMaintopicsub = Maintopicsubscriber.first
+            bacot = nonBot.select{|sub| (currentTime - sub.created_on) > (firstMaintopicsub.created_on.year - 1.year)}
+
+            #Point values
+            daySources = day.count * 5
+            weekSources = week.count * 5 - daySources
+            monthSources = month.count * 5 - weekSources - daySources
+            yearSources = year.count * 5 - monthSources - weekSources - daySources
+            dreiJahreSources = threeyear.count * 5 - yearSources - monthSources - weekSources - daySources
+            bacotSources = bacot.count * 5 - dreiJahreSources - yearSources - monthSources - weekSources - daySources
+            subSources = nonBot.count * 5
+
+            points = daySources
+            if(timeframe == "Week")
+               points = weekSources
+            elsif(timeframe == "Month")
+               points = monthSources
+            elsif(timeframe == "Year")
+               points = yearSources
+            elsif(timeframe == "Threeyears")
+               points = dreiJahreSources
+            elsif(timeframe == "BaconOfTomato")
+               points = bacotSources
+            elsif(timeframe == "All")
+               points = subSources
+            end
+         end
+         return points
+      end
+
+      def subtopicsubs
+         allSubtopicsubs = Subtopicsubscriber.all
+         nonBot = allSubtopicsubs.select{|sub| ((sub.user.pouch.privilege != "Bot") && (sub.user.pouch.privilege != "Trial")) && (sub.user.pouch.privilege != "Admin")}
          value = nonBot.count
          return value
       end
@@ -679,6 +822,40 @@ module StartHelper
             value = bacotCount
          elsif(timeframe == "All")
             value = nonBot.count
+         end
+         return value
+      end
+
+      def galleryvisitors(timeframe)
+         allVisitors = Galleryvisit.all
+         nonBot = allVisitors.select{|galleryvisit| ((galleryvisit.from_user.pouch.privilege != "Bot") && (galleryvisit.from_user.pouch.privilege != "Trial")) && (galleryvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
          end
          return value
       end
@@ -1029,6 +1206,40 @@ module StartHelper
          return value
       end
 
+      def channelvisitors(timeframe)
+         allVisitors = Channelvisit.all
+         nonBot = allVisitors.select{|channelvisit| ((channelvisit.from_user.pouch.privilege != "Bot") && (channelvisit.from_user.pouch.privilege != "Trial")) && (channelvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|channelvisit| (currentTime - channelvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|channelvisit| (currentTime - channelvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|channelvisit| (currentTime - channelvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|channelvisit| (currentTime - channelvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|channelvisit| (currentTime - channelvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
+      end
+
       def mainplaylistTime(timeframe)
          allMainplaylists = Mainplaylist.all
          firstPlaylist = Mainplaylist.first
@@ -1153,6 +1364,40 @@ module StartHelper
             end
          end
          return points
+      end
+
+      def movievisitors(timeframe)
+         allVisitors = Movievisit.all
+         nonBot = allVisitors.select{|movievisit| ((movievisit.from_user.pouch.privilege != "Bot") && (movievisit.from_user.pouch.privilege != "Trial")) && (movievisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|movievisit| (currentTime - movievisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|movievisit| (currentTime - movievisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|movievisit| (currentTime - movievisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|movievisit| (currentTime - movievisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|movievisit| (currentTime - movievisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
       end
 
       def favoritemoviesSourced(timeframe)
@@ -2078,7 +2323,7 @@ module StartHelper
       end
 
       def getAvgIncome
-         points = Pouch.average(:amount, :conditions => ['activated = ? && amount > ? && privilege != ?', true, 0, "Bot"])
+         points = Pouch.average(:amount, :conditions => ['activated = ? && amount > ? && privilege != ? && privilege != ? && privilege != ?', true, 0, "Bot", "Admin", "Trial"])
          if(points == nil)
             points = 0
          end
@@ -2272,6 +2517,8 @@ module StartHelper
             redirect_to root_path
          else
             if(type == "home")
+               homepage = Artpage.find_by_name("Homepage")
+               @artpage = homepage
                if(!current_user || !current_user.admin)
                   allMode = Maintenancemode.find_by_id(1)
                   if(allMode.maintenance_on)

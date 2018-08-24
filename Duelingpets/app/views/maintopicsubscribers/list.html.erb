@@ -1,0 +1,19 @@
+<% provide(:h1, "Maintopicsubscriber List") %>
+<div class="navlinks"><%= paginate @maintopicsubscribers %></div>
+<% @maintopicsubscribers.each do |maintopicsubscriber| %>
+   <br>
+   <div class="container"><p class="navlinks">Maintopic: <%= link_to maintopicsubscriber.maintopic.title, topiccontainer_maintopic_path(maintopicsubscriber.maintopic.topiccontainer, maintopicsubscriber.maintopic) %></p></div> <div class="container"><%= button_to 'Destroy', [maintopicsubscriber.maintopic, maintopicsubscriber], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now maintopicsubscriber.created_on %> ago on (<%= maintopicsubscriber.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if maintopicsubscriber.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(maintopicsubscriber.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Subscribed by: <%= getUserPrivilege(maintopicsubscriber.user) %><%= link_to maintopicsubscriber.user.vname, user_path(maintopicsubscriber.user) %></p>
+   <p>Status: <%= getActivity(maintopicsubscriber.user) %>
+      <% if getActivity(maintopicsubscriber.user) == "Offline" || getActivity(maintopicsubscriber.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(maintopicsubscriber.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

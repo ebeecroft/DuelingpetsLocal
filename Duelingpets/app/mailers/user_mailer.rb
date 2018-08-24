@@ -232,4 +232,22 @@ class UserMailer < ActionMailer::Base
       @foruminvite = foruminvite
       mail(to: @foruminvite.from_user.email, from: "notification@duelingpets.net", subject: "Your foruminvite to #{@foruminvite.to_user.vname} was denied. [Duelingpets]")
    end
+
+   def user_postedmaintopic(maintopic, subscriber)
+      @maintopic = maintopic
+      @containersubscriber = subscriber
+      mail(to: @containersubscriber.user.email, from: "notification@duelingpets.net", subject: "#{@maintopic.user.vname} has created a new maintopic. [Duelingpets]")
+   end
+
+   def user_postedsubtopic(subtopic, subscriber)
+      @subtopic = subtopic
+      @subscriber = subscriber
+      mail(to: @subscriber.user.email, from: "notification@duelingpets.net", subject: "#{@subtopic.user.vname} has created a new subtopic. [Duelingpets]")
+   end
+
+   def user_postednarrative(narrative, subscriber)
+      @narrative = narrative
+      @subscriber = subscriber
+      mail(to: @subscriber.user.email, from: "notification@duelingpets.net", subject: "#{@narrative.user.vname} has created a new narrative. [Duelingpets]")
+   end
 end

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  created_on: 2018-08-04 19:31:54
+  user_id: 1
+  channel_id: 1
+
+two:
+  created_on: 2018-08-04 19:31:54
+  user_id: 1
+  channel_id: 1

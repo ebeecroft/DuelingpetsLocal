@@ -1,6 +1,89 @@
 module GalleriesHelper
 
    private
+      def getGalleryVisitors(timeframe, gallery)
+         #Time values
+         allVisits = gallery.channelvisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Galleryvisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @galleryvisit = visit
+               @galleryvisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(galleryFound, visitor)
+         allVisits = galleryFound.galleryvisits.order("created_on desc")
+         galleryVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(galleryVisited.count == 0)
+            #Add visitor to list
+            newVisit = galleryFound.galleryvisits.new(params[:galleryvisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @galleryvisit = newVisit
+            @galleryvisit.save
+         end
+      end
+
+      def visitTimer(type, galleryFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != channelFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Gallery")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(galleryFound, visitor)
+                  else
+                     saveVisit(galleryFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
       def getSubfolders(mainfolder)
          mainfolderSubfolders = mainfolder.subfolders.order("created_on desc")
          subfolders = mainfolderSubfolders.select{|subfolder| (((!current_user && subfolder.bookgroup.name == "Peter Rabbit") || (current_user && subfolder.bookgroup_id <= getBookGroups(current_user))) && ((subfolder.arts.count > 0) || (subfolder.favoritearts.count > 0))) || (current_user && subfolder.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subfolder.user_id) || current_user.admin) || subfolder.collab_mode))}

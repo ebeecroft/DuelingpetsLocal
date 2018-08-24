@@ -1,6 +1,17 @@
 module MaintopicsHelper
 
    private
+      def getMaintopicSubs(maintopic)
+         allSubs = maintopic.maintopicsubscribers.order("created_on desc")
+         return allSubs.count
+      end
+
+      def retrieveMaintopicSub(maintopic)
+         allSubs = maintopic.maintopicsubscribers.order("created_on desc")
+         subFound = allSubs.select{|sub| sub.user_id == current_user.id}
+         return subFound.count
+      end
+
       def getCurrentNarrative(subtopic)
          narratives = subtopic.narratives.order("created_on desc")
          return narratives
@@ -123,12 +134,22 @@ module MaintopicsHelper
                         @maintopic = newTopic
                         if(type == "create")
                            if(@maintopic.save)
-                              pointsForMaintopic = 220
+                              pointsForMaintopic = 240
+                              ContentMailer.maintopic_created(@maintopic, pointsForMaintopic).deliver
                               pouch = Pouch.find_by_user_id(@maintopic.user_id)
                               pouch.amount += pointsForMaintopic
                               @pouch = pouch
                               @pouch.save
-                              ContentMailer.maintopic_created(@maintopic, pointsForMaintopic).deliver
+
+                              #Find all the container subs
+                              allContainerSubs = Containersubscriber.all
+                              csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @maintopic.topiccontainer.id}
+                              if(csubs.count > 0)
+                                 csubs.each do |sub|
+                                    UserMailer.user_postedmaintopic(@maintopic, sub).deliver
+                                 end
+                              end
+
                               flash[:success] = "#{@maintopic.title} was successfully created."
                               redirect_to topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic)
                            else

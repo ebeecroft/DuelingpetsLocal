@@ -22,6 +22,11 @@
       for <%= distance_of_time_in_words_to_now getTime(@movie.user) %>
    <% end %>
 </p>
+<br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getMovieVisitors("past20mins", @movie), movie_movievisits_path(@movie) %> last 40 mins: <%= link_to getMovieVisitors("past40mins", @movie), movie_movievisits_path(@movie) %> last hour: <%= link_to getMovieVisitors("pasthour", @movie), movie_movievisits_path(@movie) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getMovieVisitors("past2hours", @movie), movie_movievisits_path(@movie) %> last 3 hours: <%= link_to getMovieVisitors("past3hours", @movie), movie_movievisits_path(@movie) %></p>
+<br>
 <% if current_user && current_user.id != @movie.user_id %>
    <% if retrieveStar(@movie) == 0 %>
       <p><%= button_to 'Star', moviestars_star_path(:movie_id=>@movie.id), method: :post %></p>

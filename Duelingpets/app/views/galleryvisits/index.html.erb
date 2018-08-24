@@ -1,0 +1,17 @@
+<% provide(:h1, @gallery.name + "'s visitors") %>
+<p><%= paginate @galleryvisits %></p>
+<% @galleryvisits.each do |galleryvisit| %>
+   <br>
+   <% if galleryvisit.user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(galleryvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(galleryvisit.user) %><%= link_to galleryvisit.user.vname, user_path(galleryvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now galleryvisit.created_on %> ago on (<%= galleryvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(galleryvisit.user) %>
+      <% if getActivity(galleryvisit.user) == "Offline" || getActivity(galleryvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(galleryvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

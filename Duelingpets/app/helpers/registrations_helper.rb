@@ -87,6 +87,8 @@ module RegistrationsHelper
                      color_value = params[:session][:color].downcase
                      if(color_value)
                         if(color_value == "pink" || color_value == "red" || color_value == "blue" || color_value == "green" || color_value == "cyan" || color_value == "magenta" || color_value == "orange" || color_value == "brown" || color_value == "yellow")
+                           registerFound = Artpage.find_by_name("Register")
+                           @artpage = registerFound
                            @registration = Registration.new
                            render "register2"
                         else
@@ -97,6 +99,9 @@ module RegistrationsHelper
                         flash[:error] = "Invalid color value"
                         redirect_to root_path
                      end
+                  elsif(type == "register")
+                     verificationFound = Artpage.find_by_name("Verification")
+                     @artpage = verificationFound
                   end
                end
             elsif(type == "register2" || type == "create")
@@ -110,6 +115,8 @@ module RegistrationsHelper
                      render "/registrations/maintenance"
                   end
                else
+                  registerFound = Artpage.find_by_name("Register")
+                  @artpage = registerFound
                   newRegistration = Registration.new
                   if(type == "create")
                      newRegistration = Registration.new(params[:registration])
@@ -157,6 +164,7 @@ module RegistrationsHelper
                            newUser.password = initialPassword
                            newUser.password_confirmation = initialPassword
                            newUser.admin = registrationFound.admin
+                           newUser.bookgroup_id = 1
                            @user = newUser
                            if(@user.save)
                               #Creates the user info

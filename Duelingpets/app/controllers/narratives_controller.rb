@@ -1,5 +1,6 @@
 class NarrativesController < GroupController
    include NarrativesHelper
+   include ForumgroupretrievalHelper
 
    def index
       mode "index"

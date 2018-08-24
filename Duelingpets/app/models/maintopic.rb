@@ -5,6 +5,7 @@ class Maintopic < ActiveRecord::Base
    belongs_to :topiccontainer
    belongs_to :user
    has_many :subtopics, :foreign_key => "maintopic_id", :dependent => :destroy
+   has_many :maintopicsubscribers, :foreign_key => "maintopic_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :topicavatar, TopicavatarUploader

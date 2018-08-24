@@ -52,6 +52,8 @@ module SessionsHelper
                   allMode = Maintenancemode.find_by_id(1)
                   betaMode = Maintenancemode.find_by_id(2)
                   if(allMode.maintenance_on || betaMode.maintenance_on)
+                     loginFound = Artpage.find_by_name("Login")
+                     @artpage = loginFound
                      if(loginUser.admin)
                         loginMaintenance(loginUser, pouch)
                      else
@@ -174,7 +176,19 @@ module SessionsHelper
       end
 
       def mode(type)
-         if(type == "loginpost")
+         if(type == "login")
+            loginFound = Artpage.find_by_name("Login")
+            @artpage = loginFound
+         elsif(type == "activate")
+            activateFound = Artpage.find_by_name("Activate")
+            @artpage = activateFound
+         elsif(type == "recover")
+            recoverFound = Artpage.find_by_name("Recover")
+            @artpage = recoverFound
+         elsif(type == "resettime")
+            resetTimeFound = Artpage.find_by_name("Reset")
+            @artpage = resetTimeFound
+         elsif(type == "loginpost")
             sessionCommons(type)
          elsif(type == "recoverypost")
             sessionCommons(type)

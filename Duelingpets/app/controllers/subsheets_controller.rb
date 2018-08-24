@@ -1,5 +1,6 @@
 class SubsheetsController < GroupController
    include SubsheetsHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

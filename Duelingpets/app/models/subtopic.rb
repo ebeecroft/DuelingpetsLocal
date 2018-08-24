@@ -7,6 +7,7 @@ class Subtopic < ActiveRecord::Base
    belongs_to :user
    belongs_to :forumgroup
    has_many :narratives, :foreign_key => "subtopic_id", :dependent => :destroy
+   has_many :subtopicsubscribers, :foreign_key => "subtopic_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :topicavatar, TopicavatarUploader

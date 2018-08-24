@@ -3,12 +3,15 @@
    <p><%= audio_tag (getHomepageMusic), :controls => true, :hidden => true, :loop => true, :autoplay => true %></p>
 <% end %>
 <% if checkMusicFlag == "On" %>
-   <p><%= button_to 'Turn off music', start_adjust_path, method: :post %></p>
+   <div class="homepagestyle"><%= button_to 'Turn off music', start_adjust_path, method: :post %></div>
 <% else %>
-   <p><%= button_to 'Turn on music', start_adjust_path, method: :post %></p>
+   <div class="homepagestyle"><%= button_to 'Turn on music', start_adjust_path, method: :post %></div>
 <% end %>
+<p class="homepagestyle"><%= image_tag(@artpage.art_url(:thumb)) %></p>
+<p class="homepagestyle"><%= @artpage.message %></p>
 <br>
 <% if newestMovies.count > 0 %>
+<div class="homepagestyle">
    <p>Newest Movies</p>
    <br>
    <% newestMovies.each_with_index do |movie, index| %>
@@ -29,8 +32,10 @@
          <br>
       <% end %>
    <% end %>
+</div>
 <% end %>
 <% if newestArts.count > 0 %>
+<div class="homepagestyle">
    <p>Newest Arts</p>
    <br>
    <% newestArts.each_with_index do |art, index| %>
@@ -51,8 +56,10 @@
          <br>
       <% end %>
    <% end %>
+</div>
 <% end %>
 <% if newestSounds.count > 0 %>
+<div class="homepagestyle">
    <p>Newest Audios</p>
    <br>
    <% newestSounds.each_with_index do |sound, index| %>
@@ -73,6 +80,7 @@
          <br>
       <% end %>
    <% end %>
+</div>
 <% end %>
 <p>Pets</p>
 <p>Stories</p>

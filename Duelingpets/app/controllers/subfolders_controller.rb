@@ -1,5 +1,6 @@
 class SubfoldersController < GroupController
    include SubfoldersHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

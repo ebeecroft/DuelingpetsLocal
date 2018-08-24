@@ -40,10 +40,11 @@
          padding-bottom: 0;margin-bottom: 20px;background-color: <%= getColorAttribute("Explanationbackgc") %>;}
          #errorheader{text-align: left;font-weight: bold;padding: 5px 5px 5px 15px;font-size: 12px;
          margin: -7px;margin-bottom: 0px;background-color: <%= getColorAttribute("Explanheaderbackgc") %>;color: <%= getColorAttribute("Explanheadercolor") %>;} ul li {font-size: 12px;list-style: square;}
-         .field_with_errors{padding: 2px;background-color: <%= getColorAttribute("Errorfieldcolor") %>;display: table;}
+         .field_with_errors{padding: 2px;background-color: <%= getColorAttribute("Errorfieldcolor") %>;display: inherit; text-align: center;}
          .forumcolor{background: <%= getColorAttribute("Navigation") %>;}
          .forumcolor a{color: <%= getColorAttribute("Navigationlink") %>}
          .forumcolor a:hover{color: <%= getColorAttribute("Navigationhoverforc") %>;background: <%= getColorAttribute("Navigationhoverbackgc") %>}
+         .homepagestyle{text-align:center;}
       </style>
       <%= image_tag(displayBanner.banner_url(:thumb), id: "banner") %>
       <% if current_user %>

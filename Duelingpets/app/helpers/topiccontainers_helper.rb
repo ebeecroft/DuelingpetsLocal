@@ -1,6 +1,17 @@
 module TopiccontainersHelper
 
    private
+      def getContainerSubs(topiccontainer)
+         allSubs = topiccontainer.containersubscribers.order("created_on desc")
+         return allSubs.count
+      end
+
+      def retrieveContainerSub(topiccontainer)
+         allSubs = topiccontainer.containersubscribers.order("created_on desc")
+         subFound = allSubs.select{|sub| sub.user_id == current_user.id}
+         return subFound.count
+      end
+
       def getCurrentSubtopic(maintopic)
          subtopics = maintopic.subtopics.order("created_on desc")
          return subtopics
@@ -132,12 +143,6 @@ module TopiccontainersHelper
                         @topiccontainer = newContainer
                         if(type == "create")
                            if(@topiccontainer.save)
-                              pointsForContainer = 380
-                              pouch = Pouch.find_by_user_id(@topiccontainer.user_id)
-                              pouch.amount += pointsForContainer
-                              @pouch = pouch
-                              @pouch.save
-                              ContentMailer.topiccontainer_created(@topiccontainer, pointsForContainer).deliver
                               flash[:success] = "#{@topiccontainer.title} was successfully created."
                               redirect_to forum_topiccontainer_path(@topiccontainer.forum, @topiccontainer)
                            else

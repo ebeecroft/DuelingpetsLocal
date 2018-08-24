@@ -78,13 +78,21 @@ class User < ActiveRecord::Base
    has_many :maintopics, :foreign_key => "user_id", :dependent => :destroy
    has_many :subtopics, :foreign_key => "user_id", :dependent => :destroy
    has_many :narratives, :foreign_key => "user_id", :dependent => :destroy
+
+   #Forum attributes
    has_many :foruminvites, :foreign_key => "user_id", :dependent => :destroy
    has_many :foruminvitemembers, :foreign_key => "user_id", :dependent => :destroy
    has_many :pastforumowners, :foreign_key => "user_id", :dependent => :destroy
+   has_many :containersubscribers, :foreign_key => "user_id", :dependent => :destroy
+   has_many :maintopicsubscribers, :foreign_key => "user_id", :dependent => :destroy
+   has_many :subtopicsubscribers, :foreign_key => "user_id", :dependent => :destroy
 
    #Visitors
    has_many :uservisits, :foreign_key => "user_id", :dependent => :destroy
    has_many :blogvisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :channelvisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :movievisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :galleryvisits, :foreign_key => "user_id", :dependent => :destroy
 
    #Regex code for managing the user section
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9]+\z/i

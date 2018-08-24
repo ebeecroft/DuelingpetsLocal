@@ -54,10 +54,8 @@
 <p>Members total: <%= forumInviteMembers("All") %></p>
 <br>
 <p>Topiccontainers</p>
-<p>Sources</p>
-<p>Today: <%= containersSourced("Today") %> points Week: <%= containersSourced("Week") %> points Month: <%= containersSourced("Month") %> points</p>
-<p>Year: <%= containersSourced("Year") %> points 3 Years: <%= containersSourced("Threeyears") %> points Bacon of Tomato: <%= containersSourced("BaconOfTomato") %> points</p>
-<p>Topiccontainer total: <%= containers %></p>
+<p>Today: <%= containerTime("Today") %> Week: <%= containerTime("Week") %> Month: <%= containerTime("Month") %> Year: <%= containerTime("Year") %> 3 Years: <%= containerTime("Threeyears") %> Bacon of Tomato: <%= containerTime("BaconOfTomato") %></p>
+<p>Topiccontainer total: <%= containerTime("All") %></p>
 <br>
 <p>Maintopics</p>
 <p>Sources</p>
@@ -76,6 +74,24 @@
 <p>Today: <%= narrativesSourced("Today") %> points Week: <%= narrativesSourced("Week") %> points Month: <%= narrativesSourced("Month") %> points</p>
 <p>Year: <%= narrativesSourced("Year") %> points 3 Years: <%= narrativesSourced("Threeyears") %> points Bacon of Tomato: <%= narrativesSourced("BaconOfTomato") %> points</p>
 <p>Narrative total: <%= narratives %></p>
+<br>
+<p>Container Subscribers</p>
+<p>Sources</p>
+<p>Today: <%= containersubsSourced("Today") %> points Week: <%= containersubsSourced("Week") %> points Month: <%= containersubsSourced("Month") %> points</p>
+<p>Year: <%= containersubsSourced("Year") %> points 3 Years: <%= containersubsSourced("Threeyears") %> points Bacon of Tomato: <%= containersubsSourced("BaconOfTomato") %> points</p>
+<p>Containersub total: <%= containersubs %></p>
+<br>
+<p>Maintopic Subscribers</p>
+<p>Sources</p>
+<p>Today: <%= maintopicsubsSourced("Today") %> points Week: <%= maintopicsubsSourced("Week") %> points Month: <%= maintopicsubsSourced("Month") %> points</p>
+<p>Year: <%= maintopicsubsSourced("Year") %> points 3 Years: <%= maintopicsubsSourced("Threeyears") %> points Bacon of Tomato: <%= maintopicsubsSourced("BaconOfTomato") %> points</p>
+<p>Maintopicsub total: <%= maintopicsubs %></p>
+<br>
+<p>Subtopic Subscribers</p>
+<p>Sources</p>
+<p>Today: <%= subtopicsubsSourced("Today") %> points Week: <%= subtopicsubsSourced("Week") %> points Month: <%= subtopicsubsSourced("Month") %> points</p>
+<p>Year: <%= subtopicsubsSourced("Year") %> points 3 Years: <%= subtopicsubsSourced("Threeyears") %> points Bacon of Tomato: <%= subtopicsubsSourced("BaconOfTomato") %> points</p>
+<p>Subtopicsub total: <%= subtopicsubs %></p>
 <br>
 <!--Audio Related Attributes-->
 <p>Radios</p>
@@ -159,6 +175,10 @@
 <p>Today: <%= artcommentTime("Today") %> Week: <%= artcommentTime("Week") %> Month: <%= artcommentTime("Month") %> Year: <%= artcommentTime("Year") %> 3Years: <%= artcommentTime("Threeyears") %> Bacon of Tomato: <%= artcommentTime("BaconOfTomato") %></p>
 <p>Artcomment total: <%= artcommentTime("All") %></p>
 <br>
+<p>Gallery Visitors</p>
+<p>Last 20 mins: <%= galleryvisitors("past20mins") %> Last 40 mins: <%= galleryvisitors("past40mins") %> Last hour: <%= galleryvisitors("pasthour") %></p>
+<p>Last 2 hours: <%= galleryvisitors("past2hours") %> Last 3 hours: <%= galleryvisitors("past3hours") %></p>
+<br>
 <!--Movie Related Attributes-->
 <p>Channels</p>
 <p>Today: <%= channelTime("Today") %> Week: <%= channelTime("Week") %> Month: <%= channelTime("Month") %> Year: <%= channelTime("Year") %> 3Years: <%= channelTime("Threeyears") %> Bacon of Tomato: <%= channelTime("BaconOfTomato") %></p>
@@ -200,6 +220,14 @@
 <p>Today: <%= moviecommentTime("Today") %> Week: <%= moviecommentTime("Week") %> Month: <%= moviecommentTime("Month") %> Year: <%= moviecommentTime("Year") %> 3Years: <%= moviecommentTime("Threeyears") %> Bacon of Tomato: <%= moviecommentTime("BaconOfTomato") %></p>
 <p>Moviecomment total: <%= moviecommentTime("All") %></p>
 <br>
+<p>Channel Visitors</p>
+<p>Last 20 mins: <%= channelvisitors("past20mins") %> Last 40 mins: <%= channelvisitors("past40mins") %> Last hour: <%= channelvisitors("pasthour") %></p>
+<p>Last 2 hours: <%= channelvisitors("past2hours") %> Last 3 hours: <%= channelvisitors("past3hours") %></p>
+<br>
+<p>Movie Visitors</p>
+<p>Last 20 mins: <%= movievisitors("past20mins") %> Last 40 mins: <%= movievisitors("past40mins") %> Last hour: <%= movievisitors("pasthour") %></p>
+<p>Last 2 hours: <%= movievisitors("past2hours") %> Last 3 hours: <%= movievisitors("past3hours") %></p>
+<br>
 <!--Blog Related Attributes-->
 <p>Blogs</p>
 <p>Sources</p>
@@ -224,6 +252,7 @@
 <p>Blogstar total: <%= blogstars %></p>
 <br>
 <p>Replies</p>
+<p>Sources</p>
 <p>Today: <%= repliesSourced("Today") %> points Week: <%= repliesSourced("Week") %> points Month: <%= repliesSourced("Month") %> points</p>
 <p>Year: <%= repliesSourced("Year") %> points 3 Years: <%= repliesSourced("Threeyears") %> points Bacon of Tomato: <%= repliesSourced("BaconOfTomato") %> points</p>
 <p>Reply total: <%= replies %></p>
@@ -238,7 +267,7 @@
 <p>Silverwing: <%= getGroups("Silverwing") %> Harahpin: <%= getGroups("Harahpin") %> LOTR: <%= getGroups("Rings") %></p>
 <br>
 <p>Signups</p>
-<p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3 Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
+<p>Today: <%= getSignups("Today") %> Week: <%= getSignups("Week") %> Month: <%= getSignups("Month") %> Year: <%= getSignups("Year") %> 3Years: <%= getSignups("Threeyears") %> Bacon of Tomato: <%= getSignups("BaconOfTomato") %></p>
 <p>Total users: <%= getSignups("All") %> Total bots: <%= getUserStatus("Bots") %></p>
 <br>
 <p>User Visitors</p>

@@ -1,0 +1,17 @@
+<% provide(:h1, @movie.title + "'s visitors") %>
+<p><%= paginate @movievisits %></p>
+<% @movievisits.each do |movievisit| %>
+   <br>
+   <% if movievisit.user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(movievisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(movievisit.user) %><%= link_to movievisit.user.vname, user_path(movievisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now movievisit.created_on %> ago on (<%= movievisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(movievisit.user) %>
+      <% if getActivity(movievisit.user) == "Offline" || getActivity(movievisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(movievisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

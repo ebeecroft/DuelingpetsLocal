@@ -4,6 +4,7 @@ class Channel < ActiveRecord::Base
    #Channel related
    has_many :mainplaylists, :foreign_key => "channel_id", :dependent => :destroy
    belongs_to :user
+   has_many :channelvisits, :foreign_key => "channel_id", :dependent => :destroy
 
    #Regex information for colorscheme
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9!-]+\z/i

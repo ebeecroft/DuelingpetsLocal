@@ -1,2 +1,4 @@
 <% provide(:h1, "New Registration") %>
+<p class="homepagestyle"><%= image_tag(@artpage.art_url(:thumb)) %></p>
+<p class="homepagestyle"><%= @artpage.message %></p>
 <%= render 'form' %>

@@ -9,6 +9,7 @@ class Movie < ActiveRecord::Base
    has_many :favoritemovies, :foreign_key => "movie_id", :dependent => :destroy
    has_many :moviestars, :foreign_key => "movie_id", :dependent => :destroy
    has_many :moviecomments, :foreign_key => "movie_id", :dependent => :destroy
+   has_many :movievisits, :foreign_key => "movie_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :mp4, Mp4Uploader

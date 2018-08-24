@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
    include UsersHelper
+   include BookgroupretrievalHelper
 
    def index
       mode "index"

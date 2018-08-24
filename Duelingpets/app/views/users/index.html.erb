@@ -10,7 +10,7 @@
     <p>Country: <%= user.country %></p>
     <p>Timezone: <%= user.country_timezone %></p>
     <p>Writing Group: <%= getGroup(user) %></p>
-    <p>Reading Group: <%= user.bookgroup.name %></p>
+    <p>Reading Group: <%#= user.bookgroup.name %></p>
     <p>Pouch: <%= user.pouch.amount %> points</p>
     <p>Status: <%= getActivity(user) %>
        <% if getActivity(user) == "Offline" || getActivity(user) == "Inactive" %>

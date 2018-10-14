@@ -4,6 +4,26 @@ A website that allows users to create their own creatures.
 
 == Current Features:
 
+Maintopicmoderators allows users to moderate a maintopic
+
+Maintopicmoderatorrequests allows users to become maintopic moderators
+
+Containermoderators allows users to moderate a topiccontainer
+
+Containermoderatorrequests allows users to become container moderators
+
+Forummoderators allows users to moderate a forum
+
+Forummoderatorrequests allows users to become forum moderators
+
+Faqs provides information of common features to new users
+
+Soundvisits keeps track of when a current user visited another user's sound
+
+Radiostationvisits keeps track of when a current user visited another user's radiostation
+
+Artvisits keeps track of when a current user visited another user's art
+
 Artpages displays a picture of an imaginary creature to get the site a bit more flavor
 
 Containersubscribers allows the user to subscribe to a topiccontainer

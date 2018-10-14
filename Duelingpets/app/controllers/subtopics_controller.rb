@@ -1,4 +1,4 @@
-class SubtopicsController < GroupController
+class SubtopicsController < ApplicationController
    include SubtopicsHelper
    include ForumgroupretrievalHelper
 

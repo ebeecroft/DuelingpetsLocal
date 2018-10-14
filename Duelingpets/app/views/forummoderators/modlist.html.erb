@@ -1,0 +1,21 @@
+<% provide(:h1, @forum.name +  "'s moderators") %>
+<p><%= paginate @forummoderators %></p>
+<% @forummoderators.each do |forummoderator| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now forummoderator.created_on %> ago on (<%= forummoderator.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if forummoderator.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(forummoderator.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <div class="container"><p class="navlinks">User: <%= getUserPrivilege(forummoderator.user) %><%= link_to forummoderator.user.vname, user_path(forummoderator.user) %></p></div>
+   <% if current_user && current_user.id == forummoderator.forum.user_id %>
+      <div class="container"><%= button_to 'Destroy', [forummoderator.forum, forummoderator], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+   <p>Status: <%= getActivity(forummoderator.user) %>
+      <% if getActivity(forummoderator.user) == "Offline" || getActivity(forummoderator.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(forummoderator.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', user_forum_path(@forum.user, @forum) %></p>

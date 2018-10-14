@@ -1,6 +1,89 @@
 module ArtsHelper
 
    private
+      def getArtVisitors(timeframe, art)
+         #Time values
+         allVisits = art.artvisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Artvisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @artvisit = visit
+               @artvisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(artFound, visitor)
+         allVisits = artFound.artvisits.order("created_on desc")
+         artVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(artVisited.count == 0)
+            #Add visitor to list
+            newVisit = artFound.artvisits.new(params[:artvisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @artvisit = newVisit
+            @artvisit.save
+         end
+      end
+
+      def visitTimer(type, artFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != artFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Art")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(artFound, visitor)
+                  else
+                     saveVisit(artFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
       def retrieveArtFave(art, type)
          allFaves = art.favoritearts.order("created_on desc")
          faveFound = allFaves.select{|fave| fave.user_id == current_user.id}
@@ -30,6 +113,8 @@ module ArtsHelper
          if(artFound)
             guest = (!current_user && artFound.reviewed && artFound.bookgroup.name == "Peter Rabbit")
             if(current_user)
+               visitTimer(type, artFound)
+               cleanupOldVisits
                owner = ((artFound.user_id == current_user.id) || current_user.admin)
                visitor = (!owner && artFound.reviewed && artFound.bookgroup_id <= getBookGroups(current_user))
                art = (owner && (artFound.reviewed && artFound.bookgroup_id <= getBookGroups(current_user)) || !artFound.reviewed)

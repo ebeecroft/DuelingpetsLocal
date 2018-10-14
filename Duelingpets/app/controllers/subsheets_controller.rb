@@ -1,4 +1,4 @@
-class SubsheetsController < GroupController
+class SubsheetsController < ApplicationController
    include SubsheetsHelper
    include BookgroupretrievalHelper
 

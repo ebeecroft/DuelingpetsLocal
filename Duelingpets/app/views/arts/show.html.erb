@@ -27,6 +27,10 @@
       for <%= distance_of_time_in_words_to_now getTime(@art.user) %>
    <% end %>
 </p>
+<br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getArtVisitors("past20mins", @art), art_artvisits_path(@art) %> last 40 mins: <%= link_to getArtVisitors("past40mins", @art), art_artvisits_path(@art) %> last hour: <%= link_to getArtVisitors("pasthour", @art), art_artvisits_path(@art) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getArtVisitors("past2hours", @art), art_artvisits_path(@art) %> last 3 hours: <%= link_to getArtVisitors("past3hours", @art), art_artvisits_path(@art) %></p>
 <% if current_user && current_user.id != @art.user_id %>
    <% if retrieveArtStar(@art) == 0 %>
       <p><%= button_to 'Star', artstars_star_path(:art_id=>@art.id), method: :post %></p>

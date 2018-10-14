@@ -1,4 +1,4 @@
-class SubfoldersController < GroupController
+class SubfoldersController < ApplicationController
    include SubfoldersHelper
    include BookgroupretrievalHelper
 

@@ -1,6 +1,32 @@
 module MaintopicsHelper
 
    private
+      def maintopicContent(maintopic, type)
+         value = false
+         if(type == "New")
+            if((((current_user.id == maintopic.topiccontainer.forum.user_id) || (retrieveForumMod(maintopic.topiccontainer.forum) != 0)) || ((retrieveContainerMod(maintopic.topiccontainer) != 0) || (retrieveMaintopicMod(maintopic) != 0))) || (maintopic.topiccontainer.forum.memberprivilege.name != "Narrative"))
+               value = true
+            end
+         else
+            subtopic = maintopic
+            if(((current_user.admin || (subtopic.maintopic.topiccontainer.forum.user_id == current_user.id)) || ((retrieveForumMod(subtopic.maintopic.topiccontainer.forum) != 0) || (retrieveContainerMod(subtopic.maintopic.topiccontainer) != 0))) || ((retrieveMaintopicMod(subtopic.maintopic) != 0) || (current_user.id == subtopic.user_id)))
+               value = true
+            end
+         end
+         return value
+      end
+
+      def getMaintopicMods(maintopic)
+         allMods = maintopic.maintopicmoderators.order("created_on desc")
+         return allMods.count
+      end
+
+      def retrieveMaintopicMod(maintopic)
+         allMods = maintopic.maintopicmoderators.order("created_on desc")
+         modFound = allMods.select{|mod| mod.user_id == current_user.id}
+         return modFound.count
+      end
+
       def getMaintopicSubs(maintopic)
          allSubs = maintopic.maintopicsubscribers.order("created_on desc")
          return allSubs.count
@@ -17,6 +43,13 @@ module MaintopicsHelper
          return narratives
       end
 
+      def visibleSubtopics(topicFound)
+         allSubtopics = Subtopic.order("created_on desc")
+         maintopicSubs = allSubtopics.select{|subtopic| subtopic.maintopic_id == topicFound.id}
+         subtopics = maintopicSubs.select{|subtopic| (subtopic.forumgroup.name == "Rabbit") || (current_user && forumGroupAccess(subtopic.forumgroup, current_user))}
+         return subtopics
+      end
+
       def showCommons(type)
          logged_in2 = current_user
          if(logged_in2)
@@ -29,15 +62,32 @@ module MaintopicsHelper
          if(topicFound)
             containerFound = Topiccontainer.find_by_id(params[:topiccontainer_id])
             if(containerFound && topicFound.topiccontainer_id == containerFound.id)
-               #Finds the subtopics based on the user's forumgroup
-               maintopicSubtopics = topicFound.subtopics.order("created_on desc")
-               subtopics = maintopicSubtopics.select{|subtopic| subtopic.forumgroup.name == "Rabbit" || (current_user && forumGroupAccess(subtopic.forumgroup, current_user))}
-               #Determines if we are a guest or not
-               if(current_user)
-                  allForumMembers = Foruminvitemember.order("created_on desc")
-                  memberMatch = allForumMembers.select{|member| member.user_id == current_user.id && member.forum_id == topicFound.topiccontainer.forum_id}
-                  #Determines if we are looking at an invite forum or a noninvite forum
-                  if((topicFound.topiccontainer.forum.forumtype != "Invite" && ((subtopics.count > 0 || topicFound.topiccontainer.forum.memberprivilege.name != "Narrative") || topicFound.topiccontainer.forum.user_id == current_user.id)) || (topicFound.topiccontainer.forum.forumtype == "Invite" && (memberMatch.count > 0 && (subtopics.count > 0 || topicFound.topiccontainer.forum.memberprivilege.name != "Narrative")) || topicFound.topiccontainer.forum.user_id == current_user.id))
+               logged_in = current_user
+               if(logged_in)
+                  subtopics = visibleSubtopics(topicFound)
+
+                  #Various Moderators
+                  allForumMods = Forummoderator.order("created_on desc")
+                  modFound = allForumMods.select{|moderator| (moderator.user_id == logged_in.id) && (moderator.forum_id == topicFound.topiccontainer.forum_id)}
+                  if(modFound.count == 0)
+                     allContainerMods = Containermoderator.order("created_on desc")
+                     modFound = allContainerMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.topiccontainer.forum_id == topicFound.topiccontainer.forum_id)}
+                     if(modFound.count == 0)
+                        allMaintopicMods = Maintopicmoderator.order("created_on desc")
+                        modFound = allMaintopicMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.maintopic.topiccontainer.forum_id == topicFound.topiccontainer.forum_id)}
+                     end
+                  end
+
+                  #Sets up variables for staff and members
+                  allMembers = Foruminvitemember.order("created_on desc")
+                  forumMembers = allMembers.select{|member| (member.forum_id == topicFound.topiccontainer.forum_id)}
+                  memberFound = forumMembers.select{|member| (member.user_id == current_user.id)}
+                  staff = (((logged_in.admin || (topicFound.topicccontainer.forum.user_id == logged_in.id)) || (modFound.count > 0)))
+                  members = ((memberFound.count > 0) && ((topicFound.topiccontainer.forum.memberprivilege.name != "Narrative") || (subtopics.count > 0)))
+                  guests = (((topicFound.topiccontainer.forum.memberprivilege.name != "Narrative") || (subtopics.count > 0)))
+
+                  #Determines if we can view the maintopics
+                  if(staff || (((topicFound.topiccontainer.forum.forumtype != "Invite") && guests) || (topicFound.topiccontainer.forum.forumtype == "Invite" && members)))
                      @maintopic = topicFound
                      @subtopics = Kaminari.paginate_array(subtopics).page(params[:page]).per(10)
                      if(type == "destroy")
@@ -58,8 +108,10 @@ module MaintopicsHelper
                      redirect_to root_path
                   end
                else
+                  #Guest viewable
+                  subtopics = visibleSubtopics(topicFound)
                   subNars = subtopics.select{|subtopic| subtopic.narratives.count > 0}
-                  if(topicFound.topiccontainer.forum.forumtype == "Public" && subNars.count > 0)
+                  if(topicFound.topiccontainer.forum.forumtype.name == "Public" && subNars.count > 0)
                      @maintopic = topicFound
                      @subtopics = Kaminari.paginate_array(subNars).page(params[:page]).per(10)
                   else
@@ -78,16 +130,26 @@ module MaintopicsHelper
          topicFound = Maintopic.find_by_id(params[:id])
          if(topicFound)
             logged_in = current_user
-            if(logged_in && ((logged_in.id == topicFound.user_id) || logged_in.admin))
-               @maintopic = topicFound
-               @topiccontainer = Topiccontainer.find_by_id(topicFound.topiccontainer_id)
-               if(type == "update")
-                  if(@maintopic.update_attributes(params[:maintopic]))
-                     flash[:success] = "#{@maintopic.title} was successfully updated."
-                     redirect_to topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic)
-                  else
-                     render "edit"
+            if(logged_in)
+               allForumMods = Forummoderator.order("created_on desc")
+               modFound = allForumMods.select{|moderator| (moderator.user_id == logged_in.id) && (moderator.forum_id == topicFound.topiccontainer.forum_id)}
+               if(modFound.count == 0)
+                  allContainerMods = Containermoderator.order("created_on desc")
+                  modFound = allContainerMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.topiccontainer.forum_id == topicFound.topiccontainer.forum_id)}
+               end
+               if((logged_in.admin || (topicFound.topiccontainer.forum.user_id == logged_in.id)) || ((modFound.count > 0) || (logged_in.id == topicFound.user_id)))
+                  @maintopic = topicFound
+                  @topiccontainer = Topiccontainer.find_by_id(topicFound.topiccontainer_id)
+                  if(type == "update")
+                     if(@maintopic.update_attributes(params[:maintopic]))
+                        flash[:success] = "#{@maintopic.title} was successfully updated."
+                        redirect_to topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic)
+                     else
+                        render "edit"
+                     end
                   end
+               else
+                  redirect_to root_path
                end
             else
                redirect_to root_path
@@ -123,38 +185,49 @@ module MaintopicsHelper
                   containerFound = Topiccontainer.find_by_id(params[:topiccontainer_id])
                   if(containerFound)
                      logged_in = current_user
-                     if(logged_in && (logged_in.id == containerFound.forum.user_id) || containerFound.forum.memberprivilege.name == "Maintopic")
-                        newTopic = containerFound.maintopics.new
-                        if(type == "create")
-                           newTopic = containerFound.maintopics.new(params[:maintopic])
-                           newTopic.created_on = currentTime
-                           newTopic.user_id = logged_in.id
+                     if(logged_in)
+                        allForumMods = Forummoderator.order("created_on desc")
+                        modFound = allForumMods.select{|moderator| (moderator.user_id == logged_in.id) && (moderator.forum_id == containerFound.forum_id)}
+                        if(modFound.count == 0)
+                           allContainerMods = Containermoderator.order("created_on desc")
+                           modFound = allContainerMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.topiccontainer.forum_id == containerFound.forum_id)}
                         end
-                        @topiccontainer = containerFound
-                        @maintopic = newTopic
-                        if(type == "create")
-                           if(@maintopic.save)
-                              pointsForMaintopic = 240
-                              ContentMailer.maintopic_created(@maintopic, pointsForMaintopic).deliver
-                              pouch = Pouch.find_by_user_id(@maintopic.user_id)
-                              pouch.amount += pointsForMaintopic
-                              @pouch = pouch
-                              @pouch.save
-
-                              #Find all the container subs
-                              allContainerSubs = Containersubscriber.all
-                              csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @maintopic.topiccontainer.id}
-                              if(csubs.count > 0)
-                                 csubs.each do |sub|
-                                    UserMailer.user_postedmaintopic(@maintopic, sub).deliver
-                                 end
-                              end
-
-                              flash[:success] = "#{@maintopic.title} was successfully created."
-                              redirect_to topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic)
-                           else
-                              render "new"
+                        #Only owner, forummod, and containermod can create topics
+                        if(((logged_in.id == containerFound.forum.user_id) || (modFound.count > 0)) || (containerFound.forum.memberprivilege.name == "Maintopic"))
+                           newTopic = containerFound.maintopics.new
+                           if(type == "create")
+                              newTopic = containerFound.maintopics.new(params[:maintopic])
+                              newTopic.created_on = currentTime
+                              newTopic.user_id = logged_in.id
                            end
+                           @topiccontainer = containerFound
+                           @maintopic = newTopic
+                           if(type == "create")
+                              if(@maintopic.save)
+                                 pointsForMaintopic = 240
+                                 ContentMailer.maintopic_created(@maintopic, pointsForMaintopic).deliver
+                                 pouch = Pouch.find_by_user_id(@maintopic.user_id)
+                                 pouch.amount += pointsForMaintopic
+                                 @pouch = pouch
+                                 @pouch.save
+
+                                 #Find all the container subs
+                                 allContainerSubs = Containersubscriber.all
+                                 csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @maintopic.topiccontainer.id}
+                                 if(csubs.count > 0)
+                                    csubs.each do |sub|
+                                       UserMailer.user_postedmaintopic(@maintopic, sub).deliver
+                                    end
+                                 end
+
+                                 flash[:success] = "#{@maintopic.title} was successfully created."
+                                 redirect_to topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic)
+                              else
+                                 render "new"
+                              end
+                           end
+                        else
+                           redirect_to root_path
                         end
                      else
                         redirect_to root_path

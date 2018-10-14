@@ -1,6 +1,89 @@
 module SoundsHelper
 
    private
+      def getSoundVisitors(timeframe, sound)
+         #Time values
+         allVisits = sound.soundvisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Soundvisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @soundvisit = visit
+               @soundvisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(soundFound, visitor)
+         allVisits = soundFound.soundvisits.order("created_on desc")
+         soundVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(soundVisited.count == 0)
+            #Add visitor to list
+            newVisit = soundFound.soundvisits.new(params[:soundvisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @soundvisit = newVisit
+            @soundvisit.save
+         end
+      end
+
+      def visitTimer(type, soundFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != radioFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Sound")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(soundFound, visitor)
+                  else
+                     saveVisit(soundFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
       def retrieveSoundFave(sound, type)
          allFaves = sound.favoritesounds.order("created_on desc")
          faveFound = allFaves.select{|fave| fave.user_id == current_user.id}
@@ -30,6 +113,8 @@ module SoundsHelper
          if(soundFound)
             guest = (!current_user && soundFound.reviewed && soundFound.bookgroup.name == "Peter Rabbit")
             if(current_user)
+               visitTimer(type, soundFound)
+               cleanupOldVisits
                owner = ((soundFound.user_id == current_user.id) || current_user.admin)
                visitor = (!owner && soundFound.reviewed && soundFound.bookgroup_id <= getBookGroups(current_user))
                sound = (owner && (soundFound.reviewed && soundFound.bookgroup_id <= getBookGroups(current_user)) || !soundFound.reviewed)

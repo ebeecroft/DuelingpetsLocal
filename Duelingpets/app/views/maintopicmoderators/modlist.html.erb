@@ -1,0 +1,21 @@
+<% provide(:h1, @maintopic.title +  "'s moderators") %>
+<p><%= paginate @maintopicmoderators %></p>
+<% @maintopicmoderators.each do |maintopicmoderator| %>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now maintopicmoderator.created_on %> ago on (<%= maintopicmoderator.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if maintopicmoderator.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(maintopicmoderator.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <div class="container"><p class="navlinks">User: <%= getUserPrivilege(maintopicmoderator.user) %><%= link_to maintopicmoderator.user.vname, user_path(maintopicmoderator.user) %></p></div>
+   <% if current_user && current_user.id == maintopicmoderator.maintopic.topiccontainer.forum.user_id %>
+      <div class="container"><%= button_to 'Destroy', [maintopicmoderator.maintopic, maintopicmoderator], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+   <p>Status: <%= getActivity(maintopicmoderator.user) %>
+      <% if getActivity(maintopicmoderator.user) == "Offline" || getActivity(maintopicmoderator.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(maintopicmoderator.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', topiccontainer_maintopic_path(@maintopic.topiccontainer, @maintopic) %></p>

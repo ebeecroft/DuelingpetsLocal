@@ -1,0 +1,19 @@
+<% provide(:h1, "Soundvisit List") %>
+<div class="navlinks"><%= paginate @soundvisits %></div>
+<% @soundvisits.each do |soundvisit| %>
+   <br>
+   <div class="container"><p class="navlinks">Sound: <%= link_to soundvisit.sound.name, subsheet_sound_path(soundvisit.sound.subsheet, soundvisit.sound) %></p></div> <div class="container"><%= button_to 'Destroy', [soundvisit.sound, soundvisit], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if soundvisit.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(soundvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visited by: <%= getUserPrivilege(soundvisit.user) %><%= link_to soundvisit.user.vname, user_path(soundvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now soundvisit.created_on %> ago on (<%= soundvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(soundvisit.user) %>
+      <% if getActivity(soundvisit.user) == "Offline" || getActivity(soundvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(soundvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

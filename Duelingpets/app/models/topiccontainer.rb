@@ -6,6 +6,8 @@ class Topiccontainer < ActiveRecord::Base
    belongs_to :user
    has_many :maintopics, :foreign_key => "topiccontainer_id", :dependent => :destroy
    has_many :containersubscribers, :foreign_key => "topiccontainer_id", :dependent => :destroy
+   has_many :containermoderatorrequests, :foreign_key => "topiccontainer_id", :dependent => :destroy
+   has_many :containermoderators, :foreign_key => "topiccontainer_id", :dependent => :destroy
 
    #Regex information for topiccontainer
    VALID_TITLE_REGEX = /\A[a-z][a-z][a-z0-9!-]+\z/i

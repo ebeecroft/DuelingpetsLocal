@@ -1,0 +1,22 @@
+<% provide(:h1, "Forummoderatorrequest List") %>
+<p><%= paginate @forummoderatorrequests %></p>
+<% @forummoderatorrequests.each do |forummoderatorrequest| %>
+   <br>
+   <div class="container">Status: <%= forummoderatorrequest.status %></div> <div class="container"><%= button_to 'Destroy', [forummoderatorrequest.forum, forummoderatorrequest], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now forummoderatorrequest.created_on %> ago on (<%= forummoderatorrequest.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if forummoderatorrequest.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(forummoderatorrequest.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">User: <%= getUserPrivilege(forummoderatorrequest.user) %><%= link_to forummoderatorrequest.user.vname, user_path(forummoderatorrequest.user) %></p>
+   <p class="navlinks">Originated from forum: <%= link_to forummoderatorrequest.forum.name, user_forum_path(forummoderatorrequest.forum.user, forummoderatorrequest.forum) %></p>
+   <p>Status: <%= getActivity(forummoderatorrequest.user) %>
+      <% if getActivity(forummoderatorrequest.user) == "Offline" || getActivity(forummoderatorrequest.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(forummoderatorrequest.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= forummoderatorrequest.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

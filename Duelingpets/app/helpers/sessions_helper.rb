@@ -160,6 +160,8 @@ module SessionsHelper
             end
          else
             if(type == "loginpost")
+               loginFound = Artpage.find_by_name("Login")
+               @artpage = loginFound
                flash.now[:error] = "Invalid login name/password combination!"
                render "login"
             elsif(type == "recoverypost")

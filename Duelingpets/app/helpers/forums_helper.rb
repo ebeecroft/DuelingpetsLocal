@@ -1,19 +1,89 @@
 module ForumsHelper
 
    private
+      def forumContent(forum, type)
+         value = false
+         if(type == "New")
+            if(forum.user.id == current_user.id || retrieveForumMod(forum) != 0)
+               value = true
+            end
+         else
+            topiccontainer = forum
+            if((current_user.admin || (topiccontainer.forum.user.id == current_user.id)) || ((retrieveForumMod(topiccontainer.forum) != 0) || (current_user.id == containerFound.user_id)))
+               value = true
+            end
+         end
+         return value
+      end
+
+      def getForumValue(forum)
+         #Finds the points for all the content
+         allMaintopics = Maintopic.order("created_on desc")
+         forumMains = allMaintopics.select{|maintopic| maintopic.topiccontainer.forum_id == forum.id}
+         allSubtopics = Subtopic.order("created_on desc")
+         forumSubs = allSubtopics.select{|subtopic| subtopic.maintopic.topiccontainer.forum_id == forum.id}
+         allNarratives = Narrative.order("created_on desc")
+         forumNars = allNarratives.select{|narrative| narrative.subtopic.maintopic.topiccontainer.forum_id == forum.id}
+
+         #Finds the points for all the subscribers
+         allContainerSubs = Containersubscriber.order("created_on desc")
+         forumConSubs = allContainerSubs.select{|containersub| containersub.topiccontainer.forum_id == forum.id}
+         allMaintopicSubs = Maintopicsubscriber.order("created_on desc")
+         forumMainSubs = allMaintopicSubs.select{|maintopicsub| maintopicsub.maintopic.topiccontainer.forum_id == forum.id}
+         allSubtopicSubs = Subtopicsubscriber.order("created_on desc")
+         forumSubtopicSubs = allSubtopicSubs.select{|subtopicsub| subtopicsub.subtopic.maintopic.topiccontainer.forum_id == forum.id}
+
+         #Sum all the points found
+         subscriberpoints = (forumConSubs.count * 60) + (forumMainSubs.count * 20) + (forumSubtopicSubs.count * 5)
+         contentpoints = (forumMains.count * 240) + (forumSubs.count * 80) + (forumNars.count * 20)
+         points = subscriberpoints + contentpoints
+         return points
+      end
+
+      def getForumMods(forum)
+         allMods = forum.forummoderators.order("created_on desc")
+         return allMods.count
+      end
+
+      def retrieveForumMod(forum)
+         allMods = forum.forummoderators.order("created_on desc")
+         modFound = allMods.select{|mod| mod.user_id == current_user.id}
+         return modFound.count
+      end
+
+      def getModerators(forum, subtype)
+         value = 0
+         if(subtype == "Forum")
+            allMods = Forummoderator.all
+            mods = allMods.select{|mod| mod.forum_id == forum.id}
+            value = mods.count
+         elsif(subtype == "Container")
+            allMods = Containermoderator.all
+            mods = allMods.select{|mod| mod.topiccontainer.forum_id == forum.id}
+            value = mods.count
+         else
+            allMods = Maintopicmoderator.all
+            mods = allMods.select{|mod| mod.maintopic.topiccontainer.forum_id == forum.id}
+            value = mods.count
+         end
+         return value
+      end
+
       def getSubscribers(forum, subtype)
-         subs = 0
+         value = 0
          if(subtype == "Container")
             allSubs = Containersubscriber.all
             subs = allSubs.select{|sub| sub.topiccontainer.forum_id == forum.id}
+            value = subs.count
          elsif(subtype == "Maintopic")
             allSubs = Maintopicsubscriber.all
             subs = allSubs.select{|sub| sub.maintopic.topiccontainer.forum_id == forum.id}
+            value = subs.count
          else
             allSubs = Subtopicsubscriber.all
             subs = allSubs.select{|sub| sub.subtopic.maintopic.topiccontainer.forum_id == forum.id}
+            value = subs.count
          end
-         value = subs.count
          return value
       end
 
@@ -22,19 +92,39 @@ module ForumsHelper
          if(current_user)
             #Determines if the owner is inactive
             if((forum.forumtype.name != "Invite") && (currentTime - getOwnerVisitTime(forum)) > 3.months)
-               if((!forum.forumtimer.member_last_visited.nil?) && ((currentTime - getMemberVisitTime(forum)) < 5.days))
-                  if(memberExist(forum))
+               if((!forum.forumtimer.moderator_last_visited.nil?) && ((currentTime - getModeraterVisitTime(forum)) < 1.week))
+                  if(moderatorExist(forum))
                      inactive = true
                   end
                else
-                  if(!memberExist(forum))
-                     inactive = true
+                  if((!forum.forumtimer.member_last_visited.nil?) && ((currentTime - getMemberVisitTime(forum)) < 4.weeks))
+                     if(memberExist(forum) && !moderatorExist(forum))
+                        inactive = true
+                     end
+                  else
+                     if(!memberExist(forum) && !moderatorExist(forum))
+                        inactive = true
+                     end
                   end
                end
             elsif((forum.forumtype.name == "Invite") && (currentTime - getOwnerVisitTime(forum)) > 1.month)
                member = forum.foruminvitemembers.select{|member| member.user_id == current_user.id}
                if(member.count > 0)
-                  inactive = true
+                  if((!forum.forumtimer.moderator_last_visited.nil?) && ((currentTime - getModeraterVisitTime(forum)) < 4.days))
+                     if(moderatorExist(forum))
+                        inactive = true
+                     end
+                  else
+                     if((!forum.forumtimer.member_last_visited.nil?) && ((currentTime - getMemberVisitTime(forum)) < 1.week))
+                        if(memberExist(forum) && !moderatorExist(forum))
+                           inactive = true
+                        end
+                     else
+                        if(!memberExist(forum) && !moderatorExist(forum))
+                           inactive = true
+                        end
+                     end
+                  end
                end
             end
          end
@@ -70,10 +160,40 @@ module ForumsHelper
          return visitTime
       end
 
+      def moderatorExist(forum)
+         moderator = false
+         if(current_user && current_user.id != forum.user_id)
+            allMods = forum.forummoderators.order("created_on desc")
+            modFound = allMods.select{|mod| mod.user_id == current_user.id}
+            if(modFound.count == 0)
+               allMods = Containermoderator.order("created_on desc")
+               modFound = allMods.select{|mod| mod.user_id == current_user.id && mod.topiccontainer.forum_id == forum.id}
+               if(modFound.count == 0)
+                  allMods = Maintopicmoderator.order("created_on desc")
+                  modFound = allMods.select{|mod| mod.user_id == current_user.id && mod.maintopic.topiccontainer.forum_id == forum.id}
+                  if(modFound.count > 0)
+                     moderator = true
+                  end
+               else
+                  moderator = true
+               end
+            else
+               moderator = true
+            end
+         end
+         return moderator
+      end
+
       def getModeratorVisitTime(forum)
-         #Will be fixed up when I add moderators to forums
          timerFound = Forumtimer.find_by_forum_id(forum.id)
          visitTime = timerFound.moderator_last_visited
+
+         if(moderatorExist(forum))
+            timerFound.moderator_last_visited = currentTime
+            @forumtimer = timerFound
+            @forumtimer.save
+            visitTime = @forumtimer.moderator_last_visited
+         end
          return visitTime
       end
 
@@ -115,7 +235,7 @@ module ForumsHelper
          visitTime = timerFound.member_last_visited
 
          #Update visit time if this use is a forum member
-         if(memberExist(forum))
+         if(memberExist(forum) && !moderatorExist(forum))
             timerFound.member_last_visited = currentTime
             @forumtimer = timerFound
             @forumtimer.save
@@ -129,8 +249,9 @@ module ForumsHelper
          visitTime = timerFound.guest_last_visited
 
          #Update visit time if this use is not a forum member
-         if(current_user)
-            if(!memberExist(forum))
+         if(current_user && current_user.id != forum.user_id)
+            #Guest is setting at same time as owner
+            if(!memberExist(forum) && !moderatorExist(forum))
                timerFound.guest_last_visited = currentTime
                @forumtimer = timerFound
                @forumtimer.save
@@ -175,7 +296,25 @@ module ForumsHelper
             if(forumFound.user_id == user.id)
                value = "+"
             else
-               value = "~"
+               allMods = forum.forummoderators.order("created_on desc")
+               modFound = allMods.select{|mod| mod.user_id == user.id}
+               if(modFound.count == 0)
+                  allMods = Containermoderator.order("created_on desc")
+                  modFound = allMods.select{|mod| mod.user_id == user.id && mod.topiccontainer.forum_id == forum.id}
+                  if(modFound.count == 0)
+                     allMods = Maintopicmoderator.order("created_on desc")
+                     modFound = allMods.select{|mod| mod.user_id == user.id && mod.maintopic.topiccontainer.forum_id == forum.id}
+                     if(modFound.count > 0)
+                        value = "*"
+                     else
+                        value = "~"
+                     end
+                  else
+                     value = "*"
+                  end
+               else
+                  value = "*"
+               end
             end
          else
             value = "~"
@@ -239,10 +378,16 @@ module ForumsHelper
                         logged_in = current_user
                         if(logged_in && ((logged_in.id == forumFound.user_id) || logged_in.admin))
                            flash[:success] = "#{@forum.name} was successfully removed."
+                           forumPoints = getForumValue(@forum)
                            @forum.destroy
                            if(logged_in.admin)
                               redirect_to forums_list_path
                            else
+                              forumValue = forumPoints * 0.65
+                              pouch = Pouch.find_by_user_id(logged_in.id)
+                              pouch.amount += forumValue
+                              @pouch = pouch
+                              @pouch.save
                               redirect_to user_forums_path(forumFound.user)
                            end
                         else

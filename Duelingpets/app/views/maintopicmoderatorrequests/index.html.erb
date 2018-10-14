@@ -1,0 +1,22 @@
+<% provide(:h1, "Maintopicmoderatorrequest List") %>
+<p><%= paginate @maintopicmoderatorrequests %></p>
+<% @maintopicmoderatorrequests.each do |maintopicmoderatorrequest| %>
+   <br>
+   <div class="container">Status: <%= maintopicmoderatorrequest.status %></div> <div class="container"><%= button_to 'Destroy', [maintopicmoderatorrequest.maintopic, maintopicmoderatorrequest], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <p>Created on: <%= distance_of_time_in_words_to_now maintopicmoderatorrequest.created_on %> ago on (<%= maintopicmoderatorrequest.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if maintopicmoderatorrequest.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(maintopicmoderatorrequest.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">User: <%= getUserPrivilege(maintopicmoderatorrequest.user) %><%= link_to maintopicmoderatorrequest.user.vname, user_path(maintopicmoderatorrequest.user) %></p>
+   <p class="navlinks">Originated from maintopic: <%= link_to maintopicmoderatorrequest.maintopic.title, user_forum_path(maintopicmoderatorrequest.maintopic.topiccontainer.forum.user, maintopicmoderatorrequest.maintopic.topiccontainer.forum) %></p>
+   <p>Status: <%= getActivity(maintopicmoderatorrequest.user) %>
+      <% if getActivity(maintopicmoderatorrequest.user) == "Offline" || getActivity(maintopicmoderatorrequest.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(maintopicmoderatorrequest.user) %>
+      <% end %>
+   </p>
+   <br>
+   <p><%= maintopicmoderatorrequest.message %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

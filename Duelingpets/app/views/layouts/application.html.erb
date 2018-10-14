@@ -5,6 +5,7 @@
       <%= stylesheet_link_tag    "application", :media => "all" %>
       <%= javascript_include_tag "application" %>
       <%= csrf_meta_tags %>
+      <%= favicon_link_tag '/favicon.png' %>
    </head>
    <body id="pagestyle">
       <style>
@@ -50,7 +51,7 @@
       <% if current_user %>
          <div id="profile"><%= link_to current_user.vname, current_user %> <%= link_to "Logout", logout_path, method: "delete" %></div>
          <div id="points">Pouch: <%= current_user.pouch.amount %> points</div>
-         <% if((unreadpmsAlert > 0 || friendrequestsAlert > 0) || (foruminvitesAlert > 0 || colorsbetaAlert > 0)) %>
+         <% if(((((unreadpmsAlert > 0 || friendrequestsAlert > 0) || (foruminvitesAlert > 0 || colorsbetaAlert > 0)) || (forummoderatorrequestsAlert > 0 || containermoderatorrequestsAlert > 0)) || (maintopicmoderatorrequestsAlert > 0))) %>
             <div id="points">
                <p>Alerts:</p>
                <% if unreadpmsAlert > 0 %>
@@ -64,6 +65,15 @@
                <% end %>
                <% if colorsbetaAlert > 0 %>
                   <p><%= colorsbetaAlert %> colors in beta</p>
+               <% end %>
+               <% if forummoderatorrequestsAlert > 0 %>
+                  <p><%= forummoderatorrequestsAlert %> forum moderator requests to review</p>
+               <% end %>
+               <% if containermoderatorrequestsAlert > 0 %>
+                  <p><%= containermoderatorrequestsAlert %> container moderator requests to review</p>
+               <% end %>
+               <% if maintopicmoderatorrequestsAlert > 0 %>
+                  <p><%= maintopicmoderatorrequestsAlert %> maintopic moderator requests to review</p>
                <% end %>
             </div>
          <% end %>
@@ -119,6 +129,7 @@
             <% end %>
             <div class="navwordindent"><%= link_to "Contact", contact_path %></div>
             <div class="navwordindent"><%= link_to "Stats", stats_path %></div>
+            <div class="navwordindent"><%= link_to "Faqs", faqs_path %></div>
             <div class="navwordindent"><%= link_to "Sitemap", sitemap_path %></div>
             <% if current_user %>
                <div class="navwordindent"><%= link_to "Active", active_path %></div>

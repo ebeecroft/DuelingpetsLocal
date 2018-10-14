@@ -6,11 +6,14 @@
       <br>
       <p><%= image_tag(@subtopic.user.userinfo.miniavatar_url(:thumb)) %></p>
    <% end %>
-   <p class="navlinks"><div class="container">Owner: <%= getForumPrivilege(@subtopic.maintopic.topiccontainer.forum, @subtopic.user) %><%= link_to @subtopic.user.vname, user_path(@subtopic.user) %></div>
-      <% if(current_user && ((current_user.id == @subtopic.user_id) || current_user.admin)) %>
+   <div class="container">
+      <p class="navlinks">Owner: <%= getForumPrivilege(@subtopic.maintopic.topiccontainer.forum, @subtopic.user) %><%= link_to @subtopic.user.vname, user_path(@subtopic.user) %></p>
+   </div>
+   <% if current_user %>
+      <% if maintopicContent(@subtopic, "Edit") %>
          <div class="container"><%= button_to 'Edit', edit_maintopic_subtopic_path(@subtopic.maintopic, @subtopic), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@subtopic.maintopic, @subtopic], method: :delete, data: { confirm: 'Are you sure?' } %></div>
       <% end %>
-   </p>
+   <% end %>
    <p>Status: <%= getActivity(@subtopic.user) %>
       <% if getActivity(@subtopic.user) == "Inactive" || getActivity(@subtopic.user) == "Offline" %>
          for <%= distance_of_time_in_words_to_now getTime(@subtopic.user) %>
@@ -33,7 +36,7 @@
 <% end %>
 <% if @subtopic.narratives.count > 10 %>
    <br>
-   <p><%= paginate @narratives %></p>
+   <div class="navlinks"><%= paginate @narratives %></div>
 <% end %>
 <% if @narratives.count > 0 %>
    <% @narratives.each_with_index do |narrative, index| %>
@@ -42,8 +45,10 @@
          <p><%= audio_tag(getGalleryMusic(narrative), :controls => true) %></p>
       <% end %>
       <p>RE: <%= narrative.subtopic.title %></p>
-      <% if(current_user && ((current_user.id == narrative.user_id) || current_user.admin)) %>
-         <div class="container"><%= button_to 'Edit', edit_subtopic_narrative_path(narrative.subtopic, narrative), method: :get %></div> <div class="container"><%= button_to 'Destroy', [narrative.subtopic, narrative], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% if current_user %>
+         <% if subtopicContent(narrative, "Edit") %>
+            <div class="container"><%= button_to 'Edit', edit_subtopic_narrative_path(narrative.subtopic, narrative), method: :get %></div> <div class="container"><%= button_to 'Destroy', [narrative.subtopic, narrative], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
       <% end %>
       <p>Created on: <%= distance_of_time_in_words_to_now narrative.created_on %> ago on (<%= narrative.created_on.strftime("%B-%d-%Y") %>)</p>
       <% if narrative.user.userinfo.miniavatar != "" %>
@@ -67,7 +72,7 @@
    <br>
    <p>There are no narratives available in this subtopic.</p>
 <% end %>
-<% if current_user %>
+<% if subtopicContent(@subtopic, "New") %>
    <br>
    <p><%= button_to 'New Narrative', new_subtopic_narrative_path(@subtopic), method: :get %></p>
 <% end %>

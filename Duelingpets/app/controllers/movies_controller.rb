@@ -1,4 +1,4 @@
-class MoviesController < GroupController
+class MoviesController < ApplicationController
    include MoviesHelper
    include BookgroupretrievalHelper
 

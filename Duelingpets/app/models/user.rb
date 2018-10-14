@@ -87,12 +87,23 @@ class User < ActiveRecord::Base
    has_many :maintopicsubscribers, :foreign_key => "user_id", :dependent => :destroy
    has_many :subtopicsubscribers, :foreign_key => "user_id", :dependent => :destroy
 
+   #Moderators
+   has_many :forummoderatorrequests, :foreign_key => "user_id", :dependent => :destroy
+   has_many :forummoderators, :foreign_key => "user_id", :dependent => :destroy
+   has_many :containermoderatorrequests, :foreign_key => "user_id", :dependent => :destroy
+   has_many :containermoderators, :foreign_key => "user_id", :dependent => :destroy
+   has_many :maintopicmoderatorrequests, :foreign_key => "user_id", :dependent => :destroy
+   has_many :maintopicmoderators, :foreign_key => "user_id", :dependent => :destroy
+
    #Visitors
    has_many :uservisits, :foreign_key => "user_id", :dependent => :destroy
    has_many :blogvisits, :foreign_key => "user_id", :dependent => :destroy
    has_many :channelvisits, :foreign_key => "user_id", :dependent => :destroy
    has_many :movievisits, :foreign_key => "user_id", :dependent => :destroy
    has_many :galleryvisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :artvisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :radiostationvisits, :foreign_key => "user_id", :dependent => :destroy
+   has_many :soundvisits, :foreign_key => "user_id", :dependent => :destroy
 
    #Regex code for managing the user section
    VALID_NAME_REGEX = /\A[a-z][a-z][a-z0-9]+\z/i

@@ -1,4 +1,4 @@
-class SubplaylistsController < GroupController
+class SubplaylistsController < ApplicationController
    include SubplaylistsHelper
    include BookgroupretrievalHelper
 

@@ -34,6 +34,30 @@ module PastforumownersHelper
          return member
       end
 
+      def forumModerator(forum)
+         moderator = false
+         if(current_user && current_user.id != forum.user_id)
+            allMods = forum.forummoderators.order("created_on desc")
+            modFound = allMods.select{|mod| mod.user_id == current_user.id}
+            if(modFound.count == 0)
+               allMods = Containermoderator.order("created_on desc")
+               modFound = allMods.select{|mod| mod.user_id == current_user.id && mod.topiccontainer.forum_id == forum.id}
+               if(modFound.count == 0)
+                  allMods = Maintopicmoderator.order("created_on desc")
+                  modFound = allMods.select{|mod| mod.user_id == current_user.id && mod.maintopic.topiccontainer.forum_id == forum.id}
+                  if(modFound.count > 0)
+                     moderator = true
+                  end
+               else
+                  moderator = true
+               end
+            else
+               moderator = true
+            end
+         end
+         return moderator
+      end
+
       def destroyCommons(type)
          if(type == "destroy")
             pastforumownerFound = Pastforumowner.find_by_id(params[:id])
@@ -107,9 +131,6 @@ module PastforumownersHelper
                      render "/forums/maintenance"
                   end
                else
-                  #We need to first find out if we have a logged in user
-                  #We need to check if the forum itself does exist
-                  #We need to perform different actions depending on being forum owner or not
                   logged_in = current_user
                   if(logged_in)
                      forumFound = Forum.find_by_id(params[:forum_id])
@@ -119,36 +140,54 @@ module PastforumownersHelper
                         newOwner.pastowner_id = forumFound.user.id
                         ownerInactive = false
                         if(logged_in.id == forumFound.user_id)
-                           #We need to pass in the user_id to this method in create
                            userFound = User.find_by_id(params[:user_id])
                            newOwner.user_id = userFound.id
                            newOwner.status = "Successor"
                         else
-                           #Take control will need to operate on a forum timer to check if the owner
-                           #is inactive for a long time.
                            newOwner.status = "Takecontrol"
                            if(forumFound.forumtype != "Invite")
                               if((currentTime - forumFound.forumtimer.forumowner_last_visited) > 3.months)
-                                 #Remember to add moderator here later
-                                 if((!forumFound.forumtimer.member_last_visited.nil?) && (currentTime - forumFound.forumtimer.member_last_visited) < 5.days)
-                                    if(forumMember(forumFound))
+                                 if((!forum.forumtimer.moderator_last_visited.nil?) && ((currentTime - getModeraterVisitTime(forum)) < 1.week))
+                                    if(forumModerator(forumFound))
                                        newOwner.user_id = logged_in.id
                                        ownerInactive = true
                                     end
                                  else
-                                    if(!forumMember(forumFound))
-                                       newOwner.user_id = logged_in.id
-                                       ownerInactive = true
+                                    if((!forumFound.forumtimer.member_last_visited.nil?) && (currentTime - forumFound.forumtimer.member_last_visited) < 4.weeks)
+                                       if(forumMember(forumFound) && !forumModerator(forumFound))
+                                          newOwner.user_id = logged_in.id
+                                          ownerInactive = true
+                                       end
+                                    else
+                                       if(!forumMember(forumFound) && !forumModerator(forumFound))
+                                          newOwner.user_id = logged_in.id
+                                          ownerInactive = true
+                                       end
                                     end
                                  end
                               end
                            else
                               if((currentTime - forumFound.forumtimer.forumowner_last_visited) > 1.month)
-                                 #Remember to add moderator here later
                                  member = forumFound.foruminvitemembers.select{|member| member.user_id == logged_in.id}
                                  if(member.count > 0)
-                                    newOwner.user_id = logged_in.id
-                                    ownerInactive = true
+                                    if((!forum.forumtimer.moderator_last_visited.nil?) && ((currentTime - getModeraterVisitTime(forum)) < 4.days))
+                                       if(moderatorExist(forumFound))
+                                          newOwner.user_id = logged_in.id
+                                          ownerInactive = true
+                                       end
+                                    else
+                                       if((!forum.forumtimer.member_last_visited.nil?) && ((currentTime - getMemberVisitTime(forum)) < 1.week))
+                                          if(memberExist(forumFound) && !forumModerator(forumFound))
+                                             newOwner.user_id = logged_in.id
+                                             ownerInactive = true
+                                          end
+                                       else
+                                          if(!memberExist(forumFound) && !forumModerator(forumFound))
+                                             newOwner.user_id = logged_in.id
+                                             ownerInactive = true
+                                          end
+                                       end
+                                    end
                                  end
                               end
                            end

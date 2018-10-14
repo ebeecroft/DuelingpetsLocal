@@ -1,0 +1,21 @@
+<% provide(:h1, "Forummoderatorrequest Review") %>
+<p><%= paginate @forummoderatorrequests %></p>
+<% @forummoderatorrequests.each do |forummoderatorrequest| %>
+   <br>
+   <p class="navlinks">Status: <%= forummoderatorrequest.status %><%= button_to 'Approve', forummoderatorrequests_review1_path(:forummoderatorrequest_id=>forummoderatorrequest.id), method: :post %><%= button_to 'Deny', forummoderatorrequests_review2_path(:forummoderatorrequest_id=>forummoderatorrequest.id), method: :post %></p>
+   <p><%= forummoderatorrequest.message %></p>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now forummoderatorrequest.created_on %> ago on (<%= forummoderatorrequest.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if forummoderatorrequest.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(forummoderatorrequest.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">User: <%= getUserPrivilege(forummoderatorrequest.user) %><%= link_to forummoderatorrequest.user.vname, user_path(forummoderatorrequest.user) %></p>
+   <p>Status: <%= getActivity(forummoderatorrequest.user) %>
+      <% if getActivity(forummoderatorrequest.user) == "Offline" || getActivity(forummoderatorrequest.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(forummoderatorrequest.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

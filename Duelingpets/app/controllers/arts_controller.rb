@@ -1,4 +1,4 @@
-class ArtsController < GroupController
+class ArtsController < ApplicationController
    include ArtsHelper
    include BookgroupretrievalHelper
 

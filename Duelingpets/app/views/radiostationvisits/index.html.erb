@@ -1,0 +1,17 @@
+<% provide(:h1, @radiostation.name + "'s visitors") %>
+<div class="navlinks"><%= paginate @radiostationvisits %></div>
+<% @radiostationvisits.each do |radiostationvisit| %>
+   <br>
+   <% if radiostationvisit.user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(radiostationvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(radiostationvisit.user) %><%= link_to radiostationvisit.user.vname, user_path(radiostationvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now radiostationvisit.created_on %> ago on (<%= radiostationvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(radiostationvisit.user) %>
+      <% if getActivity(radiostationvisit.user) == "Offline" || getActivity(radiostationvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(radiostationvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

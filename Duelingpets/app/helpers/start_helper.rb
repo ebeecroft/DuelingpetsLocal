@@ -22,6 +22,27 @@ module StartHelper
          return value
       end
 
+      def forummoderatorrequestsAlert
+         allRequests = Forummoderatorrequest.order("created_on desc")
+         inprocessRequests = allRequests.select{|mod| (mod.forum.user_id == current_user.id) && (mod.status == "Inprocess")}
+         value = inprocessRequests.count
+         return value
+      end
+
+      def containermoderatorrequestsAlert
+         allRequests = Containermoderatorrequest.order("created_on desc")
+         inprocessRequests = allRequests.select{|mod| (mod.topiccontainer.forum.user_id == current_user.id) && (mod.status == "Inprocess")}
+         value = inprocessRequests.count
+         return value
+      end
+
+      def maintopicmoderatorrequestsAlert
+         allRequests = Maintopicmoderatorrequest.order("created_on desc")
+         inprocessRequests = allRequests.select{|mod| (mod.maintopic.topiccontainer.forum.user_id == current_user.id) && (mod.status == "Inprocess")}
+         value = inprocessRequests.count
+         return value
+      end
+
       def unreadpmsAlert
          allPms = Pm.order("created_on desc")
          unreadpms = allPms.select{|pm| ((pm.to_user.id == current_user.id) && pm.user2_unread) || ((pm.from_user.id == current_user.id) && pm.user1_unread)}
@@ -272,6 +293,120 @@ module StartHelper
          year = nonBot.select{|member| (currentTime - member.created_on) <= 1.year}
          threeyear = nonBot.select{|member| (currentTime - member.created_on) <= 3.years}
          bacot = nonBot.select{|member| (currentTime - member.created_on) > (firstMember.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def forumModerators(timeframe)
+         allMods = Forummoderator.all
+         firstMod = Forummoderator.first
+         nonBot = allMods.select{|mod| ((mod.user.pouch.privilege != "Bot") && (mod.user.pouch.privilege != "Trial")) && (mod.user.pouch.privilege != "Admin")}
+
+         #Time values
+         day = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.day}
+         week = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.week}
+         month = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.month}
+         year = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.year}
+         threeyear = nonBot.select{|mod| (currentTime - mod.created_on) <= 3.years}
+         bacot = nonBot.select{|mod| (currentTime - mod.created_on) > (firstMod.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def containerModerators(timeframe)
+         allMods = Containermoderator.all
+         firstMod = Containermoderator.first
+         nonBot = allMods.select{|mod| ((mod.user.pouch.privilege != "Bot") && (mod.user.pouch.privilege != "Trial")) && (mod.user.pouch.privilege != "Admin")}
+
+         #Time values
+         day = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.day}
+         week = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.week}
+         month = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.month}
+         year = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.year}
+         threeyear = nonBot.select{|mod| (currentTime - mod.created_on) <= 3.years}
+         bacot = nonBot.select{|mod| (currentTime - mod.created_on) > (firstMod.created_on.year - 1.year)}
+
+         #Count values
+         dayCount = day.count
+         weekCount = week.count - dayCount
+         monthCount = month.count - weekCount - dayCount
+         yearCount = year.count - monthCount - weekCount - dayCount
+         dreiJahreCount = threeyear.count - yearCount - monthCount - weekCount - dayCount
+         bacotCount = bacot.count - dreiJahreCount - yearCount - monthCount - weekCount - dayCount
+
+         value = dayCount
+         if(timeframe == "Week")
+            value = weekCount
+         elsif(timeframe == "Month")
+            value = monthCount
+         elsif(timeframe == "Year")
+            value = yearCount
+         elsif(timeframe == "Threeyears")
+            value = dreiJahreCount
+         elsif(timeframe == "BaconOfTomato")
+            value = bacotCount
+         elsif(timeframe == "All")
+            value = nonBot.count
+         end
+         return value
+      end
+
+      def maintopicModerators(timeframe)
+         allMods = Maintopicmoderator.all
+         firstMod = Maintopicmoderator.first
+         nonBot = allMods.select{|mod| ((mod.user.pouch.privilege != "Bot") && (mod.user.pouch.privilege != "Trial")) && (mod.user.pouch.privilege != "Admin")}
+
+         #Time values
+         day = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.day}
+         week = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.week}
+         month = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.month}
+         year = nonBot.select{|mod| (currentTime - mod.created_on) <= 1.year}
+         threeyear = nonBot.select{|mod| (currentTime - mod.created_on) <= 3.years}
+         bacot = nonBot.select{|mod| (currentTime - mod.created_on) > (firstMod.created_on.year - 1.year)}
 
          #Count values
          dayCount = day.count
@@ -662,6 +797,74 @@ module StartHelper
          return value
       end
 
+      def radiovisitors(timeframe)
+         allVisitors = Radiostationvisit.all
+         nonBot = allVisitors.select{|radiostationvisit| ((radiostationvisit.from_user.pouch.privilege != "Bot") && (radiostationvisit.from_user.pouch.privilege != "Trial")) && (radiostationvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|radiostationvisit| (currentTime - radiostationvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|radiostationvisit| (currentTime - radiostationvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|radiostationvisit| (currentTime - radiostationvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|radiostationvisit| (currentTime - radiostationvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|radiostationvisit| (currentTime - radiostationvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
+      end
+
+      def soundvisitors(timeframe)
+         allVisitors = Soundvisit.all
+         nonBot = allVisitors.select{|soundvisit| ((soundvisit.from_user.pouch.privilege != "Bot") && (soundvisit.from_user.pouch.privilege != "Trial")) && (soundvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|soundvisit| (currentTime - soundvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|soundvisit| (currentTime - soundvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|soundvisit| (currentTime - soundvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|soundvisit| (currentTime - soundvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|soundvisit| (currentTime - soundvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
+      end
+
       def mainsheetTime(timeframe)
          allMainsheets = Mainsheet.all
          firstSheet = Mainsheet.first
@@ -837,6 +1040,40 @@ module StartHelper
             pastHour = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 1.hour}
             past2Hours = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 2.hours}
             past3Hours = nonBot.select{|galleryvisit| (currentTime - galleryvisit.created_on) <= 3.hours}
+
+            #Count values
+            past20MinsCount = pastTwenty.count
+            past40MinsCount = pastFourty.count - past20MinsCount
+            pasthourCount = pastHour.count - past40MinsCount - past20MinsCount
+            past2hoursCount = past2Hours.count - pasthourCount - past40MinsCount - past20MinsCount
+            past3hoursCount =  past3Hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+            if(timeframe == "past20mins")
+               value = past20MinsCount
+            elsif(timeframe == "past40mins")
+               value = past40MinsCount
+            elsif(timeframe == "pasthour")
+               value = pasthourCount
+            elsif(timeframe == "past2hours")
+               value = past2hoursCount
+            elsif(timeframe == "past3hours")
+               value = past3hoursCount
+            end
+         end
+         return value
+      end
+
+      def artvisitors(timeframe)
+         allVisitors = Artvisit.all
+         nonBot = allVisitors.select{|artvisit| ((artvisit.from_user.pouch.privilege != "Bot") && (artvisit.from_user.pouch.privilege != "Trial")) && (artvisit.from_user.pouch.privilege != "Admin")}
+         value = 0
+         if(nonBot)
+            #Time values
+            pastTwenty = nonBot.select{|artvisit| (currentTime - artvisit.created_on) <= 20.minutes}
+            pastFourty = nonBot.select{|artvisit| (currentTime - artvisit.created_on) <= 40.minutes}
+            pastHour = nonBot.select{|artvisit| (currentTime - artvisit.created_on) <= 1.hour}
+            past2Hours = nonBot.select{|artvisit| (currentTime - artvisit.created_on) <= 2.hours}
+            past3Hours = nonBot.select{|artvisit| (currentTime - artvisit.created_on) <= 3.hours}
 
             #Count values
             past20MinsCount = pastTwenty.count

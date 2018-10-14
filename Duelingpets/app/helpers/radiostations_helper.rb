@@ -1,6 +1,89 @@
 module RadiostationsHelper
 
    private
+      def getRadiostationVisitors(timeframe, radiostation)
+         #Time values
+         allVisits = radiostation.radiostationvisits.order("created_on desc")
+         pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
+         pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
+         pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
+         past2hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 2.hours}
+         past3hours = allVisits.select{|visit| (currentTime - visit.created_on) <= 3.hours}
+
+         #Count values
+         past20MinsCount = pastTwenty.count
+         past40MinsCount = pastFourty.count - past20MinsCount
+         pasthourCount = pasthour.count - past40MinsCount - past20MinsCount
+         past2hoursCount = past2hours.count - pasthourCount - past40MinsCount - past20MinsCount
+         past3hoursCount =  past3hours.count - past2hoursCount - pasthourCount - past40MinsCount - past20MinsCount
+
+         #value = past20Count
+         if(timeframe == "past20mins")
+            value = past20MinsCount
+         elsif(timeframe == "past40mins")
+            value = past40MinsCount
+         elsif(timeframe == "pasthour")
+            value = pasthourCount
+         elsif(timeframe == "past2hours")
+            value = past2hoursCount
+         elsif(timeframe == "past3hours")
+            value = past3hoursCount
+         end
+         return value
+      end
+
+      def cleanupOldVisits
+         allVisits = Radiostationvisit.order("created_on desc")
+         oldVisits = allVisits.select{|visit| currentTime - visit.created_on > 3.hours}
+         if(oldVisits.count > 0)
+            oldVisits.each do |visit|
+               @radiostationvisit = visit
+               @radiostationvisit.destroy
+            end
+         end
+      end
+
+      def saveVisit(radioFound, visitor)
+         allVisits = radioFound.radiostationvisits.order("created_on desc")
+         radioVisited = allVisits.select{|visit| ((currentTime - visit.created_on) < 10.mins) && (visit.user_id == visitor.id)}
+         if(radioVisited.count == 0)
+            #Add visitor to list
+            newVisit = radioFound.radiostationvisits.new(params[:radiostationvisit])
+            newVisit.user_id = visitor.id
+            newVisit.created_on = currentTime
+            @radiostationvisit = newVisit
+            @radiostationvisit.save
+         end
+      end
+
+      def visitTimer(type, radioFound)
+         #Determines if we have visitors to our page
+         if(type == "show")
+            visitor = current_user
+            if(visitor)
+               userPouch = Pouch.find_by_user_id(visitor.id)
+               userPouch.last_visited = currentTime
+               @pouch = userPouch
+               @pouch.save
+
+               #Checks to see that the visitor and
+               #our user are not the same
+               if(visitor.id != radioFound.user_id && !visitor.admin)
+                  timer = Pagetimer.find_by_name("Radiostation")
+                  if(timer.expiretime - currentTime <= 0)
+                     value = duration.min.from_now.utc
+                     timer.expiretime = value
+                     @pagetimer = pagetimer
+                     @pagetimer.save
+                     saveVisit(radioFound, visitor)
+                  else
+                     saveVisit(radioFound, visitor)
+                  end
+               end
+            end
+         end
+      end
+
       def getSubsheets(mainsheet)
          mainsheetSubsheets = mainsheet.subsheets.order("created_on desc")
          subsheets = mainsheetSubsheets.select{|subsheet| (((!current_user && subsheet.bookgroup.name == "Peter Rabbit") || (current_user && subsheet.bookgroup_id <= getBookGroups(current_user))) && ((subsheet.sounds.count > 0) || (subsheet.favoritesounds.count > 0))) || (current_user && subsheet.bookgroup_id <= getBookGroups(current_user) && (((current_user.id == subsheet.user_id) || current_user.admin) || subsheet.collab_mode))}
@@ -59,6 +142,8 @@ module RadiostationsHelper
                radioMainsheets = radioFound.mainsheets.order("created_on desc")
                sheets = radioMainsheets.select{|mainsheet| mainsheet.subsheets.count > 0 || (current_user && (current_user.id == mainsheet.user_id) || current_user.admin)}
                if(sheets.count > 0 || current_user && ((current_user.id == radioFound.user_id) || current_user.admin))
+                  visitTimer(type, radioFound)
+                  cleanupOldVisits
                   @radiostation = radioFound
                   @mainsheets = Kaminari.paginate_array(sheets).page(params[:page]).per(9)
                   if(type == "destroy")

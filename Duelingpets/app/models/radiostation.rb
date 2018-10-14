@@ -5,6 +5,7 @@ class Radiostation < ActiveRecord::Base
    #Radiostation related
    has_many :mainsheets, :foreign_key => "radiostation_id", :dependent => :destroy
    belongs_to :user
+   has_many :radiostationvisits, :foreign_key => "radiostation_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :ogv, OgvUploader

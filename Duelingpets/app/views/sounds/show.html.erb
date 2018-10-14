@@ -24,6 +24,10 @@
       for <%= distance_of_time_in_words_to_now getTime(@sound.user) %>
    <% end %>
 </p>
+<br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getSoundVisitors("past20mins", @sound), sound_soundvisits_path(@sound) %> last 40 mins: <%= link_to getSoundVisitors("past40mins", @sound), sound_soundvisits_path(@sound) %> last hour: <%= link_to getSoundVisitors("pasthour", @sound), sound_soundvisits_path(@sound) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getSoundVisitors("past2hours", @sound), sound_soundvisits_path(@sound) %> last 3 hours: <%= link_to getSoundVisitors("past3hours", @sound), sound_soundvisits_path(@sound) %></p>
 <% if current_user && current_user.id != @sound.user_id %>
    <% if retrieveSoundStar(@sound) == 0 %>
       <p><%= button_to 'Star', soundstars_star_path(:sound_id=>@sound.id), method: :post %></p>

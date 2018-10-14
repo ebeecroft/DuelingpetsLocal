@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180811055707) do
+ActiveRecord::Schema.define(:version => 20180929163629) do
 
   create_table "artcomments", :force => true do |t|
     t.text     "message"
@@ -48,6 +48,14 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
   end
 
   create_table "artstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "art_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "artvisits", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
     t.integer  "art_id"
@@ -165,6 +173,24 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
     t.datetime "updated_at",                                   :null => false
   end
 
+  create_table "containermoderatorrequests", :force => true do |t|
+    t.text     "message"
+    t.datetime "created_on"
+    t.string   "status"
+    t.integer  "user_id"
+    t.integer  "topiccontainer_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  create_table "containermoderators", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "topiccontainer_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
   create_table "containersubscribers", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
@@ -193,6 +219,16 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
     t.integer  "amount"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+  end
+
+  create_table "faqs", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_on"
+    t.string   "mp3"
+    t.string   "ogg"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "favoritearts", :force => true do |t|
@@ -246,6 +282,24 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
     t.integer  "forum_id"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+  end
+
+  create_table "forummoderatorrequests", :force => true do |t|
+    t.text     "message"
+    t.datetime "created_on"
+    t.string   "status"
+    t.integer  "user_id"
+    t.integer  "forum_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "forummoderators", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "forum_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "forums", :force => true do |t|
@@ -354,6 +408,24 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
     t.boolean  "maintenance_on", :default => false
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
+  end
+
+  create_table "maintopicmoderatorrequests", :force => true do |t|
+    t.text     "message"
+    t.datetime "created_on"
+    t.string   "status"
+    t.integer  "user_id"
+    t.integer  "maintopic_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "maintopicmoderators", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "maintopic_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "maintopics", :force => true do |t|
@@ -515,6 +587,14 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
     t.datetime "updated_at",                     :null => false
   end
 
+  create_table "radiostationvisits", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "radiostation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
   create_table "referrals", :force => true do |t|
     t.integer  "user_id"
     t.integer  "from_user_id"
@@ -581,6 +661,14 @@ ActiveRecord::Schema.define(:version => 20180811055707) do
   end
 
   create_table "soundstars", :force => true do |t|
+    t.datetime "created_on"
+    t.integer  "user_id"
+    t.integer  "sound_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "soundvisits", :force => true do |t|
     t.datetime "created_on"
     t.integer  "user_id"
     t.integer  "sound_id"

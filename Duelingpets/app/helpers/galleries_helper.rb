@@ -3,7 +3,7 @@ module GalleriesHelper
    private
       def getGalleryVisitors(timeframe, gallery)
          #Time values
-         allVisits = gallery.channelvisits.order("created_on desc")
+         allVisits = gallery.galleryvisits.order("created_on desc")
          pastTwenty = allVisits.select{|visit| (currentTime - visit.created_on) <= 20.minutes}
          pastFourty = allVisits.select{|visit| (currentTime - visit.created_on) <= 40.minutes}
          pasthour = allVisits.select{|visit| (currentTime - visit.created_on) <= 1.hour}
@@ -68,7 +68,7 @@ module GalleriesHelper
 
                #Checks to see that the visitor and
                #our user are not the same
-               if(visitor.id != channelFound.user_id && !visitor.admin)
+               if(visitor.id != galleryFound.user_id && !visitor.admin)
                   timer = Pagetimer.find_by_name("Gallery")
                   if(timer.expiretime - currentTime <= 0)
                      value = duration.min.from_now.utc
@@ -142,6 +142,8 @@ module GalleriesHelper
                galleryMainfolders = galleryFound.mainfolders.order("created_on desc")
                folders = galleryMainfolders.select{|mainfolder| mainfolder.subfolders.count > 0 || (current_user && (current_user.id == mainfolder.user_id) || current_user.admin)}
                if(folders.count > 0 || current_user && ((current_user.id == galleryFound.user_id) || current_user.admin))
+                  visitTimer(type, galleryFound)
+                  cleanupOldVisits
                   @gallery = galleryFound
                   @mainfolders = Kaminari.paginate_array(folders).page(params[:page]).per(9)
                   if(type == "destroy")

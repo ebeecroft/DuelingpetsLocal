@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+   </head>
+   <body>
+      <h1><%= @containermoderatorrequest.user.vname %>'s containermoderatorrequest is awaiting your review.</h1>
+      <p>Message: <%= @containermoderatorrequest.message %></p>
+      <br>
+      <p>If you want this user to become a container moderator of the topiccontainer
+         <%= @containermoderatorrequest.topiccontainer.title %> then all you have
+         to do is click the approve button. If you some how don't feel that they are
+         ready to be a container moderator then all you have to do is click the deny button.
+      </p>
+      <p>Take your time in the process and try not be too hasty to come to a rushed judgment.
+         Above all be kind with this user even if he or she does not always agree with you. A
+         pound of patience goes a long way.
+      </p>
+      <br>
+      <p>From Bolt Greywing the Admin</p>
+   </body>
+</html>

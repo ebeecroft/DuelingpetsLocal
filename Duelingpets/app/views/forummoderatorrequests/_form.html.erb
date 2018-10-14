@@ -1,0 +1,23 @@
+<%= form_for([@forum, @forummoderatorrequest]) do |f| %>
+  <% if @forummoderatorrequest.errors.any? %>
+    <div id="errorexplan">
+      <h2 id="errorheader"><%= pluralize(@forummoderatorrequest.errors.count, "error") %> prohibited this forummoderatorrequest from being saved:</h2>
+
+      <ul>
+      <% @forummoderatorrequest.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <br>
+  <div class="field">
+    <%= f.label :message %><br />
+    <%= f.text_area :message %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+  <br>
+  <p class="navlinks"><%= link_to 'Back', user_forum_path(@forum.user, @forum) %></p>
+<% end %>

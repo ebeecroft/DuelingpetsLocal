@@ -22,11 +22,17 @@
    <% end %>
    <p>Type: <%= forum.forumtype.name %></p>
    <p>Privilege: <%= forum.memberprivilege.name %></p>
+   <p>Forum value: <%= getForumValue(forum) %> points</p>
    <br>
    <p>Containers: <%= getForumMakeup(forum, "Container") %></p>
    <p>Maintopics: <%= getForumMakeup(forum, "Maintopic") %></p>
    <p>Subtopics: <%= getForumMakeup(forum, "Subtopic") %></p>
    <p>Narratives: <%= getForumMakeup(forum, "Narrative") %></p>
+   <br>
+   <p>Moderators</p>
+   <p>Forums: <%= getModerators(forum, "Forum") %></p>
+   <p>Containers: <%= getModerators(forum, "Container") %></p>
+   <p>Maintopics: <%= getModerators(forum, "Maintopic") %></p>
    <br>
    <p>Subscribers</p>
    <p>Containers: <%= getSubscribers(forum, "Container") %></p>

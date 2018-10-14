@@ -11,6 +11,8 @@ class Forum < ActiveRecord::Base
    has_many :foruminvitemembers, :foreign_key => "forum_id", :dependent => :destroy
    has_many :pastforumowners, :foreign_key => "forum_id", :dependent => :destroy
    has_one :forumtimer, :foreign_key => "forum_id", :dependent => :destroy
+   has_many :forummoderatorrequests, :foreign_key => "forum_id", :dependent => :destroy
+   has_many :forummoderators, :foreign_key => "forum_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :banner, BannerUploader

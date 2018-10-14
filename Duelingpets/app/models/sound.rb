@@ -9,6 +9,7 @@ class Sound < ActiveRecord::Base
    has_many :favoritesounds, :foreign_key => "sound_id", :dependent => :destroy
    has_many :soundstars, :foreign_key => "sound_id", :dependent => :destroy
    has_many :soundcomments, :foreign_key => "sound_id", :dependent => :destroy
+   has_many :soundvisits, :foreign_key => "sound_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :ogg, OggUploader

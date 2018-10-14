@@ -97,27 +97,41 @@ module NarrativesHelper
          narrativeFound = Narrative.find_by_id(params[:id])
          if(narrativeFound)
             logged_in = current_user
-            if(logged_in && ((logged_in.id == narrativeFound.user_id) || logged_in.admin))
-               allGroups = Forumgroup.all
-               allowedGroups = allGroups.select{|forumgroup| forumGroupAccess(forumgroup, logged_in)}
-               @group = allowedGroups
-               @narrative = narrativeFound
-               @subtopic = Subtopic.find_by_id(narrativeFound.subtopic_id)
-               if(type == "update")
-                  if(@narrative.update_attributes(params[:narrative]))
-                     flash[:success] = "Narrative #{@narrative.subtopic.title} was successfully updated."
-                     redirect_to maintopic_subtopic_path(@narrative.subtopic.maintopic, @narrative.subtopic)
-                  else
-                     render "edit"
+            if(logged_in)
+               allForumMods = Forummoderator.order("created_on desc")
+               modFound = allForumMods.select{|moderator| (moderator.user_id == logged_in.id) && (moderator.forum_id == narrativeFound.subtopic.maintopic.topiccontainer.forum_id)}
+               if(modFound.count == 0)
+                  allContainerMods = Containermoderator.order("created_on desc")
+                  modFound = allContainerMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.topiccontainer.forum_id == narrativeFound.subtopic.maintopic.topiccontainer.forum_id)}
+                  if(modFound.count == 0)
+                     allMaintopicMods = Maintopicmoderator.order("created_on desc")
+                     modFound = allMaintopicMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.maintopic.topiccontainer.forum_id == narrativeFound.subtopic.maintopic.topiccontainer.forum_id)}
                   end
-               elsif(type == "destroy")
-                  flash[:success] = "Narrative #{@narrative.subtopic.title} was successfully removed."
-                  @narrative.destroy
-                  if(logged_in.admin)
-                     redirect_to narratives_path
-                  else
-                     redirect_to maintopic_subtopic_path(@subtopic.maintopic, @subtopic)
+               end
+               if((logged_in.admin || (narrativeFound.subtopic.maintopic.topiccontainer.forum.user_id == logged_in.id)) || ((modFound.count > 0) || (logged_in.id == narrativeFound.user_id)))
+                  allGroups = Forumgroup.all
+                  allowedGroups = allGroups.select{|forumgroup| forumGroupAccess(forumgroup, logged_in)}
+                  @group = allowedGroups
+                  @narrative = narrativeFound
+                  @subtopic = Subtopic.find_by_id(narrativeFound.subtopic_id)
+                  if(type == "update")
+                     if(@narrative.update_attributes(params[:narrative]))
+                        flash[:success] = "#{@narrative.subtopic.title} was successfully updated."
+                        redirect_to maintopic_subtopic_path(@narrative.subtopic.maintopic, @narrative.subtopic)
+                     else
+                        render "edit"
+                     end
+                  elsif(type == "destroy")
+                     flash[:success] = "Narrative #{@narrative.subtopic.title} was successfully removed."
+                     @narrative.destroy
+                     if(logged_in.admin)
+                        redirect_to narratives_path
+                     else
+                        redirect_to maintopic_subtopic_path(@subtopic.maintopic, @subtopic)
+                     end
                   end
+               else
+                  redirect_to root_path
                end
             else
                redirect_to root_path
@@ -153,59 +167,75 @@ module NarrativesHelper
                   subtopicFound = Subtopic.find_by_id(params[:subtopic_id])
                   if(subtopicFound)
                      logged_in = current_user
-                     if(logged_in && (logged_in.id == subtopicFound.maintopic.topiccontainer.forum.user_id || logged_in.id != subtopicFound.maintopic.topiccontainer.forum.user_id))
-                        newNarrative = subtopicFound.narratives.new
-                        if(type == "create")
-                           newNarrative = subtopicFound.narratives.new(params[:narrative])
-                           newNarrative.created_on = currentTime
-                           newNarrative.user_id = logged_in.id
-                        end
-                        allGroups = Forumgroup.all
-                        allowedGroups = allGroups.select{|forumgroup| forumGroupAccess(forumgroup, logged_in)}
-                        @group = allowedGroups
-                        @subtopic = subtopicFound
-                        @narrative = newNarrative
-                        if(type == "create")
-                           if(@narrative.save)
-                              pointsForNarrative = 20
-                              ContentMailer.narrative_created(@narrative, pointsForNarrative).deliver
-                              pouch = Pouch.find_by_user_id(@narrative.user_id)
-                              pouch.amount += pointsForNarrative
-                              @pouch = pouch
-                              @pouch.save
-
-                              #Find all the container subs
-                              allContainerSubs = Containersubscriber.all
-                              csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @narrative.subtopic.maintopic.topiccontainer.id}
-                              if(csubs.count > 0)
-                                 csubs.each do |sub|
-                                    UserMailer.user_postednarrative(@narrative, sub).deliver
-                                 end
-                              end
-
-                              #Find all the maintopic subs
-                              allMaintopicSubs = Maintopicsubscriber.all
-                              mainsubs = allMaintopicSubs.select{|sub| sub.maintopic.id == @narrative.subtopic.maintopic.id}
-                              if(mainsubs.count > 0)
-                                 mainsubs.each do |sub|
-                                    UserMailer.user_postednarrative(@narrative, sub).deliver
-                                 end
-                              end
-
-                              #Find all the subtopic subs
-                              allSubtopicSubs = Subtopicsubscriber.all
-                              subtopicsubs = allSubtopicSubs.select{|sub| sub.subtopic.id == @narrative.subtopic.id}
-                              if(subtopicsubs.count > 0)
-                                 subtopicsubs.each do |sub|
-                                    UserMailer.user_postednarrative(@narrative, sub).deliver
-                                 end
-                              end
-
-                              flash[:success] = "#{@narrative.subtopic.title} was successfully created."
-                              redirect_to maintopic_subtopic_path(@narrative.subtopic.maintopic, @narrative.subtopic)
-                           else
-                              render "new"
+                     if(logged_in)
+                        allForumMods = Forummoderator.order("created_on desc")
+                        modFound = allForumMods.select{|moderator| (moderator.user_id == logged_in.id) && (moderator.forum_id == subtopicFound.maintopic.topiccontainer.forum_id)}
+                        if(modFound.count == 0)
+                           allContainerMods = Containermoderator.order("created_on desc")
+                           modFound = allContainerMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.topiccontainer.forum_id == subtopicFound.maintopic.topiccontainer.forum_id)}
+                           if(modFound.count == 0)
+                              allMaintopicMods = Maintopicmoderator.order("created_on desc")
+                              modFound = allMaintopicMods.select{|moderator| moderator.user_id == logged_in.id && (moderator.maintopic.topiccontainer.forum_id == subtopicFound.maintopic.topiccontainer.forum_id)}
                            end
+                        end
+
+                        #Only owner, forummod, and containermod can create topics
+                        if(((logged_in.id == subtopicFound.maintopic.topiccontainer.forum.user_id) || (modFound.count > 0)) || logged_in)
+                           newNarrative = subtopicFound.narratives.new
+                           if(type == "create")
+                              newNarrative = subtopicFound.narratives.new(params[:narrative])
+                              newNarrative.created_on = currentTime
+                              newNarrative.user_id = logged_in.id
+                           end
+                           allGroups = Forumgroup.all
+                           allowedGroups = allGroups.select{|forumgroup| forumGroupAccess(forumgroup, logged_in)}
+                           @group = allowedGroups
+                           @subtopic = subtopicFound
+                           @narrative = newNarrative
+                           if(type == "create")
+                              if(@narrative.save)
+                                 pointsForNarrative = 20
+                                 ContentMailer.narrative_created(@narrative, pointsForNarrative).deliver
+                                 pouch = Pouch.find_by_user_id(@narrative.user_id)
+                                 pouch.amount += pointsForNarrative
+                                 @pouch = pouch
+                                 @pouch.save
+
+                                 #Find all the container subs
+                                 allContainerSubs = Containersubscriber.all
+                                 csubs = allContainerSubs.select{|sub| sub.topiccontainer.id == @narrative.subtopic.maintopic.topiccontainer.id}
+                                 if(csubs.count > 0)
+                                    csubs.each do |sub|
+                                       UserMailer.user_postednarrative(@narrative, sub).deliver
+                                    end
+                                 end
+
+                                 #Find all the maintopic subs
+                                 allMaintopicSubs = Maintopicsubscriber.all
+                                 mainsubs = allMaintopicSubs.select{|sub| sub.maintopic.id == @narrative.subtopic.maintopic.id}
+                                 if(mainsubs.count > 0)
+                                    mainsubs.each do |sub|
+                                       UserMailer.user_postednarrative(@narrative, sub).deliver
+                                    end
+                                 end
+
+                                 #Find all the subtopic subs
+                                 allSubtopicSubs = Subtopicsubscriber.all
+                                 subtopicsubs = allSubtopicSubs.select{|sub| sub.subtopic.id == @narrative.subtopic.id}
+                                 if(subtopicsubs.count > 0)
+                                    subtopicsubs.each do |sub|
+                                       UserMailer.user_postednarrative(@narrative, sub).deliver
+                                    end
+                                 end
+
+                                 flash[:success] = "#{@narrative.subtopic.title} was successfully created."
+                                 redirect_to maintopic_subtopic_path(@narrative.subtopic.maintopic, @narrative.subtopic)
+                              else
+                                 render "new"
+                              end
+                           end
+                        else
+                           redirect_to root_path
                         end
                      else
                         redirect_to root_path

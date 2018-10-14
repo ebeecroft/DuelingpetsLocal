@@ -42,6 +42,10 @@
    <% end %>
 </p>
 <br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getRadiostationVisitors("past20mins", @radiostation), radiostation_radiostationvisits_path(@radiostation) %> last 40 mins: <%= link_to getRadiostationVisitors("past40mins", @radiostation), radiostation_radiostationvisits_path(@radiostation) %> last hour: <%= link_to getRadiostationVisitors("pasthour", @radiostation), radiostation_radiostationvisits_path(@radiostation) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getRadiostationVisitors("past2hours", @radiostation), radiostation_radiostationvisits_path(@radiostation) %> last 3 hours: <%= link_to getRadiostationVisitors("past3hours", @radiostation), radiostation_radiostationvisits_path(@radiostation) %></p>
+<br>
 <p><%= @radiostation.description %></p>
 <br>
 <% if @mainsheets.count > 9 %>

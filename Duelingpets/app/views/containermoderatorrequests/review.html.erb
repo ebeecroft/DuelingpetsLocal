@@ -1,0 +1,21 @@
+<% provide(:h1, "Containermoderatorrequest Review") %>
+<p><%= paginate @containermoderatorrequests %></p>
+<% @containermoderatorrequests.each do |containermoderatorrequest| %>
+   <br>
+   <p class="navlinks">Status: <%= containermoderatorrequest.status %><%= button_to 'Approve', containermoderatorrequests_review1_path(:containermoderatorrequest_id=>containermoderatorrequest.id), method: :post %><%= button_to 'Deny', containermoderatorrequests_review2_path(:containermoderatorrequest_id=>containermoderatorrequest.id), method: :post %></p>
+   <p><%= containermoderatorrequest.message %></p>
+   <br>
+   <p>Created on: <%= distance_of_time_in_words_to_now containermoderatorrequest.created_on %> ago on (<%= containermoderatorrequest.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if containermoderatorrequest.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(containermoderatorrequest.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">User: <%= getUserPrivilege(containermoderatorrequest.user) %><%= link_to containermoderatorrequest.user.vname, user_path(containermoderatorrequest.user) %></p>
+   <p>Status: <%= getActivity(containermoderatorrequest.user) %>
+      <% if getActivity(containermoderatorrequest.user) == "Offline" || getActivity(containermoderatorrequest.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(containermoderatorrequest.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

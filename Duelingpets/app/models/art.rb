@@ -10,6 +10,7 @@ class Art < ActiveRecord::Base
    has_many :favoritearts, :foreign_key => "art_id", :dependent => :destroy
    has_many :artstars, :foreign_key => "art_id", :dependent => :destroy
    has_many :artcomments, :foreign_key => "art_id", :dependent => :destroy
+   has_many :artvisits, :foreign_key => "art_id", :dependent => :destroy
 
    #Uploader section
    mount_uploader :image, ImageUploader

@@ -68,7 +68,7 @@ module MoviesHelper
 
                #Checks to see that the visitor and
                #our user are not the same
-               if(visitor.id != channelFound.user_id && !visitor.admin)
+               if(visitor.id != movieFound.user_id && !visitor.admin)
                   timer = Pagetimer.find_by_name("Movie")
                   if(timer.expiretime - currentTime <= 0)
                      value = duration.min.from_now.utc
@@ -113,6 +113,8 @@ module MoviesHelper
          if(movieFound)
             guest = (!current_user && movieFound.reviewed && movieFound.bookgroup.name == "Peter Rabbit")
             if(current_user)
+               visitTimer(type, movieFound)
+               cleanupOldVisits
                owner = ((movieFound.user_id == current_user.id) || current_user.admin)
                visitor = (!owner && movieFound.reviewed && movieFound.bookgroup_id <= getBookGroups(current_user))
                movie = (owner && (movieFound.reviewed && movieFound.bookgroup_id <= getBookGroups(current_user)) || !movieFound.reviewed)

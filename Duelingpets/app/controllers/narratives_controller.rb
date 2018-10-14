@@ -1,4 +1,4 @@
-class NarrativesController < GroupController
+class NarrativesController < ApplicationController
    include NarrativesHelper
    include ForumgroupretrievalHelper
 

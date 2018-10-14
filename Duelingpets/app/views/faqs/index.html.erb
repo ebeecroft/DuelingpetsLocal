@@ -1,0 +1,23 @@
+<% provide(:h1, "Faq List") %>
+<p><%= paginate @faqs %></p>
+<% @faqs.each do |faq| %>
+   <br>
+   <div class="container">
+      <p class="navlinks">Title: <%= faq.title %></p>
+   </div>
+   <% if current_user && current_user.admin %>
+      <div class="container"><%= button_to 'Edit', edit_faq_path(faq), method: :get %></div> <div class="container"><%= button_to 'Destroy', [faq], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
+   <p>Created on: <%= distance_of_time_in_words_to_now faq.created_on %> ago on (<%= faq.created_on.strftime("%B-%d-%Y") %>)</p>
+   <% if faq.ogg.to_s != "" || faq.mp3.to_s != "" %>
+      <p><%= audio_tag(getGalleryMusic(faq), :controls => true) %></p>
+   <% end %>
+   <br>
+   <p><%= faq.description %></p>
+<% end %>
+<% if current_user && current_user %>
+   <br>
+   <p><%= button_to "New Faq", new_faq_path, method: :get %></p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

@@ -1,4 +1,4 @@
-class SoundsController < GroupController
+class SoundsController < ApplicationController
    include SoundsHelper
    include BookgroupretrievalHelper
 

@@ -1,0 +1,17 @@
+<% provide(:h1, @sound.title + "'s visitors") %>
+<div class="navlinks"><%= paginate @sounds %></div>
+<% @soundvisits.each do |soundvisit| %>
+   <br>
+   <% if soundvisit.user.userinfo.miniavatar.to != "" %>
+      <p><%= image_tag(soundvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visitor: <%= getUserPrivilege(soundvisit.user) %><%= link_to soundvisit.user.vname, user_path(soundvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now soundvisit.created_on %> ago on (<%= soundvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(soundvisit.user) %>
+      <% if getActivity(soundvisit.user) == "Offline" || getActivity(soundvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(soundvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

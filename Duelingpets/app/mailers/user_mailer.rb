@@ -250,4 +250,49 @@ class UserMailer < ActionMailer::Base
       @subscriber = subscriber
       mail(to: @subscriber.user.email, from: "notification@duelingpets.net", subject: "#{@narrative.user.vname} has created a new narrative. [Duelingpets]")
    end
+
+   def forummoderator_review(forummoderatorrequest)
+      @forummoderatorrequest = forummoderatorrequest
+      mail(to: @forummoderatorrequest.forum.user.email, from: "notification@duelingpets.net", subject: "#{@forummoderatorrequest.user.vname}'s forummoderatorrequest is awaiting your review. [Duelingpets]")
+   end
+
+   def forummoderator_approved(forummoderator)
+      @forummoderator = forummoderator
+      mail(to: @forummoderator.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@forummoderator.user.vname} your now a forummoderator of the forum #{@forummoderator.forum.name}. [Duelingpets]")
+   end
+
+   def forummoderator_denied(forummoderatorrequest)
+      @forummoderatorrequest = forummoderatorrequest
+      mail(to: @forummoderatorrequest.user.email, from: "notification@duelingpets.net", subject: "Your forummoderatorrequest to the forum #{@forummoderatorrequest.forum.name} was denied. [Duelingpets]")
+   end
+
+   def containermoderator_review(containermoderatorrequest)
+      @containermoderatorrequest = containermoderatorrequest
+      mail(to: @containermoderatorrequest.topiccontainer.forum.user.email, from: "notification@duelingpets.net", subject: "#{@containermoderatorrequest.user.vname}'s containermoderatorrequest is awaiting your review. [Duelingpets]")
+   end
+
+   def containermoderator_approved(containermoderator)
+      @containermoderator = containermoderator
+      mail(to: @containermoderator.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@containermoderator.user.vname} your now a containermoderator of the topiccontainer #{@containermoderator.topiccontainer.title}. [Duelingpets]")
+   end
+
+   def containermoderator_denied(containermoderatorrequest)
+      @containermoderatorrequest = containermoderatorrequest
+      mail(to: @containermoderatorrequest.user.email, from: "notification@duelingpets.net", subject: "Your containermoderatorrequest to the topiccontainer #{@containermoderatorrequest.topiccontainer.title} was denied. [Duelingpets]")
+   end
+
+   def maintopicmoderator_review(maintopicmoderatorrequest)
+      @maintopicmoderatorrequest = maintopicmoderatorrequest
+      mail(to: @maintopicmoderatorrequest.maintopic.topiccontainer.forum.user.email, from: "notification@duelingpets.net", subject: "#{@maintopicmoderatorrequest.user.vname}'s maintopicmoderatorrequest is awaiting your review. [Duelingpets]")
+   end
+
+   def maintopicmoderator_approved(maintopicmoderator)
+      @maintopicmoderator = maintopicmoderator
+      mail(to: @maintopicmoderator.user.email, from: "notification@duelingpets.net", subject: "Congratulations #{@maintopicmoderator.user.vname} your now a maintopicmoderator of the maintopic #{@maintopicmoderator.maintopic.title}. [Duelingpets]")
+   end
+
+   def maintopicmoderator_denied(maintopicmoderatorrequest)
+      @maintopicmoderatorrequest = maintopicmoderatorrequest
+      mail(to: @maintopicmoderatorrequest.user.email, from: "notification@duelingpets.net", subject: "Your maintopicmoderatorrequest to the maintopic #{@maintopicmoderatorrequest.maintopic.title} was denied. [Duelingpets]")
+   end
 end

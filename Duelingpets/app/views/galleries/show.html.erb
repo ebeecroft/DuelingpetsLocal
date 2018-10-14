@@ -42,6 +42,10 @@
    <% end %>
 </p>
 <br>
+<p>Visitors:</p>
+<p class="navlinks">last 20 mins: <%= link_to getGalleryVisitors("past20mins", @gallery), gallery_galleryvisits_path(@gallery) %> last 40 mins: <%= link_to getGalleryVisitors("past40mins", @gallery), gallery_galleryvisits_path(@gallery) %> last hour: <%= link_to getGalleryVisitors("pasthour", @gallery), gallery_galleryvisits_path(@gallery) %></p>
+<p class="navlinks">last 2 hours: <%= link_to getGalleryVisitors("past2hours", @gallery), gallery_galleryvisits_path(@gallery) %> last 3 hours: <%= link_to getGalleryVisitors("past3hours", @gallery), gallery_galleryvisits_path(@gallery) %></p>
+<br>
 <p><%= @gallery.description %></p>
 <br>
 <% if @mainfolders.count > 9 %>

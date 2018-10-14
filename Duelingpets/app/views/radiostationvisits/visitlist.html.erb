@@ -1,0 +1,19 @@
+<% provide(:h1, "Radiostationvisit List") %>
+<div class="navlinks"><%= paginate @radiostationvisits %></div>
+<% @radiostationvisits.each do |radiostationvisit| %>
+   <br>
+   <div class="container"><p class="navlinks">Radiostation: <%= link_to radiostationvisit.radiostation.name, user_radiostation_path(radiostationvisit.radiostation.user, radiostationvisit.radiostation) %></p></div> <div class="container"><%= button_to 'Destroy', [radiostationvisit.radiostation, radiostationvisit], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% if radiostationvisit.user.userinfo.miniavatar.to_s != "" %>
+      <br>
+      <p><%= image_tag(radiostationvisit.user.userinfo.miniavatar_url(:thumb)) %></p>
+   <% end %>
+   <p class="navlinks">Visited by: <%= getUserPrivilege(radiostationvisit.user) %><%= link_to radiostationvisit.user.vname, user_path(radiostationvisit.user) %></p>
+   <p>Visited: <%= distance_of_time_in_words_to_now radiostationvisit.created_on %> ago on (<%= radiostationvisit.created_on.strftime("%B-%d-%Y") %>)</p>
+   <p>Status: <%= getActivity(radiostationvisit.user) %>
+      <% if getActivity(radiostationvisit.user) == "Offline" || getActivity(radiostationvisit.user) == "Inactive" %>
+         for <%= distance_of_time_in_words_to_now getTime(radiostationvisit.user) %>
+      <% end %>
+   </p>
+<% end %>
+<br>
+<p class="navlinks"><%= link_to 'Back', root_path %></p>

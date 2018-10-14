@@ -8,8 +8,10 @@
 <div class="container">
    <p class="navlinks">Owner: <%= getForumPrivilege(@topiccontainer.forum, @topiccontainer.user) %><%= link_to @topiccontainer.user.vname, user_path(@topiccontainer.user) %></p>
 </div>
-<% if(current_user && ((current_user.id == @topiccontainer.user_id) || current_user.admin)) %>
-   <div class="container"><%= button_to 'Edit', edit_forum_topiccontainer_path(@topiccontainer.forum, @topiccontainer), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@topiccontainer.forum, @topiccontainer], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+<% if current_user %>
+   <% if forumContent(@topiccontainer, "Edit") %>
+      <div class="container"><%= button_to 'Edit', edit_forum_topiccontainer_path(@topiccontainer.forum, @topiccontainer), method: :get %></div> <div class="container"><%= button_to 'Destroy', [@topiccontainer.forum, @topiccontainer], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+   <% end %>
 <% end %>
 <p>Status: <%= getActivity(@topiccontainer.user) %>
    <% if getActivity(@topiccontainer.user) == "Inactive" || getActivity(@topiccontainer.user) == "Offline" %>
@@ -27,11 +29,17 @@
 <% if getContainerSubs(@topiccontainer) > 0 %>
    <p class="navlinks">Total Subscribers: <%= link_to getContainerSubs(@topiccontainer), topiccontainer_containersubscribers_path(@topiccontainer) %></p>
 <% end %>
+<% if getContainerMods(@topiccontainer) > 0 %>
+   <p class="navlinks">Total Moderators: <%= link_to getContainerMods(@topiccontainer), topiccontainer_containermoderators_modlist_path(@topiccontainer) %></p>
+<% end %>
+<% if current_user && current_user.id == @topiccontainer.forum.user.id %>
+   <p><%= button_to 'Reviews', topiccontainer_containermoderatorrequests_review_path(@topiccontainer.id), method: :get %></p>
+<% end %>
 <br>
 <p><%= textFormater("Multi", @topiccontainer.description, "All").html_safe %></p>
 <br>
 <% if @topiccontainer.maintopics.count > 10 %>
-   <p><%= paginate @maintopics %></p>
+   <div class="navlinks"><%= paginate @maintopics %></div>
    <br>
 <% end %>
 <% if @maintopics.count > 0 %>
@@ -44,13 +52,20 @@
       <div class="container">
          <p class="navlinks"><%= link_to maintopic.title, topiccontainer_maintopic_path(maintopic.topiccontainer, maintopic) %></p>
       </div>
-      <% if retrieveMaintopicSub(maintopic) == 0 %>
-         <div class="container"><%= button_to 'Subscribe', maintopicsubscribers_subscribe_path(:maintopic_id=>maintopic.id), method: :post %></div>
-      <% else %>
-         <div class="container"><%= button_to 'Unsubscribe', maintopicsubscribers_subscribe_path(:maintopic_id=>maintopic.id), method: :post %></div>
-      <% end %>
-      <% if(current_user && ((current_user.id == maintopic.user_id) || current_user.admin)) %>
-         <div class="container"><%= button_to 'Edit', edit_topiccontainer_maintopic_path(maintopic.topiccontainer, maintopic), method: :get %></div> <div class="container"><%= button_to 'Destroy', [maintopic.topiccontainer, maintopic], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+      <% if current_user %>
+         <% if retrieveMaintopicSub(maintopic) == 0 %>
+            <div class="container"><%= button_to 'Subscribe', maintopicsubscribers_subscribe_path(:maintopic_id=>maintopic.id), method: :post %></div>
+         <% else %>
+            <div class="container"><%= button_to 'Unsubscribe', maintopicsubscribers_subscribe_path(:maintopic_id=>maintopic.id), method: :post %></div>
+         <% end %>
+         <% if retrieveMaintopicMod(maintopic) == 0 %>
+            <div class="container"><%= button_to 'Moderator Request', new_maintopic_maintopicmoderatorrequest_path(:maintopic_id=>maintopic.id), method: :get %></div>
+         <% else %>
+            <div class="container"><%= button_to 'Remove Moderator', maintopicmoderators_unmoderate_path(:maintopic_id=>maintopic.id), method: :post %></div>
+         <% end %>
+         <% if topiccontainerContent(maintopic, "Edit") %>
+            <div class="container"><%= button_to 'Edit', edit_topiccontainer_maintopic_path(maintopic.topiccontainer, maintopic), method: :get %></div> <div class="container"><%= button_to 'Destroy', [maintopic.topiccontainer, maintopic], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+         <% end %>
       <% end %>
       <p>Created on: <%= distance_of_time_in_words_to_now maintopic.created_on %> ago on (<%= maintopic.created_on.strftime("%B-%d-%Y") %>)</p>
       <p class="navlinks">Owner: <%= getForumPrivilege(maintopic.topiccontainer.forum, maintopic.user) %><%= link_to maintopic.user.vname, user_path(maintopic.user) %></p>
@@ -63,18 +78,20 @@
       <p><%= textFormater("Multi", maintopic.description, "All").html_safe %></p>
       <div class="container">
          <% if getCurrentSubtopic(maintopic).count > 0 %>
-            <p><%= link_to getCurrentSubtopic(maintopic).last.title, maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last) %></p>
-            <% if(current_user && ((current_user.id == getCurrentSubtopic(maintopic).last.user_id) || current_user.admin)) %>
-            <div class="container"><%= button_to 'Edit', edit_maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last), method: :get %></div> <div class="container"><%= button_to 'Destroy', [getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last], method: :delete, data: { confirm: 'Are you sure?' } %></div>
-         <% end %>
-         <p>Created on: <%= distance_of_time_in_words_to_now getCurrentSubtopic(maintopic).last.created_on %> ago on (<%= getCurrentSubtopic(maintopic).last.created_on.strftime("%B-%d-%Y") %>)</p>
-         <p class="navlinks">Owner: <%= getForumPrivilege(getCurrentSubtopic(maintopic).last.maintopic.topiccontainer.forum, getCurrentSubtopic(maintopic).last.user) %><%= link_to getCurrentSubtopic(maintopic).last.user.vname, user_path(getCurrentSubtopic(maintopic).last.user) %></p>
-         <p>Status: <%= getActivity(getCurrentSubtopic(maintopic).last.user) %>
-            <% if getActivity(getCurrentSubtopic(maintopic).last.user) == "Inactive" || getActivity(getCurrentSubtopic(maintopic).last.user) == "Offline" %>
-               for <%= distance_of_time_in_words_to_now getTime(getCurrentSubtopic(maintopic).last.user) %>
+            <p class="navlinks"><%= link_to getCurrentSubtopic(maintopic).last.title, maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last) %></p>
+            <% if current_user %>
+               <% if maintopicContent(getCurrentSubtopic(maintopic), "Edit") %>
+                  <div class="container"><%= button_to 'Edit', edit_maintopic_subtopic_path(getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last), method: :get %></div> <div class="container"><%= button_to 'Destroy', [getCurrentSubtopic(maintopic).last.maintopic, getCurrentSubtopic(maintopic).last], method: :delete, data: { confirm: 'Are you sure?' } %></div>
+               <% end %>
             <% end %>
-         </p>
-         <p>Forum group: <%= getCurrentSubtopic(maintopic).last.forumgroup.name %></p>
+            <p>Created on: <%= distance_of_time_in_words_to_now getCurrentSubtopic(maintopic).last.created_on %> ago on (<%= getCurrentSubtopic(maintopic).last.created_on.strftime("%B-%d-%Y") %>)</p>
+            <p class="navlinks">Owner: <%= getForumPrivilege(getCurrentSubtopic(maintopic).last.maintopic.topiccontainer.forum, getCurrentSubtopic(maintopic).last.user) %><%= link_to getCurrentSubtopic(maintopic).last.user.vname, user_path(getCurrentSubtopic(maintopic).last.user) %></p>
+            <p>Status: <%= getActivity(getCurrentSubtopic(maintopic).last.user) %>
+               <% if getActivity(getCurrentSubtopic(maintopic).last.user) == "Inactive" || getActivity(getCurrentSubtopic(maintopic).last.user) == "Offline" %>
+                  for <%= distance_of_time_in_words_to_now getTime(getCurrentSubtopic(maintopic).last.user) %>
+               <% end %>
+            </p>
+            <p>Forum group: <%= getCurrentSubtopic(maintopic).last.forumgroup.name %></p>
          <% else %>
             <p>There are no subtopics available</p>
          <% end %>
@@ -87,7 +104,9 @@
    <br>
 <% end %>
 <% if current_user %>
-   <p><%= button_to 'New Maintopic', new_topiccontainer_maintopic_path(@topiccontainer), method: :get %></p>
-   <br>
+   <% if topiccontainerContent(@topiccontainer, "New") %>
+      <p><%= button_to 'New Maintopic', new_topiccontainer_maintopic_path(@topiccontainer), method: :get %></p>
+      <br>
+   <% end %>
 <% end %>
 <p class="navlinks"><%= link_to "Back", user_forum_path(@topiccontainer.forum.user, @topiccontainer.forum) %></p>

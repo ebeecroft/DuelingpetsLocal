@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  created_on: 2018-09-29 07:28:04
+  user_id: 1
+  radiostation_id: 1
+
+two:
+  created_on: 2018-09-29 07:28:04
+  user_id: 1
+  radiostation_id: 1
